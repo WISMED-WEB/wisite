@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://unpkg.com/vue@next"></script>
+        <script src="https://unpkg.com/mitt/dist/mitt.umd.js"></script>
+    </head>
+    <body>
+        <h1>Demo for fetch, ws, vue3 app communication</h1>
+        <div id="app1"></div>
+        <div id="app2"></div>
+        <script type="module">
+            import app1 from './js/com1.js'
+            import app2 from './js/com2.js'
+            const {createApp} = Vue;
+            createApp(app1).mount('#app1');
+            Vue.createApp(app2).mount("#app2");
+        </script>
+    </body>
+</html>
