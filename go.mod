@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/digisan/gotk v0.0.47
 	github.com/digisan/logkit v0.0.4
-	github.com/digisan/user-mgr v0.0.4
+	github.com/digisan/user-mgr v0.0.5
 	github.com/labstack/echo/v4 v4.6.3
 	github.com/postfinance/single v0.0.1
 	github.com/swaggo/echo-swagger v1.3.0
@@ -21,7 +21,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgraph-io/badger/v3 v3.2103.2 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
-	github.com/digisan/go-generics v0.0.10 // indirect
+	github.com/digisan/go-generics v0.0.11 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
@@ -50,7 +50,7 @@ require (
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	go.opencensus.io v0.23.0 // indirect
-	golang.org/x/crypto v0.0.0-20220131195533-30dcbda58838 // indirect
+	golang.org/x/crypto v0.0.0-20220208233918-bba287dce954 // indirect
 	golang.org/x/sys v0.0.0-20220207234003-57398862261d // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect

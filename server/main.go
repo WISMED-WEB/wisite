@@ -60,7 +60,7 @@ func main() {
 	// other init actions
 	{
 		udb.OpenUserStorage("../data/user")
-		su.SetValidator()
+		su.SetValidator(nil)
 	}
 
 	// start Service

@@ -2,26 +2,33 @@ package main
 
 import (
 	"github.com/labstack/echo/v4"
-	su "github.com/wismed-web/wisite/server/api/signup"
+	ad "github.com/wismed-web/wisite/server/api/admin"
+	si "github.com/wismed-web/wisite/server/api/sign-in"
+	so "github.com/wismed-web/wisite/server/api/sign-out"
+	su "github.com/wismed-web/wisite/server/api/sign-up"
 	"github.com/wismed-web/wisite/server/ws"
 )
 
 // path: handler
 var mGET = map[string]echo.HandlerFunc{
-
 	// web socket for message
 	"/ws/msg": ws.WSMsg,
 
-	// module1 api
-	// "/api/module1/test":    su.Test,
-	// "/api/module1/testmsg": su.TestSendMsg,
+	// admin
+	"/api/admin/users":       ad.ListUser,
+	"/api/admin/onlineusers": ad.ListOnlineUser,
+
+	// sign-in
+	"/api/sign-in/signin": si.SignIn,
+
+	// sign-out
+	"/api/sign-out/signout": so.SignOut,
 }
 
 var mPOST = map[string]echo.HandlerFunc{
-
 	// sign-up
 	"/api/sign-up/new":          su.NewUser,
-	// "/api/sign-up/verify-email": su.VerifyEmail,
+	"/api/sign-up/verify-email": su.VerifyEmail,
 }
 
 var mPUT = map[string]echo.HandlerFunc{
