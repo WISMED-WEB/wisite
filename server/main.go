@@ -12,6 +12,8 @@ import (
 	lk "github.com/digisan/logkit"
 	su "github.com/digisan/user-mgr/sign-up"
 	"github.com/digisan/user-mgr/udb"
+	usr "github.com/digisan/user-mgr/user"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/postfinance/single"
@@ -28,9 +30,9 @@ func init() {
 	lk.WarnDetail(false)
 }
 
-// @title Swagger Example API
+// @title WISMED WISITE API
 // @version 1.0
-// @description This is a sample server.
+// @description This is wismed wisite server.
 // @termsOfService
 // @contact.name API Support
 // @contact.url
@@ -110,9 +112,28 @@ func echoHost(done chan<- string) {
 			AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 		}))
 
-		hookPathHandler(e) // hook each path-handler
-		hookStatic(e)      // host static file/folder
-		waitShutdown(e)    // waiting for shutdown
+		// sign group
+		{
+			r := e.Group("/api/sign")
+			hookSignHandler(r)
+		}
+
+		// admin group
+		{
+			r := e.Group("/api/admin")
+			r.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+				Claims:     &usr.UserClaims{},
+				SigningKey: []byte(usr.TokenKey()),
+			}))
+			r.Use(ValidateToken)
+			hookAdminHandler(r)
+		}
+
+		hookStatic(e)   // host static file/folder
+		waitShutdown(e) // waiting for shutdown
+
+		// web socket for message
+		e.GET("/ws/msg", ws.WSMsg)
 
 		// host swagger
 		// http://localhost:1323/swagger/index.html
@@ -127,4 +148,17 @@ func echoHost(done chan<- string) {
 		}
 		lk.FailOnErrWhen(err != http.ErrServerClosed, "%v", err)
 	}()
+}
+
+func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		userTkn := c.Get("user").(*jwt.Token)
+		claims := userTkn.Claims.(*usr.UserClaims)
+		if claims.ValidateToken(userTkn.Raw) {
+			return next(c)
+		}
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"message": "invalid or expired jwt",
+		})
+	}
 }

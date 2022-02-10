@@ -233,7 +233,6 @@ import (
     "github.com/swaggo/swag/example/celler/model"
 )
 
-// ShowAccount godoc
 // @Summary      Show an account
 // @Description  get string by ID
 // @Tags         accounts
@@ -260,7 +259,6 @@ func (c *Controller) ShowAccount(ctx *gin.Context) {
   ctx.JSON(http.StatusOK, account)
 }
 
-// ListAccounts godoc
 // @Summary      List accounts
 // @Description  get accounts
 // @Tags         accounts
