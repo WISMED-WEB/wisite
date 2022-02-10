@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// *** after implementing, register with path in 'api_reg.go' ***
+// *** after implementing, register with path in 'admin.go' ***
 
 // @Title list all users
 // @Summary get all users' info in db
@@ -42,7 +42,7 @@ func ListUser(c echo.Context) error {
 // @Produce json
 // @Success 200 "OK - list successfully"
 // @Failure 500 "Fail - internal error"
-// @Router /api/admin/onlineusers [get]
+// @Router /api/admin/onlines [get]
 func ListOnlineUser(c echo.Context) error {
 	users, err := udb.UserDB.ListOnlineUsers()
 	// for _, user := range users {
@@ -65,7 +65,7 @@ func ListOnlineUser(c echo.Context) error {
 // @Success 200 "OK - action successfully"
 // @Failure 400 "Fail - invalid uname"
 // @Failure 500 "Fail - internal error"
-// @Router /api/admin/activate-user [post]
+// @Router /api/admin/activate [post]
 func ActivateUser(c echo.Context) error {
 	uname := c.FormValue("uname")
 	flagstr := c.FormValue("flag")

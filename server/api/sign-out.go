@@ -1,25 +1,20 @@
-package main
+package api
 
 import (
 	"github.com/labstack/echo/v4"
-	ad "github.com/wismed-web/wisite/server/api/admin"
+	signout "github.com/wismed-web/wisite/server/api/sign-out"
 )
 
-func hookAdminHandler(r *echo.Group) {
+// "/api/sign-out"
+func SignoutHandler(e *echo.Group) {
 
 	var mGET = map[string]echo.HandlerFunc{
-		"/users":       ad.ListUser,
-		"/onlineusers": ad.ListOnlineUser,
+		"/": signout.SignOut,
 	}
 
-	var mPOST = map[string]echo.HandlerFunc{
-		"/activate-user": ad.ActivateUser,
-	}
-
+	var mPOST = map[string]echo.HandlerFunc{}
 	var mPUT = map[string]echo.HandlerFunc{}
-
 	var mDELETE = map[string]echo.HandlerFunc{}
-
 	var mPATCH = map[string]echo.HandlerFunc{}
 
 	// ------------------------------------------------------- //
@@ -36,11 +31,11 @@ func hookAdminHandler(r *echo.Group) {
 	}
 
 	mRegMethod := map[string]func(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route{
-		"GET":    r.GET,
-		"POST":   r.POST,
-		"PUT":    r.PUT,
-		"DELETE": r.DELETE,
-		"PATCH":  r.PATCH,
+		"GET":    e.GET,
+		"POST":   e.POST,
+		"PUT":    e.PUT,
+		"DELETE": e.DELETE,
+		"PATCH":  e.PATCH,
 		// others...
 	}
 

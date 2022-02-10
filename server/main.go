@@ -18,6 +18,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/postfinance/single"
 	echoSwagger "github.com/swaggo/echo-swagger"
+	"github.com/wismed-web/wisite/server/api"
 	_ "github.com/wismed-web/wisite/server/docs" // once `swag init`, comment it out
 	"github.com/wismed-web/wisite/server/ws"
 )
@@ -112,25 +113,30 @@ func echoHost(done chan<- string) {
 			AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 		}))
 
-		// sign group
+		// sign group without JWT
 		{
 			r := e.Group("/api/sign")
-			hookSignHandler(r)
+			api.SignHandler(r)
 		}
 
-		// admin group
-		{
-			r := e.Group("/api/admin")
+		// other groups with JWT
+		groups := []string{"/api/sign-out", "/api/admin"}
+		handlers := []func(*echo.Group){api.SignoutHandler, api.AdminHandler}
+		for i, group := range groups {
+			r := e.Group(group)
 			r.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 				Claims:     &usr.UserClaims{},
 				SigningKey: []byte(usr.TokenKey()),
 			}))
 			r.Use(ValidateToken)
-			hookAdminHandler(r)
+			handlers[i](r)
 		}
 
-		hookStatic(e)   // host static file/folder
-		waitShutdown(e) // waiting for shutdown
+		// host static file/folder
+		hookStatic(e)
+
+		// waiting for shutdown
+		waitShutdown(e)
 
 		// web socket for message
 		e.GET("/ws/msg", ws.WSMsg)

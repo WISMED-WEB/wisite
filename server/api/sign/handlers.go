@@ -7,69 +7,13 @@ import (
 
 	lk "github.com/digisan/logkit"
 	si "github.com/digisan/user-mgr/sign-in"
-	so "github.com/digisan/user-mgr/sign-out"
 	su "github.com/digisan/user-mgr/sign-up"
 	usr "github.com/digisan/user-mgr/user"
 	"github.com/labstack/echo/v4"
 	md "github.com/wismed-web/wisite/module"
 )
 
-// *** after implementing, register with path in 'api_sign.go' ***
-
-// @Title sign in
-// @Summary sign in action. if ok, got token
-// @Description
-// @Tags    sign
-// @Accept  json
-// @Produce json
-// @Param   uname query string true "unique user name"
-// @Param   pwd   query string true "password"
-// @Success 200 "OK - sign-in successfully"
-// @Failure 400 "Fail - incorrect password"
-// @Failure 500 "Fail - internal error"
-// @Router /api/sign/in [get]
-func SignIn(c echo.Context) error {
-
-	lk.Debug("[%v] [%v]", c.QueryParam("uname"), c.QueryParam("pwd"))
-
-	user := usr.User{
-		UName:    c.QueryParam("uname"),
-		Password: c.QueryParam("pwd"),
-	}
-
-	if err := si.UserExists(user); err != nil {
-		return c.String(http.StatusBadRequest, fmt.Sprint(err))
-	}
-
-	if !si.PwdOK(user) {
-		return c.String(http.StatusBadRequest, "password incorrect")
-	}
-
-	defer lk.FailOnErr("%v", si.Trail(user.UName))
-
-	claims := usr.MakeUserClaims(user)
-	token := claims.GenToken()
-	return c.JSON(http.StatusOK, echo.Map{
-		"token": token,
-	})
-}
-
-// @Title sign out
-// @Summary sign out action.
-// @Description
-// @Tags    sign
-// @Accept  json
-// @Produce json
-// @Param   uname query string true "unique user name"
-// @Success 200 "OK - sign-out successfully"
-// @Failure 500 "Fail - internal error"
-// @Router /api/sign/out [get]
-func SignOut(c echo.Context) error {
-	if err := so.Logout(c.QueryParam("uname")); err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
-	}
-	return c.String(http.StatusOK, "sign-out successfully")
-}
+// *** after implementing, register with path in 'sign.go' *** //
 
 var (
 	mUser = &sync.Map{} // users waiting for verifying email code
@@ -156,4 +100,42 @@ func VerifyEmail(c echo.Context) error {
 	}
 
 	return c.String(http.StatusOK, "registered successfully")
+}
+
+// @Title sign in
+// @Summary sign in action. if ok, got token
+// @Description
+// @Tags    sign
+// @Accept  json
+// @Produce json
+// @Param   uname query string true "unique user name"
+// @Param   pwd   query string true "password"
+// @Success 200 "OK - sign-in successfully"
+// @Failure 400 "Fail - incorrect password"
+// @Failure 500 "Fail - internal error"
+// @Router /api/sign/in [get]
+func LogIn(c echo.Context) error {
+
+	// lk.Debug("[%v] [%v]", c.QueryParam("uname"), c.QueryParam("pwd"))
+
+	user := usr.User{
+		UName:    c.QueryParam("uname"),
+		Password: c.QueryParam("pwd"),
+	}
+
+	if err := si.UserExists(user); err != nil {
+		return c.String(http.StatusBadRequest, fmt.Sprint(err))
+	}
+
+	if !si.PwdOK(user) {
+		return c.String(http.StatusBadRequest, "incorrect password")
+	}
+
+	defer lk.FailOnErr("%v", si.Trail(user.UName))
+
+	claims := usr.MakeUserClaims(user)
+	token := claims.GenToken()
+	return c.JSON(http.StatusOK, echo.Map{
+		"token": token,
+	})
 }
