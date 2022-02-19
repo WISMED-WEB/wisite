@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	fm "github.com/digisan/file-mgr"
 	gio "github.com/digisan/gotk/io"
 	lk "github.com/digisan/logkit"
 	su "github.com/digisan/user-mgr/sign-up"
@@ -62,8 +63,14 @@ func main() {
 
 	// other init actions
 	{
-		udb.OpenUserStorage("../data/user")
+		// set user db dir
+		udb.OpenUserStorage("../data/db-user")
+
+		// set user validator
 		su.SetValidator(nil)
+
+		// set user file space & file item db space
+		fm.SetRoot("../data/user-space", "../data/db-fileitem")
 	}
 
 	// start Service
@@ -120,8 +127,12 @@ func echoHost(done chan<- string) {
 		}
 
 		// other groups with JWT
-		groups := []string{"/api/sign-out", "/api/admin"}
-		handlers := []func(*echo.Group){api.SignoutHandler, api.AdminHandler}
+		groups := []string{"/api/sign-out", "/api/admin", "api/file"}
+		handlers := []func(*echo.Group){
+			api.SignoutHandler,
+			api.AdminHandler,
+			api.FileHandler,
+		}
 		for i, group := range groups {
 			r := e.Group(group)
 			r.Use(middleware.JWTWithConfig(middleware.JWTConfig{

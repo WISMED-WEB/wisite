@@ -5,6 +5,8 @@ import (
 	"github.com/wismed-web/wisite/server/api/sign"
 )
 
+// register to main echo Group
+
 // "/api/sign"
 func SignHandler(e *echo.Group) {
 

@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"sync"
 
+	fm "github.com/digisan/file-mgr"
 	lk "github.com/digisan/logkit"
 	si "github.com/digisan/user-mgr/sign-in"
 	su "github.com/digisan/user-mgr/sign-up"
 	usr "github.com/digisan/user-mgr/user"
 	"github.com/labstack/echo/v4"
-	md "github.com/wismed-web/wisite/module"
 )
 
 // *** after implementing, register with path in 'sign.go' *** //
@@ -37,7 +37,7 @@ func NewUser(c echo.Context) error {
 
 	// lk.Debug("[%v] [%v] [%v] [%v]", c.FormValue("uname"), c.FormValue("email"), c.FormValue("name"), c.FormValue("pwd"))
 
-	user := usr.User{
+	user := &usr.User{
 		Active:   "T",
 		UName:    c.FormValue("uname"),
 		Email:    c.FormValue("email"),
@@ -85,18 +85,18 @@ func VerifyEmail(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "need re-sending verification code")
 	}
 
-	if err := su.VerifyCode(user.(usr.User), code); err != nil {
+	if err := su.VerifyCode(user.(*usr.User), code); err != nil {
 		return c.String(http.StatusBadRequest, fmt.Sprint(err))
 	}
 
 	// store into db
-	if err := su.Store(user.(usr.User)); err != nil {
+	if err := su.Store(user.(*usr.User)); err != nil {
 		return c.String(http.StatusInternalServerError, fmt.Sprint(err))
 	}
 
 	// sign-up ok calling...
 	{
-		md.AllocDisk(uname)
+
 	}
 
 	return c.String(http.StatusOK, "registered successfully")
@@ -118,7 +118,7 @@ func LogIn(c echo.Context) error {
 
 	// lk.Debug("[%v] [%v]", c.QueryParam("uname"), c.QueryParam("pwd"))
 
-	user := usr.User{
+	user := &usr.User{
 		UName:    c.QueryParam("uname"),
 		Password: c.QueryParam("pwd"),
 	}
@@ -132,6 +132,14 @@ func LogIn(c echo.Context) error {
 	}
 
 	defer lk.FailOnErr("%v", si.Trail(user.UName))
+
+	// log in ok calling...
+	{
+		us, err := fm.UseUser(user.UName)
+		if err != nil || us == nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+	}
 
 	claims := usr.MakeUserClaims(user)
 	token := claims.GenToken()

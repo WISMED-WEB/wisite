@@ -25,6 +25,7 @@ func SignOut(c echo.Context) error {
 	userTkn := c.Get("user").(*jwt.Token)
 	claims := userTkn.Claims.(*usr.UserClaims)
 	defer claims.DeleteToken()
+	
 	if err := so.Logout(claims.UName); err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}

@@ -2,21 +2,18 @@ package api
 
 import (
 	"github.com/labstack/echo/v4"
-	ad "github.com/wismed-web/wisite/server/api/admin"
+	"github.com/wismed-web/wisite/server/api/file"
 )
 
 // register to main echo Group
 
-// "/api/admin"
-func AdminHandler(r *echo.Group) {
+// "/api/file"
+func FileHandler(e *echo.Group) {
 
-	var mGET = map[string]echo.HandlerFunc{
-		"/users":   ad.ListUser,
-		"/onlines": ad.ListOnlineUser,
-	}
+	var mGET = map[string]echo.HandlerFunc{}
 
 	var mPOST = map[string]echo.HandlerFunc{
-		"/activate": ad.ActivateUser,
+		"/upload": file.Upload,
 	}
 
 	var mPUT = map[string]echo.HandlerFunc{}
@@ -37,11 +34,11 @@ func AdminHandler(r *echo.Group) {
 	}
 
 	mRegMethod := map[string]func(path string, h echo.HandlerFunc, m ...echo.MiddlewareFunc) *echo.Route{
-		"GET":    r.GET,
-		"POST":   r.POST,
-		"PUT":    r.PUT,
-		"DELETE": r.DELETE,
-		"PATCH":  r.PATCH,
+		"GET":    e.GET,
+		"POST":   e.POST,
+		"PUT":    e.PUT,
+		"DELETE": e.DELETE,
+		"PATCH":  e.PATCH,
 		// others...
 	}
 

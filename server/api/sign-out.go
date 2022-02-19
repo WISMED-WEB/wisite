@@ -5,6 +5,8 @@ import (
 	signout "github.com/wismed-web/wisite/server/api/sign-out"
 )
 
+// register to main echo Group
+
 // "/api/sign-out"
 func SignoutHandler(e *echo.Group) {
 
