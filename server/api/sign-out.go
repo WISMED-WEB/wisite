@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/labstack/echo/v4"
-	signout "github.com/wismed-web/wisite/server/api/sign-out"
+	signout "github.com/wismed-web/wisite-api/server/api/sign-out"
 )
 
 // register to main echo Group

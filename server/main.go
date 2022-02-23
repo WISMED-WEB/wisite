@@ -19,9 +19,9 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/postfinance/single"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	"github.com/wismed-web/wisite/server/api"
-	_ "github.com/wismed-web/wisite/server/docs" // once `swag init`, comment it out
-	"github.com/wismed-web/wisite/server/ws"
+	"github.com/wismed-web/wisite-api/server/api"
+	_ "github.com/wismed-web/wisite-api/server/docs" // once `swag init`, comment it out
+	"github.com/wismed-web/wisite-api/server/ws"
 )
 
 var (
@@ -34,7 +34,7 @@ func init() {
 
 // @title WISMED WISITE API
 // @version 1.0
-// @description This is wismed wisite server.
+// @description This is wismed wisite-api server.
 // @termsOfService
 // @contact.name API Support
 // @contact.url
@@ -70,7 +70,7 @@ func main() {
 		su.SetValidator(nil)
 
 		// set user file space & file item db space
-		fm.SetRoot("../data/user-space", "../data/db-fileitem")
+		fm.SetFileMgrRoot("../data/user-space", "../data/db-fileitem")
 	}
 
 	// start Service

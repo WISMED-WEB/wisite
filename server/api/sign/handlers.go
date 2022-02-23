@@ -16,7 +16,8 @@ import (
 // *** after implementing, register with path in 'sign.go' *** //
 
 var (
-	mUser = &sync.Map{} // users waiting for verifying email code
+	mUser        = &sync.Map{} // users waiting for verifying email code
+	MapUserSpace = &sync.Map{} // map[string]*fm.UserSpace, *** record logged-in user space ***
 )
 
 // @Title register a new user
@@ -139,6 +140,7 @@ func LogIn(c echo.Context) error {
 		if err != nil || us == nil {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
+		MapUserSpace.Store(user.UName, us)
 	}
 
 	claims := usr.MakeUserClaims(user)

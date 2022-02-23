@@ -1,4 +1,4 @@
-# wisite
+# wisite-api
 
 1. `cd ./server`
 2. `./swagger/swag init`

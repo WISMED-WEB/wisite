@@ -13,7 +13,7 @@ import (
 // *** after implementing, register with path in 'admin.go' ***
 
 // @Title list all users
-// @Summary get all users' info in db
+// @Summary get all users' info
 // @Description
 // @Tags    admin
 // @Accept  json
@@ -35,7 +35,7 @@ func ListUser(c echo.Context) error {
 }
 
 // @Title list online users
-// @Summary get all online users' info in db
+// @Summary get all online users
 // @Description
 // @Tags    admin
 // @Accept  json

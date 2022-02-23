@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/wismed-web/wisite/server/api/file"
+	"github.com/wismed-web/wisite-api/server/api/file"
 )
 
 // register to main echo Group
@@ -10,7 +10,10 @@ import (
 // "/api/file"
 func FileHandler(e *echo.Group) {
 
-	var mGET = map[string]echo.HandlerFunc{}
+	var mGET = map[string]echo.HandlerFunc{
+		"/pathcontent": file.PathContent,
+		"/fileitem":    file.FileItem,
+	}
 
 	var mPOST = map[string]echo.HandlerFunc{
 		"/upload": file.Upload,

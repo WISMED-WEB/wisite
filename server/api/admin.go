@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/labstack/echo/v4"
-	ad "github.com/wismed-web/wisite/server/api/admin"
+	ad "github.com/wismed-web/wisite-api/server/api/admin"
 )
 
 // register to main echo Group

@@ -1,17 +1,17 @@
-module github.com/wismed-web/wisite
+module github.com/wismed-web/wisite-api
 
 go 1.17
 
 require (
-	github.com/digisan/file-mgr v0.0.2
+	github.com/digisan/file-mgr v0.0.6
 	github.com/digisan/gotk v0.0.48
 	github.com/digisan/logkit v0.0.5
-	github.com/digisan/user-mgr v0.0.10
+	github.com/digisan/user-mgr v0.0.12
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/labstack/echo/v4 v4.6.3
 	github.com/postfinance/single v0.0.1
 	github.com/swaggo/echo-swagger v1.3.0
-	github.com/swaggo/swag v1.7.9
+	github.com/swaggo/swag v1.8.0
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
 )
 
@@ -36,10 +36,10 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/flatbuffers v2.0.5+incompatible // indirect
+	github.com/google/flatbuffers v2.0.6+incompatible // indirect
 	github.com/gookit/color v1.5.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/klauspost/compress v1.14.3 // indirect
+	github.com/klauspost/compress v1.14.4 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -52,7 +52,7 @@ require (
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
-	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
+	golang.org/x/sys v0.0.0-20220222200937-f2425489ef4c // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	golang.org/x/tools v0.1.9 // indirect
