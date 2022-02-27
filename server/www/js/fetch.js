@@ -8,8 +8,16 @@ export function fetch_get_json(url) {
     return cData;
 }
 
-export function fetch_get(url) {
-    const cData = fetch(url)
+export function fetch_get(url, token) {
+    const cData = fetch(url, {
+        method: 'GET',
+        withCredentials: true,
+        credentials: 'include',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    })
         .then((resp) => {
             // console.log("fetch_get:", resp);
             return resp.text()

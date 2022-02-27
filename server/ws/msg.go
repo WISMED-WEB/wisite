@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/labstack/echo/v4"
 	lk "github.com/digisan/logkit"
+	"github.com/labstack/echo/v4"
 	"golang.org/x/net/websocket"
 )
 
@@ -22,12 +22,14 @@ func SendMsg(id string, msg interface{}) bool {
 	if !ok {
 		return false
 	}
+	// lk.Debug("%v", msg)
 	chMsg.(chan interface{}) <- msg
 	return true
 }
 
 func BroadCast(msg interface{}) {
-	mIdMsg.Range(func(id, msg interface{}) bool {
+	// lk.Debug("%v", msg)
+	mIdMsg.Range(func(id, chMsg interface{}) bool {
 		go SendMsg(id.(string), msg)
 		return true
 	})
@@ -67,13 +69,13 @@ func WSMsg(c echo.Context) error {
 		defer ws.Close()
 
 		// Read
-		msg := ""
-		err := websocket.Message.Receive(ws, &msg)
+		clientMsg := ""
+		err := websocket.Message.Receive(ws, &clientMsg)
 		if err != nil {
 			c.Logger().Error(err)
 			return
 		}
-		fmt.Printf("%s\n", msg)
+		lk.Log("%s\n", clientMsg)
 
 		done := make(chan struct{})
 		go func(ctx context.Context, done chan<- struct{}) {
@@ -83,7 +85,7 @@ func WSMsg(c echo.Context) error {
 				for {
 					select {
 					case msg := <-chMsg:
-						lk.WarnOnErr("%v", websocket.Message.Send(ws, fmt.Sprintf("From WS Server! --- %v", msg)))
+						lk.WarnOnErr("%v", websocket.Message.Send(ws, fmt.Sprintf("WS message from server --- %v", msg)))
 					case <-ctx.Done():
 						return
 					}

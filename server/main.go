@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	fm "github.com/digisan/file-mgr"
@@ -14,6 +15,7 @@ import (
 	su "github.com/digisan/user-mgr/sign-up"
 	"github.com/digisan/user-mgr/udb"
 	usr "github.com/digisan/user-mgr/user"
+	vf "github.com/digisan/user-mgr/user/valfield"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -63,11 +65,15 @@ func main() {
 
 	// other init actions
 	{
-		// set user db dir
+		// set user db dir, activate ***[udb.UserDB]***
 		udb.OpenUserStorage("../data/db-user")
 
 		// set user validator
-		su.SetValidator(nil)
+		su.SetValidator(map[string]func(interface{}) bool{
+			vf.AvatarType: func(i interface{}) bool {
+				return i == "" || strings.HasPrefix(i.(string), "image/")
+			},
+		})
 
 		// set user file space & file item db space
 		fm.SetFileMgrRoot("../data/user-space", "../data/db-fileitem")
@@ -81,7 +87,7 @@ func main() {
 
 func waitShutdown(e *echo.Echo) {
 	go func() {
-		defer udb.CloseUserStorage() // after closing echo, then close db
+		defer udb.CloseUserStorage() // after closing echo, then close db, deactivate ***[udb.UserDB]***
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
@@ -120,6 +126,18 @@ func echoHost(done chan<- string) {
 			AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 		}))
 
+		// waiting for shutdown
+		waitShutdown(e)
+
+		// host static file/folder
+		hookStatic(e)
+
+		// web socket
+		e.GET("/ws/msg", ws.WSMsg)
+
+		// host swagger http://localhost:1323/swagger/index.html
+		e.GET("/swagger/*", echoSwagger.WrapHandler)
+
 		// sign group without JWT
 		{
 			r := e.Group("/api/sign")
@@ -127,11 +145,12 @@ func echoHost(done chan<- string) {
 		}
 
 		// other groups with JWT
-		groups := []string{"/api/sign-out", "/api/admin", "api/file"}
+		groups := []string{"/api/sign-out", "/api/admin", "api/file", "api/user"}
 		handlers := []func(*echo.Group){
 			api.SignoutHandler,
 			api.AdminHandler,
 			api.FileHandler,
+			api.UserHandler,
 		}
 		for i, group := range groups {
 			r := e.Group(group)
@@ -142,19 +161,6 @@ func echoHost(done chan<- string) {
 			r.Use(ValidateToken)
 			handlers[i](r)
 		}
-
-		// host static file/folder
-		hookStatic(e)
-
-		// waiting for shutdown
-		waitShutdown(e)
-
-		// web socket for message
-		e.GET("/ws/msg", ws.WSMsg)
-
-		// host swagger
-		// http://localhost:1323/swagger/index.html
-		e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 		// running...
 		var err error

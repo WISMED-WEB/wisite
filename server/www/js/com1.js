@@ -38,29 +38,29 @@ export default {
         }
         // Send back message, then handle following ws messages in 'onmessage'
         // MUST delay some while !!!
-        setTimeout(() => { ws.send('Hello, Server, Got WS Message!'); }, 1000);
+        setTimeout(() => { ws.send('Hello, Server. from com1.js'); }, 1000);
 
         /////////////////////////////////////
 
         // fetch example
-        function fireYesNo() {
-            let cData = fetch_get_json('https://yesno.wtf/api');
+        const fireYesNo = () => {
             // 'async function' return channel             
             const fnFetchValue = async () => {
-                const data = await cData;               
-                console.log(data.answer);
-                imgSrc.value = data.image;
+                const data = await fetch_get_json('https://yesno.wtf/api')
+                console.log(data.answer)
+                imgSrc.value = data.image
             };
+
             // 'async function' return channel
             let cOut = fnFetchValue();
-            console.log(`com1 result is ${cOut}`);          
+            console.log(`com1 result is ${cOut}`);
         }
 
-        function fireLocalAPI() {
+        const fireLocalAPI = () => {
             // fetch_get must be here, MUST identical to cert SN
-            let cData = fetch_get('http://192.168.31.227:1323/api/module1/test'); 
             (async () => {
-                const data = await cData;
+                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3RpdmUiOiJUIiwidW5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwibmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiJwYTU1dzByZEBXSVNNRUQiLCJyZWd0aW1lIjoiMjAyMi0wMi0yN1QwMjoxOToyNFoiLCJwaG9uZSI6IiIsImFkZHIiOiIiLCJyb2xlIjoiIiwibGV2ZWwiOiIiLCJleHBpcmUiOiIiLCJuYXRpb25hbGlkIjoiIiwiZ2VuZGVyIjoiIiwicG9zaXRpb24iOiIiLCJ0aXRsZSI6IiIsImVtcGxveWVyIjoiIiwidGFncyI6IiIsImF2YXRhcnR5cGUiOiIiLCJBdmF0YXIiOm51bGwsImV4cCI6MTY0NjE4NzU2NH0._vLkoROLrG6e3a9N_QElcL-bG8IFq93yVZj39SbYSVQ'
+                const data = await fetch_get('http://192.168.31.157:1323/api/admin/users', token)
                 resp_str.value = data;
             })();
         }
@@ -68,8 +68,8 @@ export default {
         return {
             ws_str,
             myInput,
-            imgSrc,        
-            resp_str,    
+            imgSrc,
+            resp_str,
             fireYesNo,
             fireLocalAPI,
         };
@@ -80,11 +80,11 @@ export default {
         <input v-model="myInput" placeholder="input">
         <br>
         <button class="mybutton" @click="fireYesNo">YesNoAPI</button>
-        <br>        
+        <br>
         <img :src="imgSrc" alt="YES/NO IMAGE" width="320" height="240"/>   
         <br>
         <button class="mybutton" @click="fireLocalAPI">LocalAPI</button>  
-        <br> 
+        <br>
         <p>response from local API: {{resp_str}}</p>
         <hr>
     `,

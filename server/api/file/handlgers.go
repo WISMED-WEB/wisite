@@ -101,6 +101,7 @@ func FileItem(c echo.Context) error {
 // @Param   group0 formData string false "1st category for uploading file"
 // @Param   group1 formData string false "2nd category for uploading file"
 // @Param   group2 formData string false "3rd category for uploading file"
+// @Param   file   formData file   true  "file path for uploading"
 // @Success 200 "OK - upload successfully"
 // @Failure 500 "Fail - internal error"
 // @Router /api/file/upload [post]
@@ -129,13 +130,7 @@ func Upload(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	src, err := file.Open()
-	if err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
-	defer src.Close()
-
-	if err := us.(*fm.UserSpace).SaveFile(file.Filename, note, src, group0, group1, group2); err != nil {
+	if err := us.(*fm.UserSpace).SaveFormFile(file.Filename, note, file, group0, group1, group2); err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
