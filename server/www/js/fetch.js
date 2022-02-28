@@ -1,26 +1,29 @@
-export function fetch_get_json(url) {
-    const cData = fetch(url)
-        .then((resp) => resp.json())
-        .then((data) => {
-            // console.log("fetch_get_json:", data);
-            return data;
-        }).catch((error) => { console.log(error) });
-    return cData;
+const get = async (url, token) => {
+    try {
+        if (token !== undefined) {
+            const header = {
+                method: 'GET',
+                withCredentials: true,
+                credentials: 'include',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            }
+            return await fetch(url, header);
+        }
+        return await fetch(url);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-export function fetch_get(url, token) {
-    const cData = fetch(url, {
-        method: 'GET',
-        withCredentials: true,
-        credentials: 'include',
-        headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
-        }
-    })
-        .then((resp) => {
-            // console.log("fetch_get:", resp);
-            return resp.text()
-        }).catch((error) => { console.log(error) });
-    return cData;
+export const get_json = async (url, token) => {
+    const resp = get(url, token)
+    return (await resp).json()
+}
+
+export const get_text = async (url, token) => {
+    const resp = get(url, token)
+    return (await resp).text()    
 }

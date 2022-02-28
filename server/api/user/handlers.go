@@ -119,7 +119,7 @@ func Avatar(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Couldn't find user: "+uname)
 	}
 
-	atype, b64 := u.AvatarBase64(true)
+	atype, b64 := u.AvatarBase64(false)
 	if atype == "" || b64 == "" {
 		return c.String(http.StatusNotFound, "avatar is empty")
 	}
