@@ -66,7 +66,7 @@ func main() {
 	// other init actions
 	{
 		// set user db dir, activate ***[udb.UserDB]***
-		udb.OpenUserStorage("../data/db-user")
+		udb.OpenUserStorage("./data/db-user")
 
 		// set user validator
 		su.SetValidator(map[string]func(interface{}) bool{
@@ -76,7 +76,7 @@ func main() {
 		})
 
 		// set user file space & file item db space
-		fm.SetFileMgrRoot("../data/user-space", "../data/db-fileitem")
+		fm.SetFileMgrRoot("./data/user-space", "./data/db-fileitem")
 	}
 
 	// start Service
