@@ -27,7 +27,7 @@ var (
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   uname   formData   string  true  "unique user name"
-// @Param   email   formData   string  true  "user's email"
+// @Param   email   formData   string  true  "user's email" Format(email)
 // @Param   name    formData   string  true  "user's real name"
 // @Param   pwd     formData   string  true  "user's password"
 // @Success 200 "OK - then waiting for verification code"
@@ -119,21 +119,21 @@ func VerifyEmail(c echo.Context) error {
 // @Summary sign in action. if ok, got token
 // @Description
 // @Tags    sign
-// @Accept  json
+// @Accept  multipart/form-data
 // @Produce json
-// @Param   uname query string true "unique user name"
-// @Param   pwd   query string true "password"
+// @Param   uname formData string true "unique user name"
+// @Param   pwd   formData string true "password" Format(password)
 // @Success 200 "OK - sign-in successfully"
 // @Failure 400 "Fail - incorrect password"
 // @Failure 500 "Fail - internal error"
-// @Router /api/sign/in [get]
+// @Router /api/sign/in [post]
 func LogIn(c echo.Context) error {
 
-	// lk.Debug("[%v] [%v]", c.QueryParam("uname"), c.QueryParam("pwd"))
+	// lk.Debug("[%v] [%v]", c.FormValue("uname"), c.FormValue("pwd"))
 
 	user := &usr.User{
-		UName:    c.QueryParam("uname"),
-		Password: c.QueryParam("pwd"),
+		UName:    c.FormValue("uname"),
+		Password: c.FormValue("pwd"),
 	}
 
 	{
@@ -146,7 +146,6 @@ func LogIn(c echo.Context) error {
 			if err := su.Store(user); err != nil {
 				return c.String(http.StatusInternalServerError, "BACKDOOR DEBUG"+fmt.Sprint(err))
 			}
-			goto OK
 		}
 	}
 
@@ -158,9 +157,8 @@ func LogIn(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "incorrect password")
 	}
 
-	defer lk.FailOnErr("%v", si.Trail(user.UName))
+	defer lk.FailOnErr("%v", si.Trail(user.UName)) // Refresh Online Users
 
-OK:
 	// log in ok calling...
 	{
 		us, err := fm.UseUser(user.UName)
@@ -174,5 +172,6 @@ OK:
 	token := claims.GenToken()
 	return c.JSON(http.StatusOK, echo.Map{
 		"token": token,
+		"auth":  "Bearer " + token,
 	})
 }

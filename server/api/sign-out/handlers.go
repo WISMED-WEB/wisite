@@ -22,6 +22,7 @@ import (
 // @Success 200 "OK - sign-out successfully"
 // @Failure 500 "Fail - internal error"
 // @Router /api/sign-out/ [get]
+// @Security ApiKeyAuth
 func SignOut(c echo.Context) error {
 	userTkn := c.Get("user").(*jwt.Token)
 	claims := userTkn.Claims.(*usr.UserClaims)

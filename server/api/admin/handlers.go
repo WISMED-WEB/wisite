@@ -21,6 +21,7 @@ import (
 // @Success 200 "OK - list successfully"
 // @Failure 500 "Fail - internal error"
 // @Router /api/admin/users [get]
+// @Security ApiKeyAuth
 func ListUser(c echo.Context) error {
 	users, err := udb.UserDB.ListUsers(func(u *usr.User) bool {
 		return true
@@ -43,6 +44,7 @@ func ListUser(c echo.Context) error {
 // @Success 200 "OK - list successfully"
 // @Failure 500 "Fail - internal error"
 // @Router /api/admin/onlines [get]
+// @Security ApiKeyAuth
 func ListOnlineUser(c echo.Context) error {
 	users, err := udb.UserDB.ListOnlineUsers()
 	// for _, user := range users {
@@ -66,6 +68,7 @@ func ListOnlineUser(c echo.Context) error {
 // @Failure 400 "Fail - invalid uname"
 // @Failure 500 "Fail - internal error"
 // @Router /api/admin/activate [post]
+// @Security ApiKeyAuth
 func ActivateUser(c echo.Context) error {
 	uname := c.FormValue("uname")
 	flagstr := c.FormValue("flag")

@@ -45,6 +45,9 @@ func init() {
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host 127.0.0.1:1323
 // @BasePath
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name authorization 
 func main() {
 
 	http2Ptr := flag.Bool("http2", false, "http2 mode?")

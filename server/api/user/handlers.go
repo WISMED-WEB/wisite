@@ -23,6 +23,7 @@ import (
 // @Success 200 "OK - profile get successfully"
 // @Failure 500 "Fail - internal error"
 // @Router /api/user/profile [get]
+// @Security ApiKeyAuth
 func Profile(c echo.Context) error {
 	userTkn := c.Get("user").(*jwt.Token)
 	claims := userTkn.Claims.(*usr.UserClaims)
@@ -53,6 +54,7 @@ func Profile(c echo.Context) error {
 // @Failure 400 "Fail - invalid set fields"
 // @Failure 500 "Fail - internal error"
 // @Router /api/user/setprofile [post]
+// @Security ApiKeyAuth
 func SetProfile(c echo.Context) error {
 	userTkn := c.Get("user").(*jwt.Token)
 	claims := userTkn.Claims.(*usr.UserClaims)
@@ -109,6 +111,7 @@ VALIDATE:
 // @Failure 404 "Fail - avatar is empty"
 // @Failure 500 "Fail - internal error"
 // @Router /api/user/avatar [get]
+// @Security ApiKeyAuth
 func Avatar(c echo.Context) error {
 	userTkn := c.Get("user").(*jwt.Token)
 	claims := userTkn.Claims.(*usr.UserClaims)

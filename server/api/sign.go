@@ -10,13 +10,12 @@ import (
 // "/api/sign"
 func SignHandler(e *echo.Group) {
 
-	var mGET = map[string]echo.HandlerFunc{
-		"/in": sign.LogIn,
-	}
+	var mGET = map[string]echo.HandlerFunc{}
 
 	var mPOST = map[string]echo.HandlerFunc{
 		"/new":          sign.NewUser,
 		"/verify-email": sign.VerifyEmail,
+		"/in":           sign.LogIn,
 	}
 
 	var mPUT = map[string]echo.HandlerFunc{}

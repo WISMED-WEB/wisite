@@ -23,6 +23,7 @@ import (
 // @Success 200 "OK - upload successfully"
 // @Failure 500 "Fail - internal error"
 // @Router /api/file/pathcontent [get]
+// @Security ApiKeyAuth
 func PathContent(c echo.Context) error {
 
 	userTkn := c.Get("user").(*jwt.Token)
@@ -54,6 +55,7 @@ func PathContent(c echo.Context) error {
 // @Success 200 "OK - get fileitems successfully"
 // @Failure 500 "Fail - internal error"
 // @Router /api/file/fileitem [get]
+// @Security ApiKeyAuth
 func FileItem(c echo.Context) error {
 
 	userTkn := c.Get("user").(*jwt.Token)
@@ -105,6 +107,7 @@ func FileItem(c echo.Context) error {
 // @Success 200 "OK - upload successfully"
 // @Failure 500 "Fail - internal error"
 // @Router /api/file/upload [post]
+// @Security ApiKeyAuth
 func Upload(c echo.Context) error {
 
 	userTkn := c.Get("user").(*jwt.Token)
