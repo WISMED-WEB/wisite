@@ -6,9 +6,9 @@ require (
 	github.com/digisan/file-mgr v0.0.11
 	github.com/digisan/gotk v0.0.49
 	github.com/digisan/logkit v0.0.5
-	github.com/digisan/user-mgr v0.0.19
+	github.com/digisan/user-mgr v0.0.23
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/labstack/echo/v4 v4.6.3
+	github.com/labstack/echo/v4 v4.7.0
 	github.com/postfinance/single v0.0.1
 	github.com/swaggo/echo-swagger v1.3.0
 	github.com/swaggo/swag v1.8.0
@@ -39,7 +39,7 @@ require (
 	github.com/google/flatbuffers v2.0.6+incompatible // indirect
 	github.com/gookit/color v1.5.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/klauspost/compress v1.14.4 // indirect
+	github.com/klauspost/compress v1.15.0 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

@@ -46,7 +46,7 @@ func ListUser(c echo.Context) error {
 // @Router /api/admin/onlines [get]
 // @Security ApiKeyAuth
 func ListOnlineUser(c echo.Context) error {
-	users, err := udb.UserDB.ListOnlineUsers()
+	users, err := udb.UserDB.OnlineUsers()
 	// for _, user := range users {
 	// 	fmt.Println(user)
 	// }
@@ -66,6 +66,7 @@ func ListOnlineUser(c echo.Context) error {
 // @Param   flag   formData  string  true  "true: activate, false: deactivate"
 // @Success 200 "OK - action successfully"
 // @Failure 400 "Fail - invalid uname"
+// @Failure 409 "OK - no action applied"
 // @Failure 500 "Fail - internal error"
 // @Router /api/admin/activate [post]
 // @Security ApiKeyAuth
@@ -76,9 +77,13 @@ func ActivateUser(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, "flag must be true/false")
 	}
-	_, err = udb.UserDB.ActivateUser(uname, flag)
+	u, _, err := udb.UserDB.ActivateUser(uname, flag)
 	if err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
+		if u == nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		} else {
+			return c.String(http.StatusConflict, err.Error())
+		}
 	}
 	m := map[bool]string{
 		true:  "activated",

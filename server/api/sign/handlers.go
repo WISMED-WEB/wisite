@@ -9,6 +9,7 @@ import (
 	lk "github.com/digisan/logkit"
 	si "github.com/digisan/user-mgr/sign-in"
 	su "github.com/digisan/user-mgr/sign-up"
+	"github.com/digisan/user-mgr/udb"
 	usr "github.com/digisan/user-mgr/user"
 	"github.com/labstack/echo/v4"
 )
@@ -28,7 +29,7 @@ var (
 // @Produce json
 // @Param   uname   formData   string  true  "unique user name"
 // @Param   email   formData   string  true  "user's email" Format(email)
-// @Param   name    formData   string  true  "user's real name"
+// @Param   name    formData   string  true  "user's real full name"
 // @Param   pwd     formData   string  true  "user's password"
 // @Success 200 "OK - then waiting for verification code"
 // @Failure 400 "Fail - invalid registry fields"
@@ -56,6 +57,7 @@ func NewUser(c echo.Context) error {
 		Title:      "",
 		Employer:   "",
 		Tags:       "",
+		AvatarType: "",
 		Avatar:     []byte{},
 	}
 
@@ -121,7 +123,7 @@ func VerifyEmail(c echo.Context) error {
 // @Tags    sign
 // @Accept  multipart/form-data
 // @Produce json
-// @Param   uname formData string true "unique user name"
+// @Param   uname formData string true "user name or email"
 // @Param   pwd   formData string true "password" Format(password)
 // @Success 200 "OK - sign-in successfully"
 // @Failure 400 "Fail - incorrect password"
@@ -134,6 +136,7 @@ func LogIn(c echo.Context) error {
 	user := &usr.User{
 		UName:    c.FormValue("uname"),
 		Password: c.FormValue("pwd"),
+		Email:    c.FormValue("uname"),
 	}
 
 	{
@@ -149,7 +152,7 @@ func LogIn(c echo.Context) error {
 		}
 	}
 
-	if err := si.UserExists(user); err != nil {
+	if err := si.CheckUserExists(user); err != nil {
 		return c.String(http.StatusBadRequest, fmt.Sprint(err))
 	}
 
@@ -157,7 +160,20 @@ func LogIn(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "incorrect password")
 	}
 
-	defer lk.FailOnErr("%v", si.Trail(user.UName)) // Refresh Online Users
+	// fetch real whole user
+	user, ok, err := udb.UserDB.LoadUser(user.Name, true)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	if !ok {
+		user, ok, err = udb.UserDB.LoadUserByUniProp("email", user.Email, true)
+		if err != nil || !ok {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+	}
+
+	// now, user is real user in db
+	defer lk.FailOnErr("%v", si.Trail(user.UName)) // Refresh Online Users, here UName is real
 
 	// log in ok calling...
 	{
