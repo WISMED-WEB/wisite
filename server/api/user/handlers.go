@@ -31,9 +31,16 @@ func Profile(c echo.Context) error {
 
 	u, ok, err := udb.UserDB.LoadUser(uname, true)
 	if err != nil || !ok {
-		return c.String(http.StatusInternalServerError, "Couldn't find user: "+uname)
+		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
-	return c.JSON(http.StatusOK, *u)
+	// return c.JSON(http.StatusOK, *u)
+
+	tmp := *u
+	tmp.Password = strings.Repeat("*", len(u.Password))
+	if len(u.Avatar) > 32 {
+		tmp.Avatar = u.Avatar[:32]
+	}
+	return c.JSON(http.StatusOK, tmp)
 }
 
 // @Title set user profile
@@ -44,6 +51,8 @@ func Profile(c echo.Context) error {
 // @Produce json
 // @Param   phone     formData   string  false  "phone number"
 // @Param   addr      formData   string  false  "address"
+// @Param   city      formData   string  false  "city"
+// @Param   country   formData   string  false  "country"
 // @Param   nid       formData   string  false  "national ID"
 // @Param   gender    formData   string  false  "gender M/F"
 // @Param   position  formData   string  false  "job position"
@@ -60,13 +69,15 @@ func SetProfile(c echo.Context) error {
 	claims := userTkn.Claims.(*usr.UserClaims)
 	uname := claims.UName
 
-	u, ok, err := udb.UserDB.LoadUser(uname, true)
+	u, ok, err := udb.UserDB.LoadActiveUser(uname)
 	if err != nil || !ok {
 		return c.String(http.StatusInternalServerError, "Couldn't find user: "+uname)
 	}
 
 	u.Phone = c.FormValue("phone")
 	u.Addr = c.FormValue("addr")
+	u.City = c.FormValue("city")
+	u.Country = c.FormValue("country")
 	u.NationalID = c.FormValue("nid")
 	u.Gender = c.FormValue("gender")
 	u.Position = c.FormValue("position")
@@ -76,11 +87,12 @@ func SetProfile(c echo.Context) error {
 	// Read & Set Avatar
 	file, err := c.FormFile("avatar")
 	var ext string
-	if err != nil {
-		if strings.Contains(err.Error(), "no such file") {
+	if err != nil && file == nil {
+		e := err.Error()
+		if strings.Contains(e, "no such file") || strings.Contains(e, "no multipart boundary param in Content-Type") {
 			goto VALIDATE
 		}
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, e)
 	}
 	ext = strings.TrimPrefix(filepath.Ext(file.Filename), ".")
 	if err := u.SetAvatarByFormFile("image/"+ext, file); err != nil {
@@ -133,23 +145,26 @@ func Avatar(c echo.Context) error {
 	}{Src: src})
 }
 
-// u := &usr.User{
+// var u = &usr.User{
 // 	Active:     "T",
 // 	UName:      c.FormValue("uname"),
 // 	Email:      c.FormValue("email"),
 // 	Name:       c.FormValue("name"),
 // 	Password:   c.FormValue("pwd"),
 // 	Regtime:    "TBD",
-// 	Phone:      "",      //
-// 	Addr:       "",      //
-// 	SysRole:    "",   **
-// 	MemLevel:   "0",  **
-// 	MemExpire:  "",   **
-// 	NationalID: "",      //
-// 	Gender:     "",      //
-// 	Position:   "",      //
-// 	Title:      "",      //
-// 	Employer:   "",      //
-// 	Tags:       "",   **
-// 	Avatar:     []byte{}, //
+// 	Phone:      "",
+// 	Country:    "",
+// 	City:       "",
+// 	Addr:       "",
+// 	SysRole:    "", //
+// 	MemLevel:   "", //
+// 	MemExpire:  "", //
+// 	NationalID: "",
+// 	Gender:     "",
+// 	Position:   "",
+// 	Title:      "",
+// 	Employer:   "",
+// 	Tags:       "", //
+// 	AvatarType: "",
+// 	Avatar:     []byte{},
 // }
