@@ -55,9 +55,11 @@ func Profile(c echo.Context) error {
 // @Param   country   formData   string  false  "country"
 // @Param   nid       formData   string  false  "national ID"
 // @Param   gender    formData   string  false  "gender M/F"
+// @Param   dob       formData   string  false  "date of birth"
 // @Param   position  formData   string  false  "job position"
 // @Param   title     formData   string  false  "title"
 // @Param   employer  formData   string  false  "employer"
+// @Param   bio       formData   string  false  "biography"
 // @Param   avatar    formData   file    false  "avatar"
 // @Success 200 "OK - profile set successfully"
 // @Failure 400 "Fail - invalid set fields"
@@ -80,9 +82,11 @@ func SetProfile(c echo.Context) error {
 	u.Country = c.FormValue("country")
 	u.NationalID = c.FormValue("nid")
 	u.Gender = c.FormValue("gender")
+	u.DOB = c.FormValue("dob")
 	u.Position = c.FormValue("position")
 	u.Title = c.FormValue("title")
 	u.Employer = c.FormValue("employer")
+	u.Bio = c.FormValue("bio")
 
 	// Read & Set Avatar
 	file, err := c.FormFile("avatar")
@@ -161,9 +165,11 @@ func Avatar(c echo.Context) error {
 // 	MemExpire:  "", //
 // 	NationalID: "",
 // 	Gender:     "",
+// 	DOB:        "",
 // 	Position:   "",
 // 	Title:      "",
 // 	Employer:   "",
+// 	Bio:        "",
 // 	Tags:       "", //
 // 	AvatarType: "",
 // 	Avatar:     []byte{},

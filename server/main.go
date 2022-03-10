@@ -12,6 +12,7 @@ import (
 	fm "github.com/digisan/file-mgr"
 	gio "github.com/digisan/gotk/io"
 	lk "github.com/digisan/logkit"
+	rel "github.com/digisan/user-mgr/relation"
 	su "github.com/digisan/user-mgr/sign-up"
 	"github.com/digisan/user-mgr/udb"
 	usr "github.com/digisan/user-mgr/user"
@@ -47,7 +48,7 @@ func init() {
 // @BasePath
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
-// @name authorization 
+// @name authorization
 func main() {
 
 	http2Ptr := flag.Bool("http2", false, "http2 mode?")
@@ -80,6 +81,9 @@ func main() {
 
 		// set user file space & file item db space
 		fm.SetFileMgrRoot("./data/user-space", "./data/db-fileitem")
+
+		// set user relation db
+		rel.OpenRelStorage("./data/db-relation")
 	}
 
 	// start Service
@@ -90,7 +94,8 @@ func main() {
 
 func waitShutdown(e *echo.Echo) {
 	go func() {
-		defer udb.CloseUserStorage() // after closing echo, then close db, deactivate ***[udb.UserDB]***
+		defer udb.CloseUserStorage() // after closing echo, close user db, i.e. deactivate ***[udb.UserDB]***
+		defer rel.CloseRelStorage()  // after closing echo, close relation db, i.e. deactivate ***[rel.RelDB]***
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
@@ -148,12 +153,19 @@ func echoHost(done chan<- string) {
 		}
 
 		// other groups with JWT
-		groups := []string{"/api/sign-out", "/api/admin", "api/file", "api/user"}
+		groups := []string{
+			"/api/sign-out",
+			"/api/admin",
+			"/api/file",
+			"/api/user",
+			"/api/rel",
+		}
 		handlers := []func(*echo.Group){
 			api.SignoutHandler,
 			api.AdminHandler,
 			api.FileHandler,
 			api.UserHandler,
+			api.RelHandler,
 		}
 		for i, group := range groups {
 			r := e.Group(group)

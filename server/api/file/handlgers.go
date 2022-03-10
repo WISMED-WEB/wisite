@@ -133,7 +133,7 @@ func Upload(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	if err := us.(*fm.UserSpace).SaveFormFile(file, note, group0, group1, group2); err != nil {
+	if _, err := us.(*fm.UserSpace).SaveFormFile(file, note, group0, group1, group2); err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 

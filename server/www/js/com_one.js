@@ -40,7 +40,7 @@ export default {
         }
         // Send back message, then handle following ws messages in 'onmessage'
         // MUST delay some while !!!
-        setTimeout(() => { ws.send('Hello, Server. from com1.js'); }, 1000);
+        setTimeout(() => { ws.send('Hello, Server. from com_one.js'); }, 1000);
 
         /////////////////////////////////////
 
