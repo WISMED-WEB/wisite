@@ -15,11 +15,12 @@ func AdminHandler(r *echo.Group) {
 		"/onlines": ad.ListOnlineUser,
 	}
 
-	var mPOST = map[string]echo.HandlerFunc{
+	var mPOST = map[string]echo.HandlerFunc{}
+
+	var mPUT = map[string]echo.HandlerFunc{
 		"/activate": ad.ActivateUser,
 	}
 
-	var mPUT = map[string]echo.HandlerFunc{}
 	var mDELETE = map[string]echo.HandlerFunc{}
 	var mPATCH = map[string]echo.HandlerFunc{}
 

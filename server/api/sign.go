@@ -13,9 +13,11 @@ func SignHandler(e *echo.Group) {
 	var mGET = map[string]echo.HandlerFunc{}
 
 	var mPOST = map[string]echo.HandlerFunc{
-		"/new":          sign.NewUser,
-		"/verify-email": sign.VerifyEmail,
-		"/in":           sign.LogIn,
+		"/new":              sign.NewUser,
+		"/verify-email":     sign.VerifyEmail,
+		"/in":               sign.LogIn,
+		"/reset-pwd":        sign.ResetPwd,
+		"/verify-reset-pwd": sign.VerifyResetPwd,
 	}
 
 	var mPUT = map[string]echo.HandlerFunc{}

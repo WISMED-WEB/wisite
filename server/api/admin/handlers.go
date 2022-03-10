@@ -68,7 +68,7 @@ func ListOnlineUser(c echo.Context) error {
 // @Failure 400 "Fail - invalid uname"
 // @Failure 409 "OK - no action applied"
 // @Failure 500 "Fail - internal error"
-// @Router /api/admin/activate [post]
+// @Router /api/admin/activate [put]
 // @Security ApiKeyAuth
 func ActivateUser(c echo.Context) error {
 	uname := c.FormValue("uname")

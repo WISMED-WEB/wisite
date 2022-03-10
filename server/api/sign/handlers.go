@@ -7,6 +7,7 @@ import (
 
 	fm "github.com/digisan/file-mgr"
 	lk "github.com/digisan/logkit"
+	rp "github.com/digisan/user-mgr/reset-pwd"
 	si "github.com/digisan/user-mgr/sign-in"
 	su "github.com/digisan/user-mgr/sign-up"
 	"github.com/digisan/user-mgr/udb"
@@ -17,12 +18,11 @@ import (
 // *** after implementing, register with path in 'sign.go' *** //
 
 var (
-	mUser        = &sync.Map{} // users waiting for verifying email code
 	MapUserSpace = &sync.Map{} // map[string]*fm.UserSpace, *** record logged-in user space ***
 )
 
 // @Title register a new user
-// @Summary send user's basic info for registry
+// @Summary sign up action, step 1. send user's basic info for registry
 // @Description
 // @Tags    sign
 // @Accept  multipart/form-data
@@ -72,14 +72,11 @@ func NewUser(c echo.Context) error {
 		return c.String(http.StatusBadRequest, fmt.Sprint(err))
 	}
 
-	// record new user waiting for verifying email
-	mUser.Store(user.UName, user)
-
 	return c.String(http.StatusOK, "waiting verification code in your email")
 }
 
 // @Title verify new user's email
-// @Summary send back email verification code
+// @Summary sign up action, step 2. send back email verification code
 // @Description
 // @Tags    sign
 // @Accept  multipart/form-data
@@ -92,20 +89,18 @@ func NewUser(c echo.Context) error {
 // @Router /api/sign/verify-email [post]
 func VerifyEmail(c echo.Context) error {
 
-	code := c.FormValue("code")
-	uname := c.FormValue("uname")
+	var (
+		uname = c.FormValue("uname")
+		code  = c.FormValue("code")
+	)
 
-	user, ok := mUser.LoadAndDelete(uname)
-	if !ok {
-		return c.String(http.StatusBadRequest, "need re-sending verification code")
-	}
-
-	if err := su.VerifyCode(user.(*usr.User), code); err != nil {
-		return c.String(http.StatusBadRequest, fmt.Sprint(err))
+	user, err := su.VerifyCode(uname, code)
+	if err != nil || user == nil {
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	// store into db
-	if err := su.Store(user.(*usr.User)); err != nil {
+	if err := su.Store(user); err != nil {
 		return c.String(http.StatusInternalServerError, fmt.Sprint(err))
 	}
 
@@ -191,4 +186,85 @@ func LogIn(c echo.Context) error {
 		"token": token,
 		"auth":  "Bearer " + token,
 	})
+}
+
+// @Title reset password
+// @Summary reset password action, step 1. send verification code to user's email for authentication
+// @Description
+// @Tags    sign
+// @Accept  multipart/form-data
+// @Produce json
+// @Param   uname   formData   string  true  "unique user name"
+// @Param   email   formData   string  true  "user's email" Format(email)
+// @Success 200 "OK - then waiting for verification code"
+// @Failure 400 "Fail - invalid registry fields"
+// @Failure 500 "Fail - internal error"
+// @Router /api/sign/reset-pwd [post]
+func ResetPwd(c echo.Context) error {
+
+	u := &usr.User{
+		UName: c.FormValue("uname"),
+		Email: c.FormValue("email"),
+	}
+
+	if err := rp.CheckUserExists(u); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	if !rp.EmailOK(u) {
+		return c.String(http.StatusBadRequest, fmt.Sprintf("input email [%s] is different from [%s] sign-up", u.Email, u.UName))
+	}
+
+	// load full user before ChkEmail
+	user, ok, err := udb.UserDB.LoadUser(u.UName, true)
+	if err != nil || !ok {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	if err := su.ChkEmail(user); err != nil {
+		fmt.Println(err)
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	return c.String(http.StatusOK, "waiting verification code in your email")
+}
+
+// @Title update new password
+// @Summary reset password action, step 2. send back verification code for updating password
+// @Description
+// @Tags    sign
+// @Accept  multipart/form-data
+// @Produce json
+// @Param   uname  formData  string  true  "unique user name"
+// @Param   code   formData  string  true  "verification code (in user's email)"
+// @Param   pwd    formData  string  true  "new password"
+// @Success 200 "OK   - password updated successfully"
+// @Failure 400 "Fail - incorrect verification code"
+// @Failure 500 "Fail - internal error"
+// @Router /api/sign/verify-reset-pwd [post]
+func VerifyResetPwd(c echo.Context) error {
+
+	var (
+		uname = c.FormValue("uname")
+		code  = c.FormValue("code")
+		pwd   = c.FormValue("pwd")
+	)
+
+	user, err := su.VerifyCode(uname, code)
+	if err != nil || user == nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	// check new password
+	if su.ChkPwd(pwd, su.PwdLen) {
+		user.Password = pwd
+	} else {
+		return c.String(http.StatusBadRequest, "invalid password, at least 11 length with UPPER CASE, number and symbol")
+	}
+
+	// store into db
+	if err := su.Store(user); err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.String(http.StatusOK, "password updated")
 }
