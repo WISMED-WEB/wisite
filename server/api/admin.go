@@ -18,7 +18,8 @@ func AdminHandler(r *echo.Group) {
 	var mPOST = map[string]echo.HandlerFunc{}
 
 	var mPUT = map[string]echo.HandlerFunc{
-		"/activate": ad.ActivateUser,
+		"/activate":    ad.ActivateUser,
+		"/officialize": ad.OfficializeUser,
 	}
 
 	var mDELETE = map[string]echo.HandlerFunc{}

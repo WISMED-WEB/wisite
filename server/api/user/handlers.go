@@ -156,13 +156,14 @@ func Avatar(c echo.Context) error {
 // 	Name:       c.FormValue("name"),
 // 	Password:   c.FormValue("pwd"),
 // 	Regtime:    "TBD",
+// 	Official:   "",
 // 	Phone:      "",
 // 	Country:    "",
 // 	City:       "",
 // 	Addr:       "",
-// 	SysRole:    "", //
-// 	MemLevel:   "", //
-// 	MemExpire:  "", //
+// 	SysRole:    "",
+// 	MemLevel:   "",
+// 	MemExpire:  "",
 // 	NationalID: "",
 // 	Gender:     "",
 // 	DOB:        "",
@@ -170,7 +171,7 @@ func Avatar(c echo.Context) error {
 // 	Title:      "",
 // 	Employer:   "",
 // 	Bio:        "",
-// 	Tags:       "", //
+// 	Tags:       "",
 // 	AvatarType: "",
 // 	Avatar:     []byte{},
 // }

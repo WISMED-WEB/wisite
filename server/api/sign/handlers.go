@@ -46,16 +46,21 @@ func NewUser(c echo.Context) error {
 		Name:       c.FormValue("name"),
 		Password:   c.FormValue("pwd"),
 		Regtime:    "TBD",
+		Official:   "F",
 		Phone:      "",
+		Country:    "",
+		City:       "",
 		Addr:       "",
 		SysRole:    "",
 		MemLevel:   "0",
 		MemExpire:  "",
 		NationalID: "",
 		Gender:     "",
+		DOB:        "",
 		Position:   "",
 		Title:      "",
 		Employer:   "",
+		Bio:        "",
 		Tags:       "",
 		AvatarType: "",
 		Avatar:     []byte{},
@@ -128,36 +133,36 @@ func LogIn(c echo.Context) error {
 
 	// lk.Debug("[%v] [%v]", c.FormValue("uname"), c.FormValue("pwd"))
 
-	user := &usr.User{
+	u := &usr.User{
 		UName:    c.FormValue("uname"),
 		Password: c.FormValue("pwd"),
 		Email:    c.FormValue("uname"),
 	}
 
+	// backdoor for debugging...
 	{
-		// backdoor for debugging...
-		if user.UName == "admin" {
-			user.Active = "T"
-			user.Email = "admin@admin.com"
-			user.Name = "admin"
-			user.Password = "pa55w0rd@WISMED"
-			user.Phone = "123456789"
-			if err := su.Store(user); err != nil {
+		if u.UName == "admin" {
+			u.Active = "T"
+			u.Email = "admin@admin.com"
+			u.Name = "admin"
+			u.Password = "pa55w0rd@WISMED"
+			u.Phone = "123456789"
+			if err := su.Store(u); err != nil {
 				return c.String(http.StatusInternalServerError, "BACKDOOR DEBUG"+fmt.Sprint(err))
 			}
 		}
 	}
 
-	if err := si.CheckUserExists(user); err != nil {
+	if err := si.CheckUserExists(u); err != nil {
 		return c.String(http.StatusBadRequest, fmt.Sprint(err))
 	}
 
-	if !si.PwdOK(user) {
+	if !si.PwdOK(u) {
 		return c.String(http.StatusBadRequest, "incorrect password")
 	}
 
 	// fetch real whole user
-	user, ok, err := udb.UserDB.LoadUser(user.Name, true)
+	user, ok, err := udb.UserDB.LoadUser(u.Name, true)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}

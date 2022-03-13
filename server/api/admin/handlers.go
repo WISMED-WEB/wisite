@@ -91,3 +91,39 @@ func ActivateUser(c echo.Context) error {
 	}
 	return c.String(http.StatusOK, fmt.Sprintf("[%s] is %s", uname, m[flag]))
 }
+
+// @Title officialize user
+// @Summary officialize or un-officialize a user
+// @Description
+// @Tags    admin
+// @Accept  multipart/form-data
+// @Produce json
+// @Param   uname  formData  string  true  "unique user name"
+// @Param   flag   formData  string  true  "true: officialize, false: un-officialize"
+// @Success 200 "OK - action successfully"
+// @Failure 400 "Fail - invalid uname"
+// @Failure 409 "OK - no action applied"
+// @Failure 500 "Fail - internal error"
+// @Router /api/admin/officialize [put]
+// @Security ApiKeyAuth
+func OfficializeUser(c echo.Context) error {
+	uname := c.FormValue("uname")
+	flagstr := c.FormValue("flag")
+	flag, err := strconv.ParseBool(flagstr)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "flag must be true/false")
+	}
+	u, _, err := udb.UserDB.OfficializeUser(uname, flag)
+	if err != nil {
+		if u == nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		} else {
+			return c.String(http.StatusConflict, err.Error())
+		}
+	}
+	m := map[bool]string{
+		true:  "switched to official account",
+		false: "switched to unofficial account",
+	}
+	return c.String(http.StatusOK, fmt.Sprintf("[%s] is %s", uname, m[flag]))
+}
