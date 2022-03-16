@@ -71,10 +71,10 @@ func NewUser(c echo.Context) error {
 	lk.Log("%v", user)
 
 	if err := su.ChkInput(user); err != nil {
-		return c.String(http.StatusBadRequest, fmt.Sprint(err))
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 	if err := su.ChkEmail(user); err != nil {
-		return c.String(http.StatusBadRequest, fmt.Sprint(err))
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	return c.String(http.StatusOK, "waiting verification code in your email")
@@ -106,7 +106,7 @@ func VerifyEmail(c echo.Context) error {
 
 	// store into db
 	if err := su.Store(user); err != nil {
-		return c.String(http.StatusInternalServerError, fmt.Sprint(err))
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	// sign-up ok calling...
@@ -147,14 +147,15 @@ func LogIn(c echo.Context) error {
 			u.Name = "admin"
 			u.Password = "pa55w0rd@WISMED"
 			u.Phone = "123456789"
+			u.Official = "F"
 			if err := su.Store(u); err != nil {
-				return c.String(http.StatusInternalServerError, "BACKDOOR DEBUG"+fmt.Sprint(err))
+				return c.String(http.StatusInternalServerError, "BACKDOOR DEBUG"+err.Error())
 			}
 		}
 	}
 
 	if err := si.CheckUserExists(u); err != nil {
-		return c.String(http.StatusBadRequest, fmt.Sprint(err))
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	if !si.PwdOK(u) {

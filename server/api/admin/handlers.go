@@ -56,6 +56,18 @@ func ListOnlineUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)
 }
 
+// return uname, set flag, return ok, error
+func switchField(c echo.Context, fn func(uname string, flag bool) (*usr.User, bool, error)) (string, bool, bool, error) {
+	uname := c.FormValue("uname")
+	flagstr := c.FormValue("flag")
+	flag, err := strconv.ParseBool(flagstr)
+	if err != nil {
+		return "", flag, false, fmt.Errorf("flag must be true/false")
+	}
+	_, ok, err := fn(uname, flag)
+	return uname, flag, ok, err
+}
+
 // @Title activate user
 // @Summary activate or deactivate a user
 // @Description
@@ -65,24 +77,18 @@ func ListOnlineUser(c echo.Context) error {
 // @Param   uname  formData  string  true  "unique user name"
 // @Param   flag   formData  string  true  "true: activate, false: deactivate"
 // @Success 200 "OK - action successfully"
-// @Failure 400 "Fail - invalid uname"
-// @Failure 409 "OK - no action applied"
+// @Failure 400 "Fail - invalid true/false flag"
 // @Failure 500 "Fail - internal error"
 // @Router /api/admin/activate [put]
 // @Security ApiKeyAuth
 func ActivateUser(c echo.Context) error {
-	uname := c.FormValue("uname")
-	flagstr := c.FormValue("flag")
-	flag, err := strconv.ParseBool(flagstr)
+	uname, flag, ok, err := switchField(c, udb.UserDB.ActivateUser)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "flag must be true/false")
-	}
-	u, _, err := udb.UserDB.ActivateUser(uname, flag)
-	if err != nil {
-		if u == nil {
+		if uname == "" {
+			return c.String(http.StatusBadRequest, err.Error())
+		}
+		if !ok {
 			return c.String(http.StatusInternalServerError, err.Error())
-		} else {
-			return c.String(http.StatusConflict, err.Error())
 		}
 	}
 	m := map[bool]string{
@@ -101,24 +107,18 @@ func ActivateUser(c echo.Context) error {
 // @Param   uname  formData  string  true  "unique user name"
 // @Param   flag   formData  string  true  "true: officialize, false: un-officialize"
 // @Success 200 "OK - action successfully"
-// @Failure 400 "Fail - invalid uname"
-// @Failure 409 "OK - no action applied"
+// @Failure 400 "Fail - invalid true/false flag"
 // @Failure 500 "Fail - internal error"
 // @Router /api/admin/officialize [put]
 // @Security ApiKeyAuth
 func OfficializeUser(c echo.Context) error {
-	uname := c.FormValue("uname")
-	flagstr := c.FormValue("flag")
-	flag, err := strconv.ParseBool(flagstr)
+	uname, flag, ok, err := switchField(c, udb.UserDB.OfficializeUser)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "flag must be true/false")
-	}
-	u, _, err := udb.UserDB.OfficializeUser(uname, flag)
-	if err != nil {
-		if u == nil {
+		if uname == "" {
+			return c.String(http.StatusBadRequest, err.Error())
+		}
+		if !ok {
 			return c.String(http.StatusInternalServerError, err.Error())
-		} else {
-			return c.String(http.StatusConflict, err.Error())
 		}
 	}
 	m := map[bool]string{

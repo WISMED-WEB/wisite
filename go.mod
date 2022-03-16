@@ -6,7 +6,7 @@ require (
 	github.com/digisan/file-mgr v0.0.12
 	github.com/digisan/gotk v0.0.49
 	github.com/digisan/logkit v0.0.5
-	github.com/digisan/user-mgr v0.0.30
+	github.com/digisan/user-mgr v0.0.33
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/labstack/echo/v4 v4.7.1
 	github.com/postfinance/single v0.0.1
