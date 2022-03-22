@@ -16,21 +16,22 @@ rm -rf ./build
 
 GOARCH=amd64
 LDFLAGS="-s -w"
-OUT=server-`date +%F@%T@%Z`
+TM=`date +%F@%T@%Z`
+OUT=server\($TM\)
 
 # For Docker, one build below for linux64 is enough.
 OUTPATH_LINUX=./build/linux64/
 mkdir -p $OUTPATH_LINUX
 CGO_ENABLED=0 GOOS="linux" GOARCH="$GOARCH" go build -ldflags="$LDFLAGS" -o $OUT
 mv $OUT $OUTPATH_LINUX
-cp -r ./www $OUTPATH_LINUX
+# cp -r ./www $OUTPATH_LINUX
 echo "${G}server(linux64) built${W}"
 
 OUTPATH_WIN=./build/win64/
 mkdir -p $OUTPATH_WIN
 CGO_ENABLED=0 GOOS="windows" GOARCH="$GOARCH" go build -ldflags="$LDFLAGS" -o $OUT.exe
 mv $OUT.exe $OUTPATH_WIN
-cp -r ./www $OUTPATH_WIN
+# cp -r ./www $OUTPATH_WIN
 echo "${G}server(win64) built${W}"
 
 # OUTPATH_MAC=./build/mac/
@@ -50,6 +51,7 @@ echo "${G}server(win64) built${W}"
 
 #######################################################################################
 
-RELEASE_NAME=wisite-api.tar.gz 
+RELEASE_NAME=wisite-api\($TM\).tar.gz 
 cd ./build
-tar -czvf $RELEASE_NAME ./linux64 ./win64  # ./mac ./linuxarm
+echo $RELEASE_NAME
+tar -czvf ./$RELEASE_NAME ./linux64 ./win64  # ./mac ./linuxarm

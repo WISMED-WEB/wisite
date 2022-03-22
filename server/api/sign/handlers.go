@@ -40,30 +40,36 @@ func NewUser(c echo.Context) error {
 	// lk.Debug("[%v] [%v] [%v] [%v]", c.FormValue("uname"), c.FormValue("email"), c.FormValue("name"), c.FormValue("pwd"))
 
 	user := &usr.User{
-		Active:     "T",
-		UName:      c.FormValue("uname"),
-		Email:      c.FormValue("email"),
-		Name:       c.FormValue("name"),
-		Password:   c.FormValue("pwd"),
-		Regtime:    "TBD",
-		Official:   "F",
-		Phone:      "",
-		Country:    "",
-		City:       "",
-		Addr:       "",
-		SysRole:    "",
-		MemLevel:   "0",
-		MemExpire:  "",
-		NationalID: "",
-		Gender:     "",
-		DOB:        "",
-		Position:   "",
-		Title:      "",
-		Employer:   "",
-		Bio:        "",
-		Tags:       "",
-		AvatarType: "",
-		Avatar:     []byte{},
+		Core: usr.Core{
+			UName:    c.FormValue("uname"),
+			Email:    c.FormValue("email"),
+			Password: c.FormValue("pwd"),
+		},
+		Profile: usr.Profile{
+			Name:       c.FormValue("name"),
+			Phone:      "",
+			Country:    "",
+			City:       "",
+			Addr:       "",
+			NationalID: "",
+			Gender:     "",
+			DOB:        "",
+			Position:   "",
+			Title:      "",
+			Employer:   "",
+			Bio:        "",
+			AvatarType: "",
+			Avatar:     []byte{},
+		},
+		Admin: usr.Admin{
+			Regtime:   "TBD",
+			Active:    "T",
+			SysRole:   "",
+			MemLevel:  "0",
+			MemExpire: "",
+			Official:  "F",
+			Tags:      "",
+		},
 	}
 
 	// su.SetValidator(map[string]func(string) bool{ })
@@ -73,6 +79,7 @@ func NewUser(c echo.Context) error {
 	if err := su.ChkInput(user); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
+
 	if err := su.ChkEmail(user); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -101,6 +108,11 @@ func VerifyEmail(c echo.Context) error {
 
 	user, err := su.VerifyCode(uname, code)
 	if err != nil || user == nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	// double check before storing
+	if err := su.ChkInput(user); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
@@ -134,9 +146,13 @@ func LogIn(c echo.Context) error {
 	// lk.Debug("[%v] [%v]", c.FormValue("uname"), c.FormValue("pwd"))
 
 	u := &usr.User{
-		UName:    c.FormValue("uname"),
-		Password: c.FormValue("pwd"),
-		Email:    c.FormValue("uname"),
+		Core: usr.Core{
+			UName:    c.FormValue("uname"),
+			Password: c.FormValue("pwd"),
+			Email:    c.FormValue("uname"),
+		},
+		Profile: usr.Profile{},
+		Admin:   usr.Admin{},
 	}
 
 	// backdoor for debugging...
@@ -209,8 +225,12 @@ func LogIn(c echo.Context) error {
 func ResetPwd(c echo.Context) error {
 
 	u := &usr.User{
-		UName: c.FormValue("uname"),
-		Email: c.FormValue("email"),
+		Core: usr.Core{
+			UName: c.FormValue("uname"),
+			Email: c.FormValue("email"),
+		},
+		Profile: usr.Profile{},
+		Admin:   usr.Admin{},
 	}
 
 	if err := rp.CheckUserExists(u); err != nil {

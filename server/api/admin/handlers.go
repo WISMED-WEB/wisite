@@ -23,7 +23,7 @@ import (
 // @Router /api/admin/users [get]
 // @Security ApiKeyAuth
 func ListUser(c echo.Context) error {
-	users, err := udb.UserDB.ListUsers(func(u *usr.User) bool {
+	users, err := udb.UserDB.ListUser(func(u *usr.User) bool {
 		return true
 	})
 	// for _, user := range users {
