@@ -1,6 +1,5 @@
 # wisite-api
 
-1. `cd ./server`
-2. `./swagger/swag init`
-3. `go build`
-4. access `http://localhost:1323/swagger/index.html`
+1. `./build.sh [release]`. with `release`, create executable package
+2. access `http://localhost:1323/swagger/index.html`
+3. before submit to github, do `./clean.sh all`. with `all`, remove all data.

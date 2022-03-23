@@ -33,14 +33,18 @@ func Profile(c echo.Context) error {
 	if err != nil || !ok {
 		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
-	// return c.JSON(http.StatusOK, *u)
 
-	tmp := *u
-	tmp.Password = strings.Repeat("*", len(u.Password))
-	if len(u.Avatar) > 32 {
-		tmp.Avatar = u.Avatar[:32]
+	if len(u.Profile.Avatar) > 32 {
+		u.Profile.Avatar = u.Profile.Avatar[:32]
 	}
-	return c.JSON(http.StatusOK, tmp)
+
+	return c.JSON(http.StatusOK, struct {
+		usr.Profile
+		MemberDays string `json:"memberDays"`
+	}{
+		u.Profile,
+		fmt.Sprintf("%v", int(u.SinceJoined().Hours()/24.0)),
+	})
 }
 
 // @Title set user profile

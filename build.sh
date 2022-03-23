@@ -12,8 +12,6 @@ G=`tput setaf 2`
 Y=`tput setaf 3`
 W=`tput sgr0`
 
-rm -rf ./build
-
 GOARCH=amd64
 LDFLAGS="-s -w"
 TM=`date +%F@%T@%Z`
@@ -51,7 +49,12 @@ echo "${G}server(win64) built${W}"
 
 #######################################################################################
 
-RELEASE_NAME=wisite-api\($TM\).tar.gz 
-cd ./build
-echo $RELEASE_NAME
-tar -czvf ./$RELEASE_NAME ./linux64 ./win64  # ./mac ./linuxarm
+if [[ $1 == 'release' ]]
+then
+
+    RELEASE_NAME=wisite-api\($TM\).tar.gz 
+    cd ./build
+    echo $RELEASE_NAME
+    tar -czvf ./$RELEASE_NAME --exclude='./linux64/data' --exclude='./win64/data'  ./linux64 ./win64  # ./mac ./linuxarm
+
+fi
