@@ -6,7 +6,7 @@ require (
 	github.com/digisan/file-mgr v0.0.13
 	github.com/digisan/gotk v0.0.50
 	github.com/digisan/logkit v0.0.6
-	github.com/digisan/user-mgr v0.1.4
+	github.com/digisan/user-mgr v0.1.5
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/postfinance/single v0.0.1
@@ -56,7 +56,7 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220224211638-0e9765cccd65 // indirect
 	golang.org/x/tools v0.1.10 // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gopkg.in/mail.v2 v2.3.1 // indirect

@@ -40,9 +40,13 @@ func Profile(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, struct {
 		usr.Profile
+		Uname      string `json:"uname"`
+		Email      string `json:"email"`
 		MemberDays string `json:"memberDays"`
 	}{
 		u.Profile,
+		u.UName,
+		u.Email,
 		fmt.Sprintf("%v", int(u.SinceJoined().Hours()/24.0)),
 	})
 }
@@ -57,7 +61,8 @@ func Profile(c echo.Context) error {
 // @Param   addr      formData   string  false  "address"
 // @Param   city      formData   string  false  "city"
 // @Param   country   formData   string  false  "country"
-// @Param   nid       formData   string  false  "national ID"
+// @Param   pidtype   formData   string  false  "personal id type"
+// @Param   pid       formData   string  false  "personal id"
 // @Param   gender    formData   string  false  "gender M/F"
 // @Param   dob       formData   string  false  "date of birth"
 // @Param   position  formData   string  false  "job position"
@@ -77,14 +82,15 @@ func SetProfile(c echo.Context) error {
 
 	u, ok, err := udb.UserDB.LoadActiveUser(uname)
 	if err != nil || !ok {
-		return c.String(http.StatusInternalServerError, "Couldn't find user: "+uname)
+		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
 
 	u.Phone = c.FormValue("phone")
 	u.Addr = c.FormValue("addr")
 	u.City = c.FormValue("city")
 	u.Country = c.FormValue("country")
-	u.NationalID = c.FormValue("nid")
+	u.PersonalIDType = c.FormValue("pidtype")
+	u.PersonalID = c.FormValue("pid")
 	u.Gender = c.FormValue("gender")
 	u.DOB = c.FormValue("dob")
 	u.Position = c.FormValue("position")
@@ -139,7 +145,7 @@ func Avatar(c echo.Context) error {
 
 	u, ok, err := udb.UserDB.LoadUser(uname, true)
 	if err != nil || !ok {
-		return c.String(http.StatusInternalServerError, "Couldn't find user: "+uname)
+		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
 
 	atype, b64 := u.AvatarBase64(false)
@@ -154,34 +160,36 @@ func Avatar(c echo.Context) error {
 }
 
 // var u = &usr.User{
-// 	Core:    usr.Core{
+// 	Core: usr.Core{
 // 		UName:    "",
 // 		Email:    "",
 // 		Password: "",
 // 	},
 // 	Profile: usr.Profile{
-// 		Name:       "",
-// 		Phone:      "",
-// 		Country:    "",
-// 		City:       "",
-// 		Addr:       "",
-// 		NationalID: "",
-// 		Gender:     "",
-// 		DOB:        "",
-// 		Position:   "",
-// 		Title:      "",
-// 		Employer:   "",
-// 		Bio:        "",
-// 		AvatarType: "",
-// 		Avatar:     []byte{},
+// 		Name:           "",
+// 		Phone:          "",
+// 		Country:        "",
+// 		City:           "",
+// 		Addr:           "",
+// 		PersonalIDType: "",
+// 		PersonalID:     "",
+// 		Gender:         "",
+// 		DOB:            "",
+// 		Position:       "",
+// 		Title:          "",
+// 		Employer:       "",
+// 		Bio:            "",
+// 		AvatarType:     "",
+// 		Avatar:         []byte{},
 // 	},
-// 	Admin:   usr.Admin{
-// 		Regtime:   "",
-// 		Active:    "",
+// 	Admin: usr.Admin{
+// 		Regtime:   time.Now().Truncate(time.Second),
+// 		Active:    true,
+// 		Certified: false,
+// 		Official:  false,
 // 		SysRole:   "",
 // 		MemLevel:  "",
-// 		MemExpire: "",
-// 		Official:  "",
+// 		MemExpire: time.Time{},
 // 		Tags:      "",
 // 	},
 // }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+	"time"
 
 	fm "github.com/digisan/file-mgr"
 	lk "github.com/digisan/logkit"
@@ -46,28 +47,30 @@ func NewUser(c echo.Context) error {
 			Password: c.FormValue("pwd"),
 		},
 		Profile: usr.Profile{
-			Name:       c.FormValue("name"),
-			Phone:      "",
-			Country:    "",
-			City:       "",
-			Addr:       "",
-			NationalID: "",
-			Gender:     "",
-			DOB:        "",
-			Position:   "",
-			Title:      "",
-			Employer:   "",
-			Bio:        "",
-			AvatarType: "",
-			Avatar:     []byte{},
+			Name:           c.FormValue("name"),
+			Phone:          "",
+			Country:        "",
+			City:           "",
+			Addr:           "",
+			PersonalIDType: "",
+			PersonalID:     "",
+			Gender:         "",
+			DOB:            "",
+			Position:       "",
+			Title:          "",
+			Employer:       "",
+			Bio:            "",
+			AvatarType:     "",
+			Avatar:         []byte{},
 		},
 		Admin: usr.Admin{
-			Regtime:   "TBD",
-			Active:    "T",
+			Regtime:   time.Now().Truncate(time.Second),
+			Active:    true,
+			Certified: false,
+			Official:  false,
 			SysRole:   "",
 			MemLevel:  "0",
-			MemExpire: "",
-			Official:  "F",
+			MemExpire: time.Time{},
 			Tags:      "",
 		},
 	}
@@ -158,12 +161,12 @@ func LogIn(c echo.Context) error {
 	// backdoor for debugging...
 	{
 		if u.UName == "admin" {
-			u.Active = "T"
+			u.Active = true
 			u.Email = "admin@admin.com"
 			u.Name = "admin"
 			u.Password = "pa55w0rd@WISMED"
 			u.Phone = "123456789"
-			u.Official = "F"
+			u.Official = false
 			if err := su.Store(u); err != nil {
 				return c.String(http.StatusInternalServerError, "BACKDOOR DEBUG"+err.Error())
 			}
