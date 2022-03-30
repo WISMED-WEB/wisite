@@ -146,7 +146,7 @@ func VerifyEmail(c echo.Context) error {
 // @Router /api/sign/in [post]
 func LogIn(c echo.Context) error {
 
-	// lk.Debug("[%v] [%v]", c.FormValue("uname"), c.FormValue("pwd"))
+	lk.Debug("login: [%v] [%v]", c.FormValue("uname"), c.FormValue("pwd"))
 
 	u := &usr.User{
 		Core: usr.Core{
@@ -158,21 +158,6 @@ func LogIn(c echo.Context) error {
 		Admin:   usr.Admin{},
 	}
 
-	// backdoor for debugging...
-	{
-		if u.UName == "admin" {
-			u.Active = true
-			u.Email = "admin@admin.com"
-			u.Name = "admin"
-			u.Password = "pa55w0rd@WISMED"
-			u.Phone = "123456789"
-			u.Official = false
-			if err := su.Store(u); err != nil {
-				return c.String(http.StatusInternalServerError, "BACKDOOR DEBUG"+err.Error())
-			}
-		}
-	}
-
 	if err := si.CheckUserExists(u); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -182,7 +167,7 @@ func LogIn(c echo.Context) error {
 	}
 
 	// fetch real whole user
-	user, ok, err := udb.UserDB.LoadUser(u.Name, true)
+	user, ok, err := udb.UserDB.LoadUser(u.UName, true)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
