@@ -104,7 +104,7 @@ func SetProfile(c echo.Context) error {
 	if err != nil && file == nil {
 		e := err.Error()
 		if strings.Contains(e, "no such file") || strings.Contains(e, "no multipart boundary param in Content-Type") {
-			goto VALIDATE
+			goto VALIDATE // if no file submitted, do nothing
 		}
 		return c.String(http.StatusBadRequest, e)
 	}

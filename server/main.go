@@ -73,8 +73,8 @@ func main() {
 		udb.OpenUserStorage("./data/db-user")
 
 		// set user validator
-		su.SetValidator(map[string]func(interface{}) bool{
-			vf.AvatarType: func(i interface{}) bool {
+		su.SetValidator(map[string]func(any) bool{
+			vf.AvatarType: func(i any) bool {
 				return i == "" || strings.HasPrefix(i.(string), "image/")
 			},
 		})
@@ -195,7 +195,7 @@ func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 		if claims.ValidateToken(userTkn.Raw) {
 			return next(c)
 		}
-		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+		return c.JSON(http.StatusUnauthorized, map[string]any{
 			"message": "invalid or expired jwt",
 		})
 	}

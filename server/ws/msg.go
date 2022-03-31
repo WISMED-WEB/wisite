@@ -17,19 +17,19 @@ var (
 	mIdWSCancel = &sync.Map{}
 )
 
-func SendMsg(id string, msg interface{}) bool {
+func SendMsg(id string, msg any) bool {
 	chMsg, ok := mIdMsg.Load(id)
 	if !ok {
 		return false
 	}
 	// lk.Debug("%v", msg)
-	chMsg.(chan interface{}) <- msg
+	chMsg.(chan any) <- msg
 	return true
 }
 
-func BroadCast(msg interface{}) {
+func BroadCast(msg any) {
 	// lk.Debug("%v", msg)
-	mIdMsg.Range(func(id, chMsg interface{}) bool {
+	mIdMsg.Range(func(id, chMsg any) bool {
 		go SendMsg(id.(string), msg)
 		return true
 	})
@@ -45,7 +45,7 @@ func CloseMsg(id string) bool {
 }
 
 func CloseAllMsg() {
-	mIdWSCancel.Range(func(id, chCancel interface{}) bool {
+	mIdWSCancel.Range(func(id, chCancel any) bool {
 		go chCancel.(context.CancelFunc)()
 		return true
 	})
@@ -58,7 +58,7 @@ func WSMsg(c echo.Context) error {
 	id = "id" // just for testing ***********************************
 
 	// reg a new message channel
-	mIdMsg.Store(id, make(chan interface{}, 1024))
+	mIdMsg.Store(id, make(chan any, 1024))
 
 	// reg message channel closing
 	ctx, cancel := context.WithCancel(context.Background())
@@ -81,7 +81,7 @@ func WSMsg(c echo.Context) error {
 		go func(ctx context.Context, done chan<- struct{}) {
 			defer func() { done <- struct{}{} }()
 			if IChMsg, ok := mIdMsg.Load(id); ok {
-				chMsg := IChMsg.(chan interface{})
+				chMsg := IChMsg.(chan any)
 				for {
 					select {
 					case msg := <-chMsg:
