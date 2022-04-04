@@ -69,7 +69,7 @@ func NewUser(c echo.Context) error {
 			Certified: false,
 			Official:  false,
 			SysRole:   "",
-			MemLevel:  "0",
+			MemLevel:  0,
 			MemExpire: time.Time{},
 			Tags:      "",
 		},
@@ -148,7 +148,7 @@ func LogIn(c echo.Context) error {
 
 	lk.Debug("login: [%v] [%v]", c.FormValue("uname"), c.FormValue("pwd"))
 
-	u := &usr.User{
+	user := &usr.User{
 		Core: usr.Core{
 			UName:    c.FormValue("uname"),
 			Password: c.FormValue("pwd"),
@@ -158,25 +158,15 @@ func LogIn(c echo.Context) error {
 		Admin:   usr.Admin{},
 	}
 
-	if err := si.CheckUserExists(u); err != nil {
+	if err := si.CheckUserExists(user); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	if !si.PwdOK(u) {
+	if !si.PwdOK(user) { // if successful, user updated.
 		return c.String(http.StatusBadRequest, "incorrect password")
 	}
 
-	// fetch real whole user
-	user, ok, err := udb.UserDB.LoadUser(u.UName, true)
-	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
-	}
-	if !ok {
-		user, ok, err = udb.UserDB.LoadUserByUniProp("email", user.Email, true)
-		if err != nil || !ok {
-			return c.String(http.StatusInternalServerError, err.Error())
-		}
-	}
+	// fmt.Println(user)
 
 	// now, user is real user in db
 	defer lk.FailOnErr("%v", si.Trail(user.UName)) // Refresh Online Users, here UName is real
