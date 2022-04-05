@@ -22,7 +22,7 @@ import (
 // @Produce json
 // @Success 200 "OK - get menu successfully"
 // @Failure 500 "Fail - internal error"
-// @Router /api/admin/menu [get]
+// @Router /api/admin/spa/menu [get]
 // @Security ApiKeyAuth
 func Menu(c echo.Context) error {
 
@@ -44,16 +44,18 @@ func Menu(c echo.Context) error {
 
 	switch user.MemLevel {
 	case 0:
-		menu = []string{"profile", "whats-new", "poster-help"}
+		menu = []string{"whats-new", "topic", "ask", "task"}
 	case 1:
-		menu = []string{"profile", "whats-new", "poster-sharing", "poster-help"}
+		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "task"}
 	case 2:
-		menu = []string{"profile", "whats-new", "poster-sharing", "poster-help", "audit"}
+		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "assign", "task", "audit"}
 	case 3:
-		menu = []string{"profile", "whats-new", "poster-sharing", "poster-help", "audit", "admin"}
+		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "assign", "task", "audit", "admin"}
 	default:
-		menu = []string{"profile"}
+		menu = []string{}
 	}
+
+	menu = append(menu, "profile", "wisite-green")
 
 	return c.JSON(http.StatusOK, menu)
 }
