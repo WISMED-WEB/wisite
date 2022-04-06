@@ -46,11 +46,11 @@ func Menu(c echo.Context) error {
 	case 0:
 		menu = []string{"whats-new", "topic", "ask", "task"}
 	case 1:
-		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "task"}
+		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "task", "vote"}
 	case 2:
-		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "assign", "task", "audit"}
+		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "assign", "task", "vote", "audit"}
 	case 3:
-		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "assign", "task", "audit", "admin"}
+		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "assign", "task", "vote", "audit", "admin"}
 	default:
 		menu = []string{}
 	}

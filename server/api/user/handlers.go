@@ -115,7 +115,7 @@ func SetProfile(c echo.Context) error {
 
 VALIDATE:
 	// validate
-	if err := su.ChkInput(u, vf.UName, vf.SysRole, vf.MemLevel, vf.MemExpire, vf.Tags); err != nil {
+	if err := su.ChkInput(u, vf.UName, vf.EmailDB, vf.SysRole, vf.MemLevel, vf.MemExpire, vf.Tags); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
