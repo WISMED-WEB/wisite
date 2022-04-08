@@ -259,7 +259,7 @@ func VerifyResetPwd(c echo.Context) error {
 	}
 
 	// check new password
-	if su.ChkPwd(pwd, su.PwdLen) {
+	if rst := su.ChkPwd(pwd); rst.OK {
 		user.Password = pwd
 	} else {
 		return c.String(http.StatusBadRequest, "invalid password, at least 11 length with UPPER CASE, number and symbol")

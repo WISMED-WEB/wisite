@@ -73,9 +73,10 @@ func main() {
 		udb.OpenUserStorage("./data/db-user")
 
 		// set user validator
-		su.SetValidator(map[string]func(any) bool{
-			vf.AvatarType: func(i any) bool {
-				return i == "" || strings.HasPrefix(i.(string), "image/")
+		su.SetValidator(map[string]func(o, v any) usr.ValRst{
+			vf.AvatarType: func(o, v any) usr.ValRst {
+				ok := v == "" || strings.HasPrefix(v.(string), "image/")
+				return usr.NewValRst(ok, "avatarType must have prefix - 'image/'")
 			},
 		})
 
