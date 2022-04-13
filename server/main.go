@@ -149,8 +149,8 @@ func echoHost(done chan<- string) {
 
 		// sign group without JWT
 		{
-			r := e.Group("/api/sign")
-			api.SignHandler(r)
+			api.SignHandler(e.Group("/api/sign"))
+			api.SystemHandler(e.Group("/api/system"))
 		}
 
 		// other groups with JWT
