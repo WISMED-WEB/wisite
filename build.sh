@@ -7,6 +7,11 @@ set -e
 cd ./server
 ./swagger/swag init
 
+# create version info as hard-coded 
+cd ./static-cfg
+go run .
+cd -
+
 R=`tput setaf 1`
 G=`tput setaf 2`
 Y=`tput setaf 3`
