@@ -3,9 +3,11 @@ package admin
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 
+	. "github.com/digisan/go-generics/v2"
 	"github.com/digisan/user-mgr/udb"
 	usr "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
@@ -66,6 +68,9 @@ func Menu(c echo.Context) error {
 // @Tags    admin
 // @Accept  json
 // @Produce json
+// @Param   uname  query string false "user filter with uname wildcard(*)"
+// @Param   name   query string false "user filter with name wildcard(*)"
+// @Param   active query string false "user filter with active status"
 // @Success 200 "OK - list successfully"
 // @Failure 401 "Fail - unauthorized error"
 // @Failure 500 "Fail - internal error"
@@ -91,9 +96,30 @@ func ListUser(c echo.Context) error {
 	}
 	// --- //
 
+	var (
+		active = c.QueryParam("active")
+		wUname = c.QueryParam("uname")
+		wName  = c.QueryParam("name")
+		rUname = regexp.MustCompile("^" + strings.ReplaceAll(wUname, `*`, `[\w\d]*`) + "$")
+		rName  = regexp.MustCompile("^" + strings.ReplaceAll(wName, `*`, `[\w\d]*`) + "$")
+	)
+
 	users, err := udb.UserDB.ListUser(func(u *usr.User) bool {
-		return true
+		switch {
+		case len(wUname) > 0 && !rUname.MatchString(u.UName):
+			return false
+		case len(wName) > 0 && !rName.MatchString(u.Name):
+			return false
+		case len(active) > 0:
+			if bActive, err := strconv.ParseBool(active); err == nil {
+				return bActive == u.Active
+			}
+			return false
+		default:
+			return true
+		}
 	})
+
 	for _, user := range users {
 		user.Password = strings.Repeat("*", len(user.Password))
 	}
@@ -109,6 +135,7 @@ func ListUser(c echo.Context) error {
 // @Tags    admin
 // @Accept  json
 // @Produce json
+// @Param   uname query string false "user filter with uname wildcard(*)"
 // @Success 200 "OK - list successfully"
 // @Failure 401 "Fail - unauthorized error"
 // @Failure 500 "Fail - internal error"
@@ -134,6 +161,11 @@ func ListOnlineUser(c echo.Context) error {
 	}
 	// --- //
 
+	var (
+		wUname = c.QueryParam("uname")
+		rUname = regexp.MustCompile("^" + strings.ReplaceAll(wUname, `*`, `[\w\d]*`) + "$")
+	)
+
 	users, err := udb.UserDB.OnlineUsers()
 	// for _, user := range users {
 	// 	fmt.Println(user)
@@ -141,6 +173,14 @@ func ListOnlineUser(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
+
+	Filter(&users, func(i int, e string) bool {
+		if len(wUname) > 0 && !rUname.MatchString(e) {
+			return false
+		}
+		return true
+	})
+
 	return c.JSON(http.StatusOK, users)
 }
 

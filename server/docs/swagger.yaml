@@ -1,0 +1,590 @@
+host: 127.0.0.1:1323
+info:
+  contact:
+    name: API Support
+  description: This is wismed wisite-api server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: WISMED WISITE API
+  version: "1.0"
+paths:
+  /api/admin/activate:
+    put:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: unique user name
+        in: formData
+        name: uname
+        required: true
+        type: string
+      - description: 'true: activate, false: deactivate'
+        in: formData
+        name: flag
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - action successfully
+        "400":
+          description: Fail - invalid true/false flag
+        "401":
+          description: Fail - unauthorized error
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: activate or deactivate a user
+      tags:
+      - admin
+  /api/admin/officialize:
+    put:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: unique user name
+        in: formData
+        name: uname
+        required: true
+        type: string
+      - description: 'true: officialize, false: un-officialize'
+        in: formData
+        name: flag
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - action successfully
+        "400":
+          description: Fail - invalid true/false flag
+        "401":
+          description: Fail - unauthorized error
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: officialize or un-officialize a user
+      tags:
+      - admin
+  /api/admin/onlines:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: user filter with uname wildcard(*)
+        in: query
+        name: uname
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - list successfully
+        "401":
+          description: Fail - unauthorized error
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get all online users
+      tags:
+      - admin
+  /api/admin/spa/menu:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get menu successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get tailored side menu for different user group
+      tags:
+      - admin
+  /api/admin/users:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: user filter with uname wildcard(*)
+        in: query
+        name: uname
+        type: string
+      - description: user filter with name wildcard(*)
+        in: query
+        name: name
+        type: string
+      - description: user filter with active status
+        in: query
+        name: active
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - list successfully
+        "400":
+          description: Fail - parameter error
+        "401":
+          description: Fail - unauthorized error
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get all users' info
+      tags:
+      - admin
+  /api/file/fileitem:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: path to a file
+        in: query
+        name: path
+        type: string
+      - description: file's id
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get fileitems successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get fileitems by given path or id.
+      tags:
+      - file
+  /api/file/pathcontent:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: path to some level
+        in: query
+        name: path
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - upload successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get content under specific path.
+      tags:
+      - file
+  /api/file/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: note for uploading file
+        in: formData
+        name: note
+        type: string
+      - description: 1st category for uploading file
+        in: formData
+        name: group0
+        type: string
+      - description: 2nd category for uploading file
+        in: formData
+        name: group1
+        type: string
+      - description: 3rd category for uploading file
+        in: formData
+        name: group2
+        type: string
+      - description: file path for uploading
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - upload successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: upload file action.
+      tags:
+      - file
+  /api/rel/action/{whom}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: which action to apply, accept [follow, unfollow, block, unblock,
+          mute, unmute]
+        in: query
+        name: action
+        required: true
+        type: string
+      - description: whose uname you want to follow
+        in: path
+        name: whom
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - following successfully
+        "400":
+          description: Fail - invalid action type
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: relation actions
+      tags:
+      - relation
+  /api/rel/content/{type}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: relation content type to apply, accept [following, follower,
+          blocked, muted]
+        in: path
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - got following successfully
+        "400":
+          description: Fail - invalid relation content type
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get all relation users for one type
+      tags:
+      - relation
+  /api/sign-out/:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - sign-out successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: sign out action.
+      tags:
+      - sign
+  /api/sign/in:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: user name or email
+        in: formData
+        name: uname
+        required: true
+        type: string
+      - description: password
+        format: password
+        in: formData
+        name: pwd
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - sign-in successfully
+        "400":
+          description: Fail - incorrect password
+        "500":
+          description: Fail - internal error
+      summary: sign in action. if ok, got token
+      tags:
+      - sign
+  /api/sign/new:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: unique user name
+        in: formData
+        name: uname
+        required: true
+        type: string
+      - description: user's email
+        format: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: user's real full name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: user's password
+        in: formData
+        name: pwd
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - then waiting for verification code
+        "400":
+          description: Fail - invalid registry fields
+        "500":
+          description: Fail - internal error
+      summary: sign up action, step 1. send user's basic info for registry
+      tags:
+      - sign
+  /api/sign/reset-pwd:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: unique user name
+        in: formData
+        name: uname
+        required: true
+        type: string
+      - description: user's email
+        format: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - then waiting for verification code
+        "400":
+          description: Fail - invalid registry fields
+        "500":
+          description: Fail - internal error
+      summary: reset password action, step 1. send verification code to user's email
+        for authentication
+      tags:
+      - sign
+  /api/sign/verify-email:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: unique user name
+        in: formData
+        name: uname
+        required: true
+        type: string
+      - description: verification code (in user's email)
+        in: formData
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - sign-up successfully
+        "400":
+          description: Fail - incorrect verification code
+        "500":
+          description: Fail - internal error
+      summary: sign up action, step 2. send back email verification code
+      tags:
+      - sign
+  /api/sign/verify-reset-pwd:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: unique user name
+        in: formData
+        name: uname
+        required: true
+        type: string
+      - description: verification code (in user's email)
+        in: formData
+        name: code
+        required: true
+        type: string
+      - description: new password
+        in: formData
+        name: pwd
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK   - password updated successfully
+        "400":
+          description: Fail - incorrect verification code
+        "500":
+          description: Fail - internal error
+      summary: reset password action, step 2. send back verification code for updating
+        password
+      tags:
+      - sign
+  /api/system/ver:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get its version
+      summary: get this api service version
+      tags:
+      - system
+  /api/system/ver-tag:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get its tag
+      summary: get this api service project github version tag
+      tags:
+      - system
+  /api/user/avatar:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get avatar src base64
+        "404":
+          description: Fail - avatar is empty
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get user avatar src as base64
+      tags:
+      - user
+  /api/user/profile:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - profile get successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get user profile
+      tags:
+      - user
+  /api/user/setprofile:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: phone number
+        in: formData
+        name: phone
+        type: string
+      - description: address
+        in: formData
+        name: addr
+        type: string
+      - description: city
+        in: formData
+        name: city
+        type: string
+      - description: country
+        in: formData
+        name: country
+        type: string
+      - description: personal id type
+        in: formData
+        name: pidtype
+        type: string
+      - description: personal id
+        in: formData
+        name: pid
+        type: string
+      - description: gender M/F
+        in: formData
+        name: gender
+        type: string
+      - description: date of birth
+        in: formData
+        name: dob
+        type: string
+      - description: job position
+        in: formData
+        name: position
+        type: string
+      - description: title
+        in: formData
+        name: title
+        type: string
+      - description: employer
+        in: formData
+        name: employer
+        type: string
+      - description: biography
+        in: formData
+        name: bio
+        type: string
+      - description: avatar
+        in: formData
+        name: avatar
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - profile set successfully
+        "400":
+          description: Fail - invalid set fields
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: set user profile
+      tags:
+      - user
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: authorization
+    type: apiKey
+swagger: "2.0"

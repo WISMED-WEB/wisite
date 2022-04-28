@@ -5,7 +5,6 @@ set -e
 ./clean.sh
 
 cd ./server
-./swagger/swag init
 
 # create version info as hard-coded 
 cd ./static-cfg
