@@ -71,6 +71,12 @@ func main() {
 	{
 		// set user db dir, activate ***[udb.UserDB]***
 		udb.OpenUserStorage("./data/db-user")
+		defer udb.CloseUserStorage()
+
+		// monitor active users
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		monitorUser(ctx)
 
 		// set user validator
 		su.SetValidator(map[string]func(o, v any) usr.ValRst{
@@ -82,9 +88,11 @@ func main() {
 
 		// set user file space & file item db space
 		fm.SetFileMgrRoot("./data/user-space", "./data/db-fileitem")
+		defer fm.CloseFileMgr()
 
 		// set user relation db
 		rel.OpenRelStorage("./data/db-relation")
+		defer rel.CloseRelStorage()
 	}
 
 	// start Service

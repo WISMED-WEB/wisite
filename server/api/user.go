@@ -17,6 +17,7 @@ func UserHandler(e *echo.Group) {
 
 	var mPOST = map[string]echo.HandlerFunc{
 		"/setprofile": user.SetProfile,
+		"/heartbeats": user.HeartBeats,
 	}
 
 	var mPUT = map[string]echo.HandlerFunc{}

@@ -6,9 +6,12 @@ rm -rf ./server/docs
 
 cd ./server
 ./swagger/swag init
-
 cd -
 
-rm go.sum
+if [[ $1 == 'all' ]]
+then
 
+rm go.sum
 go get -u ./...
+
+fi

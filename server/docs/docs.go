@@ -226,9 +226,6 @@ const docTemplate = `{
                     "200": {
                         "description": "OK - list successfully"
                     },
-                    "400": {
-                        "description": "Fail - parameter error"
-                    },
                     "401": {
                         "description": "Fail - unauthorized error"
                     },
@@ -776,6 +773,33 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Fail - avatar is empty"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
+        "/api/user/heartbeats": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "frequently call this to indicate that front-end user is active.",
+                "responses": {
+                    "200": {
+                        "description": "OK - heartbeats successfully"
                     },
                     "500": {
                         "description": "Fail - internal error"

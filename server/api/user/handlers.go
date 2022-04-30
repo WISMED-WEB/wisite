@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	lk "github.com/digisan/logkit"
+	si "github.com/digisan/user-mgr/sign-in"
 	su "github.com/digisan/user-mgr/sign-up"
 	"github.com/digisan/user-mgr/udb"
 	usr "github.com/digisan/user-mgr/user"
@@ -13,6 +15,30 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
+
+// @Title user heartbeats
+// @Summary frequently call this to indicate that front-end user is active.
+// @Description
+// @Tags    user
+// @Accept  json
+// @Produce json
+// @Success 200 "OK - heartbeats successfully"
+// @Failure 500 "Fail - internal error"
+// @Router /api/user/heartbeats [post]
+// @Security ApiKeyAuth
+func HeartBeats(c echo.Context) error {
+
+	userTkn := c.Get("user").(*jwt.Token)
+	claims := userTkn.Claims.(*usr.UserClaims)
+
+	uname := claims.UName
+	if err := si.Trail(uname); err != nil {
+		lk.Debug("%v", err.Error())
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.String(http.StatusOK, fmt.Sprintf("[%v] heartbeats", uname))
+}
 
 // @Title get user profile
 // @Summary get user profile

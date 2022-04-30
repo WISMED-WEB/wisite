@@ -19,7 +19,8 @@ import (
 // *** after implementing, register with path in 'sign.go' *** //
 
 var (
-	MapUserSpace = &sync.Map{} // map[string]*fm.UserSpace, *** record logged-in user space ***
+	MapUserSpace  = &sync.Map{} // map[string]*fm.UserSpace, *** record logged-in user space ***
+	MapUserClaims = &sync.Map{} // map[string]*usr.UserClaims, *** record logged-in user claims  ***
 )
 
 // @Title register a new user
@@ -181,6 +182,8 @@ func LogIn(c echo.Context) error {
 	}
 
 	claims := usr.MakeUserClaims(user)
+	defer func() { MapUserClaims.Store(user.UName, claims) }() // save current user claims for other usage
+
 	token := claims.GenToken()
 	return c.JSON(http.StatusOK, echo.Map{
 		"token": token,

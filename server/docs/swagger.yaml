@@ -132,8 +132,6 @@ paths:
       responses:
         "200":
           description: OK - list successfully
-        "400":
-          description: Fail - parameter error
         "401":
           description: Fail - unauthorized error
         "500":
@@ -493,6 +491,22 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: get user avatar src as base64
+      tags:
+      - user
+  /api/user/heartbeats:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - heartbeats successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: frequently call this to indicate that front-end user is active.
       tags:
       - user
   /api/user/profile:
