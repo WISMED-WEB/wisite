@@ -225,6 +225,38 @@ paths:
       summary: upload file action.
       tags:
       - file
+  /api/post/template:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - upload successfully
+      security:
+      - ApiKeyAuth: []
+      summary: get post template for dev reference.
+      tags:
+      - post
+  /api/post/upload:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - upload successfully
+        "400":
+          description: Fail - incorrect post-meta data format
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: upload a post by filling a post template.
+      tags:
+      - post
   /api/rel/action/{whom}:
     put:
       consumes:

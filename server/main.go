@@ -166,6 +166,7 @@ func echoHost(done chan<- string) {
 			"/api/sign-out",
 			"/api/admin",
 			"/api/file",
+			"/api/post",
 			"/api/user",
 			"/api/rel",
 		}
@@ -173,6 +174,7 @@ func echoHost(done chan<- string) {
 			api.SignoutHandler,
 			api.AdminHandler,
 			api.FileHandler,
+			api.PostHandler,
 			api.UserHandler,
 			api.RelHandler,
 		}

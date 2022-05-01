@@ -371,6 +371,60 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/post/template": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "get post template for dev reference.",
+                "responses": {
+                    "200": {
+                        "description": "OK - upload successfully"
+                    }
+                }
+            }
+        },
+        "/api/post/upload": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "post"
+                ],
+                "summary": "upload a post by filling a post template.",
+                "responses": {
+                    "200": {
+                        "description": "OK - upload successfully"
+                    },
+                    "400": {
+                        "description": "Fail - incorrect post-meta data format"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
         "/api/rel/action/{whom}": {
             "put": {
                 "security": [
