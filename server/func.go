@@ -11,9 +11,9 @@ import (
 	"github.com/wismed-web/wisite-api/server/api/sign"
 )
 
-func monitorUser(ctx context.Context) {
+func monitorUser(ctx context.Context, offlineTimeout time.Duration) {
 	cInactive := make(chan string, 4096)
-	si.MonitorInactive(ctx, cInactive, 60*time.Second, nil)
+	si.MonitorInactive(ctx, cInactive, offlineTimeout, nil)
 	go func() {
 		for inactive := range cInactive {
 			if so.Logout(inactive) == nil {

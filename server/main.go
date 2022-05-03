@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	fm "github.com/digisan/file-mgr"
 	gio "github.com/digisan/gotk/io"
@@ -51,6 +52,9 @@ func init() {
 // @name authorization
 func main() {
 
+	// 127.0.0.1
+	// 13.55.91.185
+
 	http2Ptr := flag.Bool("http2", false, "http2 mode?")
 	flag.Parse()
 	fHttp2 = *http2Ptr
@@ -76,7 +80,7 @@ func main() {
 		// monitor active users
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
-		monitorUser(ctx)
+		monitorUser(ctx, 300*time.Second)
 
 		// set user validator
 		su.SetValidator(map[string]func(o, v any) usr.ValRst{

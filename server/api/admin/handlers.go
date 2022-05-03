@@ -3,7 +3,6 @@ package admin
 import (
 	"fmt"
 	"net/http"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -100,8 +99,8 @@ func ListUser(c echo.Context) error {
 		active = c.QueryParam("active")
 		wUname = c.QueryParam("uname")
 		wName  = c.QueryParam("name")
-		rUname = regexp.MustCompile("^" + strings.ReplaceAll(wUname, `*`, `[\w\d]*`) + "$")
-		rName  = regexp.MustCompile("^" + strings.ReplaceAll(wName, `*`, `[\w\d]*`) + "$")
+		rUname = wc2re(wUname)
+		rName  = wc2re(wName)
 	)
 
 	users, err := udb.UserDB.ListUser(func(u *usr.User) bool {
@@ -163,7 +162,7 @@ func ListOnlineUser(c echo.Context) error {
 
 	var (
 		wUname = c.QueryParam("uname")
-		rUname = regexp.MustCompile("^" + strings.ReplaceAll(wUname, `*`, `[\w\d]*`) + "$")
+		rUname = wc2re(wUname)
 	)
 
 	users, err := udb.UserDB.OnlineUsers()
