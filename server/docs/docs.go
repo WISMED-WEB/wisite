@@ -371,6 +371,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/post/ids": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "get a batch of Post id group.",
+                "responses": {
+                    "200": {
+                        "description": "OK - get successfully"
+                    },
+                    "400": {
+                        "description": "Fail - "
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
         "/api/post/template": {
             "get": {
                 "security": [
@@ -385,9 +415,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "post"
+                    "Post"
                 ],
-                "summary": "get post template for dev reference.",
+                "summary": "get Post template for dev reference.",
                 "responses": {
                     "200": {
                         "description": "OK - upload successfully"
@@ -409,15 +439,15 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "post"
+                    "Post"
                 ],
-                "summary": "upload a post by filling a post template.",
+                "summary": "upload a Post by filling a Post template.",
                 "responses": {
                     "200": {
                         "description": "OK - upload successfully"
                     },
                     "400": {
-                        "description": "Fail - incorrect post-meta data format"
+                        "description": "Fail - incorrect Post format"
                     },
                     "500": {
                         "description": "Fail - internal error"

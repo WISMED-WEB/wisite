@@ -12,7 +12,7 @@ func PostHandler(e *echo.Group) {
 
 	var mGET = map[string]echo.HandlerFunc{
 		"/template": post.GetTemplate,
-		"/posts":    post.GetPosts,
+		"/ids":      post.GetIdBatch,
 	}
 
 	var mPOST = map[string]echo.HandlerFunc{

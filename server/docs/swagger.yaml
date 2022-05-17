@@ -225,6 +225,24 @@ paths:
       summary: upload file action.
       tags:
       - file
+  /api/post/ids:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get successfully
+        "400":
+          description: 'Fail - '
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get a batch of Post id group.
+      tags:
+      - Post
   /api/post/template:
     get:
       consumes:
@@ -236,9 +254,9 @@ paths:
           description: OK - upload successfully
       security:
       - ApiKeyAuth: []
-      summary: get post template for dev reference.
+      summary: get Post template for dev reference.
       tags:
-      - post
+      - Post
   /api/post/upload:
     post:
       consumes:
@@ -249,14 +267,14 @@ paths:
         "200":
           description: OK - upload successfully
         "400":
-          description: Fail - incorrect post-meta data format
+          description: Fail - incorrect Post format
         "500":
           description: Fail - internal error
       security:
       - ApiKeyAuth: []
-      summary: upload a post by filling a post template.
+      summary: upload a Post by filling a Post template.
       tags:
-      - post
+      - Post
   /api/rel/action/{whom}:
     put:
       consumes:
