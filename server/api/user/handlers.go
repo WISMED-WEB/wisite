@@ -19,7 +19,7 @@ import (
 // @Title user heartbeats
 // @Summary frequently call this to indicate that front-end user is active.
 // @Description
-// @Tags    user
+// @Tags    User
 // @Accept  json
 // @Produce json
 // @Success 200 "OK - heartbeats successfully"
@@ -43,7 +43,7 @@ func HeartBeats(c echo.Context) error {
 // @Title get user profile
 // @Summary get user profile
 // @Description
-// @Tags    user
+// @Tags    User
 // @Accept  json
 // @Produce json
 // @Success 200 "OK - profile get successfully"
@@ -80,7 +80,7 @@ func Profile(c echo.Context) error {
 // @Title set user profile
 // @Summary set user profile
 // @Description
-// @Tags    user
+// @Tags    User
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   phone     formData   string  false  "phone number"
@@ -156,7 +156,7 @@ VALIDATE:
 // @Title get user avatar
 // @Summary get user avatar src as base64
 // @Description
-// @Tags    user
+// @Tags    User
 // @Accept  json
 // @Produce json
 // @Success 200 "OK - get avatar src base64"

@@ -26,7 +26,7 @@ var (
 // @Title register a new user
 // @Summary sign up action, step 1. send user's basic info for registry
 // @Description
-// @Tags    sign
+// @Tags    Sign
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   uname   formData   string  true  "unique user name"
@@ -94,7 +94,7 @@ func NewUser(c echo.Context) error {
 // @Title verify new user's email
 // @Summary sign up action, step 2. send back email verification code
 // @Description
-// @Tags    sign
+// @Tags    Sign
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   uname  formData  string  true  "unique user name"
@@ -136,7 +136,7 @@ func VerifyEmail(c echo.Context) error {
 // @Title sign in
 // @Summary sign in action. if ok, got token
 // @Description
-// @Tags    sign
+// @Tags    Sign
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   uname formData string true "user name or email"
@@ -194,7 +194,7 @@ func LogIn(c echo.Context) error {
 // @Title reset password
 // @Summary reset password action, step 1. send verification code to user's email for authentication
 // @Description
-// @Tags    sign
+// @Tags    Sign
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   uname   formData   string  true  "unique user name"
@@ -238,7 +238,7 @@ func ResetPwd(c echo.Context) error {
 // @Title update new password
 // @Summary reset password action, step 2. send back verification code for updating password
 // @Description
-// @Tags    sign
+// @Tags    Sign
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   uname  formData  string  true  "unique user name"

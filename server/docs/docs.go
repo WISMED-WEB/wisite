@@ -36,7 +36,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin"
                 ],
                 "summary": "activate or deactivate a user",
                 "parameters": [
@@ -85,7 +85,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin"
                 ],
                 "summary": "officialize or un-officialize a user",
                 "parameters": [
@@ -134,7 +134,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin"
                 ],
                 "summary": "get all online users",
                 "parameters": [
@@ -172,7 +172,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin"
                 ],
                 "summary": "get tailored side menu for different user group",
                 "responses": {
@@ -199,7 +199,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin"
                 ],
                 "summary": "get all users' info",
                 "parameters": [
@@ -235,7 +235,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/file/fileitem": {
+        "/api/file/fileitems": {
             "get": {
                 "security": [
                     {
@@ -249,26 +249,27 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "file"
+                    "File"
                 ],
                 "summary": "get fileitems by given path or id.",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "path to a file",
-                        "name": "path",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "file's id",
+                        "description": "file id (md5)",
                         "name": "id",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK - get fileitems successfully"
+                    },
+                    "400": {
+                        "description": "Fail - incorrect query param id"
+                    },
+                    "404": {
+                        "description": "Fail - not found"
                     },
                     "500": {
                         "description": "Fail - internal error"
@@ -290,20 +291,28 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "file"
+                    "File"
                 ],
                 "summary": "get content under specific path.",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "path to some level",
-                        "name": "path",
-                        "in": "query"
+                        "description": "year-month, e.g. 2022-05",
+                        "name": "ym",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "group path, e.g. group1/group2/group3",
+                        "name": "gpath",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK - upload successfully"
+                        "description": "OK - get content successfully"
                     },
                     "500": {
                         "description": "Fail - internal error"
@@ -325,7 +334,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "file"
+                    "File"
                 ],
                 "summary": "upload file action.",
                 "parameters": [
@@ -469,7 +478,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "relation"
+                    "Relation"
                 ],
                 "summary": "relation actions",
                 "parameters": [
@@ -515,7 +524,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "relation"
+                    "Relation"
                 ],
                 "summary": "get all relation users for one type",
                 "parameters": [
@@ -554,7 +563,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sign"
+                    "Sign"
                 ],
                 "summary": "sign out action.",
                 "responses": {
@@ -576,7 +585,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sign"
+                    "Sign"
                 ],
                 "summary": "sign in action. if ok, got token",
                 "parameters": [
@@ -618,7 +627,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sign"
+                    "Sign"
                 ],
                 "summary": "sign up action, step 1. send user's basic info for registry",
                 "parameters": [
@@ -674,7 +683,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sign"
+                    "Sign"
                 ],
                 "summary": "reset password action, step 1. send verification code to user's email for authentication",
                 "parameters": [
@@ -716,7 +725,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sign"
+                    "Sign"
                 ],
                 "summary": "sign up action, step 2. send back email verification code",
                 "parameters": [
@@ -757,7 +766,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sign"
+                    "Sign"
                 ],
                 "summary": "reset password action, step 2. send back verification code for updating password",
                 "parameters": [
@@ -805,7 +814,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "system"
+                    "System"
                 ],
                 "summary": "get this api service version",
                 "responses": {
@@ -824,7 +833,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "system"
+                    "System"
                 ],
                 "summary": "get this api service project github version tag",
                 "responses": {
@@ -848,7 +857,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "User"
                 ],
                 "summary": "get user avatar src as base64",
                 "responses": {
@@ -878,7 +887,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "User"
                 ],
                 "summary": "frequently call this to indicate that front-end user is active.",
                 "responses": {
@@ -905,7 +914,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "User"
                 ],
                 "summary": "get user profile",
                 "responses": {
@@ -932,7 +941,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "User"
                 ],
                 "summary": "set user profile",
                 "parameters": [

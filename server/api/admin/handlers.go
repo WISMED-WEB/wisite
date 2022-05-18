@@ -18,7 +18,7 @@ import (
 // @Title get side menu
 // @Summary get tailored side menu for different user group
 // @Description
-// @Tags    admin
+// @Tags    Admin
 // @Accept  json
 // @Produce json
 // @Success 200 "OK - get menu successfully"
@@ -64,7 +64,7 @@ func Menu(c echo.Context) error {
 // @Title list all users
 // @Summary get all users' info
 // @Description
-// @Tags    admin
+// @Tags    Admin
 // @Accept  json
 // @Produce json
 // @Param   uname  query string false "user filter with uname wildcard(*)"
@@ -131,7 +131,7 @@ func ListUser(c echo.Context) error {
 // @Title list online users
 // @Summary get all online users
 // @Description
-// @Tags    admin
+// @Tags    Admin
 // @Accept  json
 // @Produce json
 // @Param   uname query string false "user filter with uname wildcard(*)"
@@ -198,7 +198,7 @@ func switchField(c echo.Context, fn func(uname string, flag bool) (*usr.User, bo
 // @Title activate user
 // @Summary activate or deactivate a user
 // @Description
-// @Tags    admin
+// @Tags    Admin
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   uname  formData  string  true  "unique user name"
@@ -248,7 +248,7 @@ func ActivateUser(c echo.Context) error {
 // @Title officialize user
 // @Summary officialize or un-officialize a user
 // @Description
-// @Tags    admin
+// @Tags    Admin
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   uname  formData  string  true  "unique user name"

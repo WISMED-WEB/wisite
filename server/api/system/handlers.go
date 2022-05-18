@@ -11,7 +11,7 @@ import (
 // @Title api service version
 // @Summary get this api service version
 // @Description
-// @Tags    system
+// @Tags    System
 // @Accept  json
 // @Produce json
 // @Success 200 "OK - get its version"
@@ -23,7 +23,7 @@ func Ver(c echo.Context) error {
 // @Title api service tag
 // @Summary get this api service project github version tag
 // @Description
-// @Tags    system
+// @Tags    System
 // @Accept  json
 // @Produce json
 // @Success 200 "OK - get its tag"

@@ -39,7 +39,7 @@ paths:
       - ApiKeyAuth: []
       summary: activate or deactivate a user
       tags:
-      - admin
+      - Admin
   /api/admin/officialize:
     put:
       consumes:
@@ -70,7 +70,7 @@ paths:
       - ApiKeyAuth: []
       summary: officialize or un-officialize a user
       tags:
-      - admin
+      - Admin
   /api/admin/onlines:
     get:
       consumes:
@@ -93,7 +93,7 @@ paths:
       - ApiKeyAuth: []
       summary: get all online users
       tags:
-      - admin
+      - Admin
   /api/admin/spa/menu:
     get:
       consumes:
@@ -109,7 +109,7 @@ paths:
       - ApiKeyAuth: []
       summary: get tailored side menu for different user group
       tags:
-      - admin
+      - Admin
   /api/admin/users:
     get:
       consumes:
@@ -140,53 +140,60 @@ paths:
       - ApiKeyAuth: []
       summary: get all users' info
       tags:
-      - admin
-  /api/file/fileitem:
+      - Admin
+  /api/file/fileitems:
     get:
       consumes:
       - application/json
       parameters:
-      - description: path to a file
-        in: query
-        name: path
-        type: string
-      - description: file's id
+      - description: file id (md5)
         in: query
         name: id
+        required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK - get fileitems successfully
+        "400":
+          description: Fail - incorrect query param id
+        "404":
+          description: Fail - not found
         "500":
           description: Fail - internal error
       security:
       - ApiKeyAuth: []
       summary: get fileitems by given path or id.
       tags:
-      - file
+      - File
   /api/file/pathcontent:
     get:
       consumes:
       - application/json
       parameters:
-      - description: path to some level
+      - description: year-month, e.g. 2022-05
         in: query
-        name: path
+        name: ym
+        required: true
+        type: string
+      - description: group path, e.g. group1/group2/group3
+        in: query
+        name: gpath
+        required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: OK - upload successfully
+          description: OK - get content successfully
         "500":
           description: Fail - internal error
       security:
       - ApiKeyAuth: []
       summary: get content under specific path.
       tags:
-      - file
+      - File
   /api/file/upload:
     post:
       consumes:
@@ -224,7 +231,7 @@ paths:
       - ApiKeyAuth: []
       summary: upload file action.
       tags:
-      - file
+      - File
   /api/post/ids:
     get:
       consumes:
@@ -304,7 +311,7 @@ paths:
       - ApiKeyAuth: []
       summary: relation actions
       tags:
-      - relation
+      - Relation
   /api/rel/content/{type}:
     get:
       consumes:
@@ -329,7 +336,7 @@ paths:
       - ApiKeyAuth: []
       summary: get all relation users for one type
       tags:
-      - relation
+      - Relation
   /api/sign-out/:
     get:
       consumes:
@@ -345,7 +352,7 @@ paths:
       - ApiKeyAuth: []
       summary: sign out action.
       tags:
-      - sign
+      - Sign
   /api/sign/in:
     post:
       consumes:
@@ -373,7 +380,7 @@ paths:
           description: Fail - internal error
       summary: sign in action. if ok, got token
       tags:
-      - sign
+      - Sign
   /api/sign/new:
     post:
       consumes:
@@ -411,7 +418,7 @@ paths:
           description: Fail - internal error
       summary: sign up action, step 1. send user's basic info for registry
       tags:
-      - sign
+      - Sign
   /api/sign/reset-pwd:
     post:
       consumes:
@@ -440,7 +447,7 @@ paths:
       summary: reset password action, step 1. send verification code to user's email
         for authentication
       tags:
-      - sign
+      - Sign
   /api/sign/verify-email:
     post:
       consumes:
@@ -467,7 +474,7 @@ paths:
           description: Fail - internal error
       summary: sign up action, step 2. send back email verification code
       tags:
-      - sign
+      - Sign
   /api/sign/verify-reset-pwd:
     post:
       consumes:
@@ -500,7 +507,7 @@ paths:
       summary: reset password action, step 2. send back verification code for updating
         password
       tags:
-      - sign
+      - Sign
   /api/system/ver:
     get:
       consumes:
@@ -512,7 +519,7 @@ paths:
           description: OK - get its version
       summary: get this api service version
       tags:
-      - system
+      - System
   /api/system/ver-tag:
     get:
       consumes:
@@ -524,7 +531,7 @@ paths:
           description: OK - get its tag
       summary: get this api service project github version tag
       tags:
-      - system
+      - System
   /api/user/avatar:
     get:
       consumes:
@@ -542,7 +549,7 @@ paths:
       - ApiKeyAuth: []
       summary: get user avatar src as base64
       tags:
-      - user
+      - User
   /api/user/heartbeats:
     post:
       consumes:
@@ -558,7 +565,7 @@ paths:
       - ApiKeyAuth: []
       summary: frequently call this to indicate that front-end user is active.
       tags:
-      - user
+      - User
   /api/user/profile:
     get:
       consumes:
@@ -574,7 +581,7 @@ paths:
       - ApiKeyAuth: []
       summary: get user profile
       tags:
-      - user
+      - User
   /api/user/setprofile:
     post:
       consumes:
@@ -645,7 +652,7 @@ paths:
       - ApiKeyAuth: []
       summary: set user profile
       tags:
-      - user
+      - User
 securityDefinitions:
   ApiKeyAuth:
     in: header

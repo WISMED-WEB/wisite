@@ -2,6 +2,11 @@
 
 set -e
 
+R=`tput setaf 1`
+G=`tput setaf 2`
+Y=`tput setaf 3`
+W=`tput sgr0`
+
 ./clean.sh
 
 cd ./server
@@ -10,11 +15,6 @@ cd ./server
 cd ./static-cfg
 go run .
 cd -
-
-R=`tput setaf 1`
-G=`tput setaf 2`
-Y=`tput setaf 3`
-W=`tput sgr0`
 
 GOARCH=amd64
 LDFLAGS="-s -w"

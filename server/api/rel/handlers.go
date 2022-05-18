@@ -17,7 +17,7 @@ import (
 // @Title   user relations
 // @Summary relation actions
 // @Description
-// @Tags    relation
+// @Tags    Relation
 // @Accept  json
 // @Produce json
 // @Param   action query string true "which action to apply, accept [follow, unfollow, block, unblock, mute, unmute]"
@@ -64,7 +64,7 @@ func Action(c echo.Context) error {
 // @Title user relation content
 // @Summary get all relation users for one type
 // @Description
-// @Tags    relation
+// @Tags    Relation
 // @Accept  json
 // @Produce json
 // @Param   type path string true "relation content type to apply, accept [following, follower, blocked, muted]"

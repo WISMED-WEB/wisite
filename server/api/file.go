@@ -12,7 +12,7 @@ func FileHandler(e *echo.Group) {
 
 	var mGET = map[string]echo.HandlerFunc{
 		"/pathcontent": file.PathContent,
-		"/fileitem":    file.FileItem,
+		"/fileitems":    file.FileItems,
 	}
 
 	var mPOST = map[string]echo.HandlerFunc{

@@ -240,7 +240,7 @@ import (
 // ShowAccount godoc
 // @Summary      Show an account
 // @Description  get string by ID
-// @Tags         accounts
+// @Tags         Accounts
 // @Accept       json
 // @Produce      json
 // @Param        id   path      int  true  "Account ID"
@@ -267,7 +267,7 @@ func (c *Controller) ShowAccount(ctx *gin.Context) {
 // ListAccounts godoc
 // @Summary      List accounts
 // @Description  get accounts
-// @Tags         accounts
+// @Tags         Accounts
 // @Accept       json
 // @Produce      json
 // @Param        q    query     string  false  "name search by q"  Format(email)

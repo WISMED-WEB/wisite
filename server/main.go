@@ -151,7 +151,7 @@ func echoHost(done chan<- string) {
 		waitShutdown(e)
 
 		// host static file/folder | only for testing
-		// hookStatic(e)
+		hookStatic(e)
 
 		// web socket
 		e.GET("/ws/msg", ws.WSMsg)

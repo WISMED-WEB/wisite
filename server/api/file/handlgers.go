@@ -2,9 +2,9 @@ package file
 
 import (
 	"net/http"
+	"path/filepath"
 
 	fm "github.com/digisan/file-mgr"
-	"github.com/digisan/file-mgr/fdb"
 	usr "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -16,11 +16,12 @@ import (
 // @Title pathcontent
 // @Summary get content under specific path.
 // @Description
-// @Tags    file
+// @Tags    File
 // @Accept  json
 // @Produce json
-// @Param   path query string false "path to some level"
-// @Success 200 "OK - upload successfully"
+// @Param   ym    query string true "year-month, e.g. 2022-05"
+// @Param   gpath query string true "group path, e.g. group1/group2/group3"
+// @Success 200 "OK - get content successfully"
 // @Failure 500 "Fail - internal error"
 // @Router /api/file/pathcontent [get]
 // @Security ApiKeyAuth
@@ -31,7 +32,8 @@ func PathContent(c echo.Context) error {
 
 	var (
 		uname = claims.UName
-		path  = c.QueryParam("path")
+		ym    = c.QueryParam("ym")
+		gpath = c.QueryParam("gpath")
 	)
 
 	// fetch user space for valid login
@@ -40,30 +42,30 @@ func PathContent(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "login error for [pathcontent] @"+uname)
 	}
 
-	content := us.(*fm.UserSpace).PathContent(path)
+	content := us.(*fm.UserSpace).PathContent(filepath.Join(ym, gpath))
 	return c.JSON(http.StatusOK, content)
 }
 
 // @Title fileitem
 // @Summary get fileitems by given path or id.
 // @Description
-// @Tags    file
+// @Tags    File
 // @Accept  json
 // @Produce json
-// @Param   path query string false "path to a file"
-// @Param   id   query string false "file's id"
+// @Param   id   query string true "file ID (md5)"
 // @Success 200 "OK - get fileitems successfully"
+// @Failure 400 "Fail - incorrect query param id"
+// @Failure 404 "Fail - not found"
 // @Failure 500 "Fail - internal error"
-// @Router /api/file/fileitem [get]
+// @Router /api/file/fileitems [get]
 // @Security ApiKeyAuth
-func FileItem(c echo.Context) error {
+func FileItems(c echo.Context) error {
 
 	userTkn := c.Get("user").(*jwt.Token)
 	claims := userTkn.Claims.(*usr.UserClaims)
 
 	var (
 		uname = claims.UName
-		path  = c.QueryParam("path")
 		id    = c.QueryParam("id")
 	)
 
@@ -73,21 +75,12 @@ func FileItem(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "login error for [fileitem] @"+uname)
 	}
 
-	var fis []*fdb.FileItem
-	if fi := us.(*fm.UserSpace).FileItemByPath(path); fi != nil {
-		fis = append(fis, fi)
+	fis, err := us.(*fm.UserSpace).FileItems(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
 	}
-	fis = append(fis, us.(*fm.UserSpace).FileItemByID(id)...)
-
-	// remove duplicated fileitem
-	m := map[string]*fdb.FileItem{}
-	for _, fi := range fis {
-		m[fi.Id+fi.Path] = fi
-	}
-
-	fis = []*fdb.FileItem{}
-	for _, v := range m {
-		fis = append(fis, v)
+	if len(fis) == 0 {
+		return c.JSON(http.StatusNotFound, fis)
 	}
 
 	return c.JSON(http.StatusOK, fis)
@@ -96,7 +89,7 @@ func FileItem(c echo.Context) error {
 // @Title upload
 // @Summary upload file action.
 // @Description
-// @Tags    file
+// @Tags    File
 // @Accept  multipart/form-data
 // @Produce json
 // @Param   note   formData string false "note for uploading file"

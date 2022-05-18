@@ -17,7 +17,7 @@ import (
 // @Title sign out
 // @Summary sign out action.
 // @Description
-// @Tags    sign
+// @Tags    Sign
 // @Accept  json
 // @Produce json
 // @Success 200 "OK - sign-out successfully"
