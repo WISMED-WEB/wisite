@@ -3,6 +3,7 @@ package file
 import (
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	fm "github.com/digisan/file-mgr"
 	usr "github.com/digisan/user-mgr/user"
@@ -86,8 +87,8 @@ func FileItems(c echo.Context) error {
 	return c.JSON(http.StatusOK, fis)
 }
 
-// @Title upload
-// @Summary upload file action.
+// @Title upload-formfile
+// @Summary upload file action via form file input.
 // @Description
 // @Tags    File
 // @Accept  multipart/form-data
@@ -97,11 +98,12 @@ func FileItems(c echo.Context) error {
 // @Param   group1 formData string false "2nd category for uploading file"
 // @Param   group2 formData string false "3rd category for uploading file"
 // @Param   file   formData file   true  "file path for uploading"
-// @Success 200 "OK - upload successfully"
+// @Success 200 "OK - return storage path"
+// @Failure 400 "Fail - file param is incorrect"
 // @Failure 500 "Fail - internal error"
-// @Router /api/file/upload [post]
+// @Router /api/file/upload-formfile [post]
 // @Security ApiKeyAuth
-func Upload(c echo.Context) error {
+func UploadFormFile(c echo.Context) error {
 
 	userTkn := c.Get("user").(*jwt.Token)
 	claims := userTkn.Claims.(*usr.UserClaims)
@@ -126,9 +128,74 @@ func Upload(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	if _, err := us.(*fm.UserSpace).SaveFormFile(file, note, group0, group1, group2); err != nil {
+
+	path, err := us.(*fm.UserSpace).SaveFormFile(file, note, group0, group1, group2)
+	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.String(http.StatusOK, "uploaded successfully")
+	// * root path is   "data/user-space/"
+	// * storage path   "data/user-space/cdutwhu/2022-05/g0/g1/g2/document/github key.1652858188.txt"
+	// * this    return "2022-05/g0/g1/g2/document/github key.1652858188.txt"
+	// * future  access "[uname]/2022-05/g0/g1/g2/document/github key.1652858188.txt"
+
+	parts := strings.Split(path, "/")
+	path = strings.Join(parts[3:], "/")
+	return c.String(http.StatusOK, path)
+}
+
+// @Title upload-bodydata
+// @Summary upload file action via body content.
+// @Description
+// @Tags    File
+// @Accept  multipart/form-data
+// @Produce json
+// @Param   fname  formData string true  "filename for uploading data from body"
+// @Param   note   formData string false "note for uploading file"
+// @Param   group0 formData string false "1st category for uploading file"
+// @Param   group1 formData string false "2nd category for uploading file"
+// @Param   group2 formData string false "3rd category for uploading file"
+// @Param   data   body     string true  "file data for uploading" Format(binary)
+// @Success 200 "OK - return storage path"
+// @Failure 400 "Fail - file param is incorrect"
+// @Failure 500 "Fail - internal error"
+// @Router /api/file/upload-bodydata [post]
+// @Security ApiKeyAuth
+func UploadBodyData(c echo.Context) error {
+
+	userTkn := c.Get("user").(*jwt.Token)
+	claims := userTkn.Claims.(*usr.UserClaims)
+
+	// Read form fields
+	var (
+		uname   = claims.UName
+		fname   = c.FormValue("fname")
+		note    = c.FormValue("note")
+		group0  = c.FormValue("group0")
+		group1  = c.FormValue("group1")
+		group2  = c.FormValue("group2")
+		dataRdr = c.Request().Body
+	)
+
+	// fetch user space for valid login
+	us, ok := sign.MapUserSpace.Load(uname)
+	if !ok || us == nil {
+		return c.String(http.StatusInternalServerError, "login error for [upload] @"+uname)
+	}
+
+	if len(fname) == 0 {
+		return c.String(http.StatusBadRequest, "file name is empty")
+	}
+	if dataRdr == nil {
+		return c.String(http.StatusBadRequest, "body data is empty")
+	}
+
+	path, err := us.(*fm.UserSpace).SaveFile(fname, note, dataRdr, group0, group1, group2)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	parts := strings.Split(path, "/")
+	path = strings.Join(parts[3:], "/")
+	return c.String(http.StatusOK, path)
 }

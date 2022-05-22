@@ -146,7 +146,7 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: file id (md5)
+      - description: file ID (md5)
         in: query
         name: id
         required: true
@@ -194,7 +194,54 @@ paths:
       summary: get content under specific path.
       tags:
       - File
-  /api/file/upload:
+  /api/file/upload-bodydata:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: filename for uploading data from body
+        in: formData
+        name: fname
+        required: true
+        type: string
+      - description: note for uploading file
+        in: formData
+        name: note
+        type: string
+      - description: 1st category for uploading file
+        in: formData
+        name: group0
+        type: string
+      - description: 2nd category for uploading file
+        in: formData
+        name: group1
+        type: string
+      - description: 3rd category for uploading file
+        in: formData
+        name: group2
+        type: string
+      - description: file data for uploading
+        format: binary
+        in: body
+        name: data
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - return storage path
+        "400":
+          description: Fail - file param is incorrect
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: upload file action via body content.
+      tags:
+      - File
+  /api/file/upload-formfile:
     post:
       consumes:
       - multipart/form-data
@@ -224,12 +271,14 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK - upload successfully
+          description: OK - return storage path
+        "400":
+          description: Fail - file param is incorrect
         "500":
           description: Fail - internal error
       security:
       - ApiKeyAuth: []
-      summary: upload file action.
+      summary: upload file action via form file input.
       tags:
       - File
   /api/post/ids:

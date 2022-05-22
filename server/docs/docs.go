@@ -255,7 +255,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "file id (md5)",
+                        "description": "file ID (md5)",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -320,7 +320,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/file/upload": {
+        "/api/file/upload-bodydata": {
             "post": {
                 "security": [
                     {
@@ -336,7 +336,80 @@ const docTemplate = `{
                 "tags": [
                     "File"
                 ],
-                "summary": "upload file action.",
+                "summary": "upload file action via body content.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "filename for uploading data from body",
+                        "name": "fname",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "note for uploading file",
+                        "name": "note",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "1st category for uploading file",
+                        "name": "group0",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "2nd category for uploading file",
+                        "name": "group1",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "3rd category for uploading file",
+                        "name": "group2",
+                        "in": "formData"
+                    },
+                    {
+                        "format": "binary",
+                        "description": "file data for uploading",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - return storage path"
+                    },
+                    "400": {
+                        "description": "Fail - file param is incorrect"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
+        "/api/file/upload-formfile": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "File"
+                ],
+                "summary": "upload file action via form file input.",
                 "parameters": [
                     {
                         "type": "string",
@@ -372,7 +445,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK - upload successfully"
+                        "description": "OK - return storage path"
+                    },
+                    "400": {
+                        "description": "Fail - file param is incorrect"
                     },
                     "500": {
                         "description": "Fail - internal error"
