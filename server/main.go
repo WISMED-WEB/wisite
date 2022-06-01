@@ -80,7 +80,7 @@ func main() {
 		// monitor active users
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
-		monitorUser(ctx, 300*time.Second)
+		monitorUser(ctx, 3600*time.Second) // heartbeats checker timeout
 
 		// set user validator
 		su.SetValidator(map[string]func(o, v any) usr.ValRst{

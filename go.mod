@@ -3,10 +3,10 @@ module github.com/wismed-web/wisite-api
 go 1.18
 
 require (
-	github.com/digisan/event-mgr v0.0.1
-	github.com/digisan/file-mgr v0.1.4
-	github.com/digisan/go-generics v0.1.10
-	github.com/digisan/gotk v0.1.10
+	github.com/digisan/event-mgr v0.0.2
+	github.com/digisan/file-mgr v0.1.7
+	github.com/digisan/go-generics v0.1.13
+	github.com/digisan/gotk v0.1.14
 	github.com/digisan/logkit v0.0.8
 	github.com/digisan/user-mgr v0.2.4
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -14,7 +14,7 @@ require (
 	github.com/postfinance/single v0.0.2
 	github.com/swaggo/echo-swagger v1.3.2
 	github.com/swaggo/swag v1.8.2
-	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2
+	golang.org/x/net v0.0.0-20220531201128-c960675eff93
 )
 
 require (
@@ -40,8 +40,9 @@ require (
 	github.com/google/flatbuffers v2.0.6+incompatible // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gookit/color v1.5.0 // indirect
+	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/klauspost/compress v1.15.4 // indirect
+	github.com/klauspost/compress v1.15.5 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -53,7 +54,7 @@ require (
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	go.opencensus.io v0.23.0 // indirect
-	golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898 // indirect
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect

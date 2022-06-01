@@ -328,7 +328,7 @@ const docTemplate = `{
                     }
                 ],
                 "consumes": [
-                    "multipart/form-data"
+                    "application/octet-stream"
                 ],
                 "produces": [
                     "application/json"
@@ -342,32 +342,32 @@ const docTemplate = `{
                         "type": "string",
                         "description": "filename for uploading data from body",
                         "name": "fname",
-                        "in": "formData",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "note for uploading file",
                         "name": "note",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "1st category for uploading file",
                         "name": "group0",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "2nd category for uploading file",
                         "name": "group1",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "3rd category for uploading file",
                         "name": "group2",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "format": "binary",

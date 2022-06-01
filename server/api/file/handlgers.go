@@ -148,14 +148,14 @@ func UploadFormFile(c echo.Context) error {
 // @Summary upload file action via body content.
 // @Description
 // @Tags    File
-// @Accept  multipart/form-data
+// @Accept  application/octet-stream
 // @Produce json
-// @Param   fname  formData string true  "filename for uploading data from body"
-// @Param   note   formData string false "note for uploading file"
-// @Param   group0 formData string false "1st category for uploading file"
-// @Param   group1 formData string false "2nd category for uploading file"
-// @Param   group2 formData string false "3rd category for uploading file"
-// @Param   data   body     string true  "file data for uploading" Format(binary)
+// @Param   fname  query string true  "filename for uploading data from body"
+// @Param   note   query string false "note for uploading file"
+// @Param   group0 query string false "1st category for uploading file"
+// @Param   group1 query string false "2nd category for uploading file"
+// @Param   group2 query string false "3rd category for uploading file"
+// @Param   data   body  string true  "file data for uploading" Format(binary)
 // @Success 200 "OK - return storage path"
 // @Failure 400 "Fail - file param is incorrect"
 // @Failure 500 "Fail - internal error"
@@ -169,11 +169,11 @@ func UploadBodyData(c echo.Context) error {
 	// Read form fields
 	var (
 		uname   = claims.UName
-		fname   = c.FormValue("fname")
-		note    = c.FormValue("note")
-		group0  = c.FormValue("group0")
-		group1  = c.FormValue("group1")
-		group2  = c.FormValue("group2")
+		fname   = c.QueryParam("fname")
+		note    = c.QueryParam("note")
+		group0  = c.QueryParam("group0")
+		group1  = c.QueryParam("group1")
+		group2  = c.QueryParam("group2")
 		dataRdr = c.Request().Body
 	)
 

@@ -9,6 +9,8 @@ rm -rf ./server/server
 rm -rf ./server/tmp*
 rm -rf ./server/data
 
+rm -rf ./prelease/prelease
+
 if [[ $1 == 'all' ]] 
 then
 

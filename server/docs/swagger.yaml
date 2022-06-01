@@ -197,27 +197,27 @@ paths:
   /api/file/upload-bodydata:
     post:
       consumes:
-      - multipart/form-data
+      - application/octet-stream
       parameters:
       - description: filename for uploading data from body
-        in: formData
+        in: query
         name: fname
         required: true
         type: string
       - description: note for uploading file
-        in: formData
+        in: query
         name: note
         type: string
       - description: 1st category for uploading file
-        in: formData
+        in: query
         name: group0
         type: string
       - description: 2nd category for uploading file
-        in: formData
+        in: query
         name: group1
         type: string
       - description: 3rd category for uploading file
-        in: formData
+        in: query
         name: group2
         type: string
       - description: file data for uploading

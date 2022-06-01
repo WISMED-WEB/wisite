@@ -2,6 +2,7 @@ package post
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"path/filepath"
 
@@ -82,8 +83,9 @@ func Upload(c echo.Context) error {
 			paths = append(paths, path)
 		}
 	}
-	if !fd.AllExistAsWhole(paths...) {
-		return c.String(http.StatusBadRequest, "some of files are invalid storage at server")
+	ok, epath := fd.AllExistAsWhole(paths...)
+	if !ok {
+		return c.String(http.StatusBadRequest, fmt.Sprintf("'%s' is invalid stored at server", epath))
 	}
 
 	// save P as JSON for event
