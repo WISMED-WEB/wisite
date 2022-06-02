@@ -11,8 +11,9 @@ import (
 func PostHandler(e *echo.Group) {
 
 	var mGET = map[string]echo.HandlerFunc{
-		"/template": post.GetTemplate,
-		"/ids":      post.GetIdBatch,
+		"/template": post.Template,
+		"/ids":      post.IdBatch,
+		"/one":      post.GetOne,
 	}
 
 	var mPOST = map[string]echo.HandlerFunc{

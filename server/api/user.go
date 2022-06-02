@@ -17,12 +17,14 @@ func UserHandler(e *echo.Group) {
 
 	var mPOST = map[string]echo.HandlerFunc{
 		"/setprofile": user.SetProfile,
-		"/heartbeats": user.HeartBeats,
 	}
 
 	var mPUT = map[string]echo.HandlerFunc{}
 	var mDELETE = map[string]echo.HandlerFunc{}
-	var mPATCH = map[string]echo.HandlerFunc{}
+
+	var mPATCH = map[string]echo.HandlerFunc{
+		"/heartbeats": user.HeartBeats,
+	}
 
 	// ------------------------------------------------------- //
 

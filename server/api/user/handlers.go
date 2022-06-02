@@ -24,7 +24,7 @@ import (
 // @Produce json
 // @Success 200 "OK - heartbeats successfully"
 // @Failure 500 "Fail - internal error"
-// @Router /api/user/heartbeats [post]
+// @Router /api/user/heartbeats [patch]
 // @Security ApiKeyAuth
 func HeartBeats(c echo.Context) error {
 

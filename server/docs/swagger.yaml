@@ -285,18 +285,55 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: time or count
+        in: query
+        name: fetchby
+        required: true
+        type: string
+      - description: recent [value] minutes for time OR most recent [value] count
+        in: query
+        name: value
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK - get successfully
         "400":
-          description: 'Fail - '
+          description: Fail - incorrect query param type
         "500":
           description: Fail - internal error
       security:
       - ApiKeyAuth: []
       summary: get a batch of Post id group.
+      tags:
+      - Post
+  /api/post/one:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Post ID for its content
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get successfully
+        "400":
+          description: Fail - incorrect query param id
+        "404":
+          description: Fail - not found
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get one Post content.
       tags:
       - Post
   /api/post/template:
@@ -600,7 +637,7 @@ paths:
       tags:
       - User
   /api/user/heartbeats:
-    post:
+    patch:
       consumes:
       - application/json
       produces:

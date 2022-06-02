@@ -465,12 +465,70 @@
                     "Post"
                 ],
                 "summary": "get a batch of Post id group.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "time or count",
+                        "name": "fetchby",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "recent [value] minutes for time OR most recent [value] count",
+                        "name": "value",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK - get successfully"
                     },
                     "400": {
-                        "description": "Fail - "
+                        "description": "Fail - incorrect query param type"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
+        "/api/post/one": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "get one Post content.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID for its content",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - get successfully"
+                    },
+                    "400": {
+                        "description": "Fail - incorrect query param id"
+                    },
+                    "404": {
+                        "description": "Fail - not found"
                     },
                     "500": {
                         "description": "Fail - internal error"
@@ -942,7 +1000,7 @@
             }
         },
         "/api/user/heartbeats": {
-            "post": {
+            "patch": {
                 "security": [
                     {
                         "ApiKeyAuth": []
