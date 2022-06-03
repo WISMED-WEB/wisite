@@ -3,8 +3,8 @@ module github.com/wismed-web/wisite-api
 go 1.18
 
 require (
-	github.com/digisan/event-mgr v0.0.3
-	github.com/digisan/file-mgr v0.1.7
+	github.com/digisan/event-mgr v0.0.4
+	github.com/digisan/file-mgr v0.1.8
 	github.com/digisan/go-generics v0.1.13
 	github.com/digisan/gotk v0.1.14
 	github.com/digisan/logkit v0.0.8

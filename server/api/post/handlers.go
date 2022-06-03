@@ -37,13 +37,11 @@ func Template(c echo.Context) error {
 		Topic:    "post topic",
 		Content: []struct {
 			Text string "json:\"text\""
-			Type string "json:\"type\""
 			Path string "json:\"path\""
 		}{
 			{
 				Text: "some words for this attach",
-				Type: "attachment type, e.g. image/video/audio/pdf/others",
-				Path: "attached stuff path, which is given from 'file upload'",
+				Path: "attached stuff path, which should have been given from 'file upload'",
 			},
 		},
 		Summary: "summarize your topic",
@@ -88,7 +86,7 @@ func Upload(c echo.Context) error {
 	}
 	ok, epath := fd.AllExistAsWhole(paths...)
 	if !ok {
-		return c.String(http.StatusBadRequest, fmt.Sprintf("'%s' is invalid storage at server", epath))
+		return c.String(http.StatusBadRequest, fmt.Sprintf("'%s' is invalid storage at server", filepath.Base(epath)))
 	}
 
 	// save P as JSON for event
@@ -105,7 +103,7 @@ func Upload(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.String(http.StatusOK, "Post uploaded successfully")
+	return c.JSON(http.StatusOK, evt)
 }
 
 // @Title get a batch of Post id group
