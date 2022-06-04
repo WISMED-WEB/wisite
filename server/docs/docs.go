@@ -585,6 +585,17 @@ const docTemplate = `{
                     "Post"
                 ],
                 "summary": "upload a Post by filling a Post template.",
+                "parameters": [
+                    {
+                        "description": "filled Post template json file",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK - upload successfully"

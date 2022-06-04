@@ -173,7 +173,7 @@ func ListOnlineUser(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	Filter(&users, func(i int, e string) bool {
+	FilterFast(&users, func(i int, e string) bool {
 		if len(wUname) > 0 && !rUname.MatchString(e) {
 			return false
 		}

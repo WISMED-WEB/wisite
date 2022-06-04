@@ -354,6 +354,13 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: filled Post template json file
+        in: body
+        name: data
+        required: true
+        schema:
+          type: string
       produces:
       - application/json
       responses:

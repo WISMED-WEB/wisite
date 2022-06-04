@@ -54,6 +54,7 @@ func Template(c echo.Context) error {
 // @Tags    Post
 // @Accept  json
 // @Produce json
+// @Param   data body string true "filled Post template json file"
 // @Success 200 "OK - upload successfully"
 // @Failure 400 "Fail - incorrect Post format"
 // @Failure 500 "Fail - internal error"

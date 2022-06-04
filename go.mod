@@ -5,9 +5,9 @@ go 1.18
 require (
 	github.com/digisan/event-mgr v0.0.4
 	github.com/digisan/file-mgr v0.1.8
-	github.com/digisan/go-generics v0.1.13
-	github.com/digisan/gotk v0.1.14
-	github.com/digisan/logkit v0.0.8
+	github.com/digisan/go-generics v0.1.14
+	github.com/digisan/gotk v0.1.15
+	github.com/digisan/logkit v0.0.9
 	github.com/digisan/user-mgr v0.2.4
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/labstack/echo/v4 v4.7.2
@@ -42,7 +42,7 @@ require (
 	github.com/gookit/color v1.5.0 // indirect
 	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/klauspost/compress v1.15.5 // indirect
+	github.com/klauspost/compress v1.15.6 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
