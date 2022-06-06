@@ -11,9 +11,10 @@ import (
 func AdminHandler(r *echo.Group) {
 
 	var mGET = map[string]echo.HandlerFunc{
-		"/spa/menu":    ad.Menu,
-		"/users":   ad.ListUser,
-		"/onlines": ad.ListOnlineUser,
+		"/spa/menu": ad.Menu,
+		"/users":    ad.ListUser,
+		"/onlines":  ad.ListOnlineUser,
+		"/avatar":   ad.UserAvatar,
 	}
 
 	var mPOST = map[string]echo.HandlerFunc{}

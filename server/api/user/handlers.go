@@ -153,8 +153,8 @@ VALIDATE:
 	return c.String(http.StatusOK, "Profile Updated")
 }
 
-// @Title get user avatar
-// @Summary get user avatar src as base64
+// @Title get self avatar
+// @Summary get self avatar src as base64
 // @Description
 // @Tags    User
 // @Accept  json

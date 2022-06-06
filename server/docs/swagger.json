@@ -63,6 +63,45 @@
                 }
             }
         },
+        "/api/admin/avatar": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "get a user's avatar src as base64",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "uname for its avatar",
+                        "name": "uname",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - get avatar src base64"
+                    },
+                    "400": {
+                        "description": "Fail - user does not exist"
+                    },
+                    "404": {
+                        "description": "Fail - avatar is empty"
+                    }
+                }
+            }
+        },
         "/api/admin/officialize": {
             "put": {
                 "security": [
@@ -996,7 +1035,7 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "get user avatar src as base64",
+                "summary": "get self avatar src as base64",
                 "responses": {
                     "200": {
                         "description": "OK - get avatar src base64"

@@ -128,6 +128,41 @@ func ListUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)
 }
 
+// @Title get avatar of a user
+// @Summary get a user's avatar src as base64
+// @Description
+// @Tags    Admin
+// @Accept  json
+// @Produce json
+// @Param   uname query string true "uname for its avatar"
+// @Success 200 "OK - get avatar src base64"
+// @Failure 400 "Fail - user does not exist"
+// @Failure 404 "Fail - avatar is empty"
+// @Router /api/admin/avatar [get]
+// @Security ApiKeyAuth
+func UserAvatar(c echo.Context) error {
+
+	uname := c.QueryParam("uname")
+	if len(uname) == 0 {
+		return c.String(http.StatusBadRequest, uname+" cannot be empty")
+	}
+
+	u, ok, err := udb.UserDB.LoadUser(uname, true)
+	if err != nil || !ok {
+		return c.String(http.StatusBadRequest, "couldn't find user: "+uname)
+	}
+
+	atype, b64 := u.AvatarBase64(false)
+	if atype == "" || b64 == "" {
+		return c.String(http.StatusNotFound, "avatar is empty")
+	}
+
+	src := fmt.Sprintf("data:%s;base64,%s", atype, b64)
+	return c.JSON(http.StatusOK, struct {
+		Src string `json:"src"`
+	}{Src: src})
+}
+
 // @Title list online users
 // @Summary get all online users
 // @Description
