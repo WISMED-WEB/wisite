@@ -29,12 +29,12 @@ mv $OUT $OUTPATH_LINUX
 # cp -r ./www $OUTPATH_LINUX
 echo "${G}server(linux64) built${W}"
 
-OUTPATH_WIN=./build/win64/
-mkdir -p $OUTPATH_WIN
-CGO_ENABLED=0 GOOS="windows" GOARCH="$GOARCH" go build -ldflags="$LDFLAGS" -o $OUT.exe
-mv $OUT.exe $OUTPATH_WIN
-# cp -r ./www $OUTPATH_WIN
-echo "${G}server(win64) built${W}"
+# OUTPATH_WIN=./build/win64/
+# mkdir -p $OUTPATH_WIN
+# CGO_ENABLED=0 GOOS="windows" GOARCH="$GOARCH" go build -ldflags="$LDFLAGS" -o $OUT.exe
+# mv $OUT.exe $OUTPATH_WIN
+# # cp -r ./www $OUTPATH_WIN
+# echo "${G}server(win64) built${W}"
 
 # OUTPATH_MAC=./build/mac/
 # mkdir -p $OUTPATH_MAC
@@ -59,6 +59,6 @@ then
     RELEASE_NAME=wisite-api\($TM\).tar.gz 
     cd ./build
     echo $RELEASE_NAME
-    tar -czvf ./$RELEASE_NAME --exclude='./linux64/data' --exclude='./win64/data'  ./linux64 ./win64  # ./mac ./linuxarm
+    tar -czvf ./$RELEASE_NAME --exclude='./linux64/data' --exclude='./win64/data'  ./linux64 # ./win64 ./mac ./linuxarm
 
 fi

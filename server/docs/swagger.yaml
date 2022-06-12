@@ -327,11 +327,31 @@ paths:
           description: OK - get successfully
         "400":
           description: Fail - incorrect query param type
+        "404":
+          description: Fail - not found
         "500":
           description: Fail - internal error
       security:
       - ApiKeyAuth: []
       summary: get a batch of Post id group.
+      tags:
+      - Post
+  /api/post/ids-all:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get successfully
+        "404":
+          description: Fail - empty event ids
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get all Post id group.
       tags:
       - Post
   /api/post/one:

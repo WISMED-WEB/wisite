@@ -20,6 +20,13 @@ else
 
     rm -rf ./server/build/linux64/tmp*
     rm -rf ./server/build/linux64/server*
+    
+    rm -rf ./server/build/linux64/data/id-event
+    rm -rf ./server/build/linux64/data/id-subs
+    rm -rf ./server/build/linux64/data/span-ids
+    rm -rf ./server/build/linux64/data/owner-ids
+    rm -rf ./server/build/linux64/*.txt
+
     rm -rf ./server/build/win64/tmp*
     rm -rf ./server/build/win64/server*
     

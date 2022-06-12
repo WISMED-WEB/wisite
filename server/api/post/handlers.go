@@ -11,7 +11,7 @@ import (
 	em "github.com/digisan/event-mgr"
 	. "github.com/digisan/go-generics/v2"
 	fd "github.com/digisan/gotk/filedir"
-	lk "github.com/digisan/logkit"
+	gio "github.com/digisan/gotk/io"
 	usr "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -35,10 +35,7 @@ func Template(c echo.Context) error {
 	return c.JSON(http.StatusOK, Post{
 		Category: "post category",
 		Topic:    "post topic",
-		Content: []struct {
-			Text string "json:\"text\""
-			Path string "json:\"path\""
-		}{
+		Content: []Paragraph{
 			{
 				Text: "some words for this attach",
 				Path: "attached stuff path, which should have been given from 'file upload'",
@@ -73,8 +70,13 @@ func Upload(c echo.Context) error {
 	if err := c.Bind(P); err != nil {
 		return c.String(http.StatusBadRequest, "incorrect Post format: "+err.Error())
 	}
+	// lk.Log("---> %s -- %v", uname, P)
 
-	lk.Log("%s -- %v", uname, P)
+	// get rid of empty paragraph
+	//
+	FilterFast(&P.Content, func(i int, e Paragraph) bool {
+		return len(e.Text) > 0 || len(e.Path) > 0
+	})
 
 	// validate each path from P
 	//
@@ -92,17 +94,21 @@ func Upload(c echo.Context) error {
 
 	// save P as JSON for event
 	//
-	lk.Log("%s", es.CurrIDs())
-
 	data, err := json.Marshal(P)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	evt := em.NewEvent("", uname, "Post", string(data), edb.SaveEvt)
-	if err = es.AddEvent(evt); err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+	evt := em.NewEvent("", uname, "Post", string(data))
+	if len(evt.ID) > 0 {
+		if err = em.AddEvent(evt); err != nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+
+		gio.MustAppendFile("./debug.txt", []byte(evt.ID), true)
 	}
+
+	// lk.Log("---> %s", em.CurrIDs())
 
 	return c.JSON(http.StatusOK, evt)
 }
@@ -117,6 +123,7 @@ func Upload(c echo.Context) error {
 // @Param   value   query string true "recent [value] minutes for time OR most recent [value] count"
 // @Success 200 "OK - get successfully"
 // @Failure 400 "Fail - incorrect query param type"
+// @Failure 404 "Fail - not found"
 // @Failure 500 "Fail - internal error"
 // @Router /api/post/ids [get]
 // @Security ApiKeyAuth
@@ -143,17 +150,49 @@ func IdBatch(c echo.Context) error {
 
 	switch fetchby {
 	case "time":
-		ids, err = em.FetchEvtIDsByTm(edb, value+"m", "DESC")
+		ids, err = em.FetchEvtIDsByTm(value + "m")
 		if err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
 	case "count":
-		ids, err = em.FetchEvtIDsByCnt(edb, int(n), "", "")
+		ids, err = em.FetchEvtIDsByCnt(int(n), "")
 		if err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
 	}
 
+	// lk.Log("IdBatch ---> %d : %v", len(ids), ids)
+
+	if len(ids) == 0 {
+		return c.String(http.StatusNotFound, "not found")
+	}
+
+	return c.JSON(http.StatusOK, ids)
+}
+
+// @Title get all Post id group
+// @Summary get all Post id group.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Success 200 "OK - get successfully"
+// @Failure 404 "Fail - empty event ids"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/ids-all [get]
+// @Security ApiKeyAuth
+func IdAll(c echo.Context) error {
+
+	ids, err := em.FetchAllEvtIDs()
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	// lk.Log("IdAll ---> %d : %v", len(ids), ids)
+
+	if len(ids) == 0 {
+		return c.String(http.StatusNotFound, "not found")
+	}
 	return c.JSON(http.StatusOK, ids)
 }
 
@@ -184,7 +223,7 @@ func GetOne(c echo.Context) error {
 		c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
 	}
 
-	content, err := edb.GetEvt(id)
+	content, err := em.GetEvtDB(id)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 	}

@@ -52,9 +52,6 @@ func init() {
 // @name authorization
 func main() {
 
-	// 127.0.0.1
-	// 13.55.91.185
-
 	http2Ptr := flag.Bool("http2", false, "http2 mode?")
 	flag.Parse()
 	fHttp2 = *http2Ptr

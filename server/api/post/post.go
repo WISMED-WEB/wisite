@@ -5,14 +5,16 @@ import (
 	"strings"
 )
 
+type Paragraph struct {
+	Text string `json:"text"`
+	Path string `json:"path"`
+}
+
 type Post struct {
-	Category string `json:"category"`
-	Topic    string `json:"topic"`
-	Content  []struct {
-		Text string `json:"text"`
-		Path string `json:"path"`
-	} `json:"content"`
-	Summary string `json:"summary"`
+	Category string      `json:"category"`
+	Topic    string      `json:"topic"`
+	Content  []Paragraph `json:"content"`
+	Summary  string      `json:"summary"`
 }
 
 func (m Post) String() string {

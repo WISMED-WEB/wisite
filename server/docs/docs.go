@@ -535,6 +535,39 @@ const docTemplate = `{
                     "400": {
                         "description": "Fail - incorrect query param type"
                     },
+                    "404": {
+                        "description": "Fail - not found"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
+        "/api/post/ids-all": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "get all Post id group.",
+                "responses": {
+                    "200": {
+                        "description": "OK - get successfully"
+                    },
+                    "404": {
+                        "description": "Fail - empty event ids"
+                    },
                     "500": {
                         "description": "Fail - internal error"
                     }
