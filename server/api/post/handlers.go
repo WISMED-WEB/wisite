@@ -7,11 +7,13 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	em "github.com/digisan/event-mgr"
 	. "github.com/digisan/go-generics/v2"
 	fd "github.com/digisan/gotk/filedir"
 	gio "github.com/digisan/gotk/io"
+	lk "github.com/digisan/logkit"
 	usr "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -129,11 +131,7 @@ func Upload(c echo.Context) error {
 // @Security ApiKeyAuth
 func IdBatch(c echo.Context) error {
 
-	// userTkn := c.Get("user").(*jwt.Token)
-	// claims := userTkn.Claims.(*usr.UserClaims)
-
 	var (
-		// uname   = claims.UName
 		fetchby = c.QueryParam("fetchby")
 		value   = c.QueryParam("value")
 		ids     = []string{}
@@ -211,11 +209,7 @@ func IdAll(c echo.Context) error {
 // @Security ApiKeyAuth
 func GetOne(c echo.Context) error {
 
-	// userTkn := c.Get("user").(*jwt.Token)
-	// claims := userTkn.Claims.(*usr.UserClaims)
-
 	var (
-		// uname = claims.UName
 		id = c.QueryParam("id")
 	)
 
@@ -232,4 +226,44 @@ func GetOne(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, content)
+}
+
+// @Title get own Post id group in a specific period
+// @Summary get own Post id group in one specific time period.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Param   period query string true "time period for query, format is 'yyyymm', e.g. '202206'"
+// @Success 200 "OK - get successfully"
+// @Failure 400 "Fail - incorrect query param type"
+// @Failure 404 "Fail - empty event ids"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/own/ids [get]
+// @Security ApiKeyAuth
+func IdOwn(c echo.Context) error {
+
+	userTkn := c.Get("user").(*jwt.Token)
+	claims := userTkn.Claims.(*usr.UserClaims)
+
+	var (
+		uname  = claims.UName
+		period = c.QueryParam("period")
+	)
+
+	if _, err := time.Parse("200601", period); err != nil {
+		return c.String(http.StatusBadRequest, "'period' format must be 'yyyymm', e.g. '202206'")
+	}
+
+	lk.Log("%s -- %s", uname, period)
+
+	ids, err := em.FetchOwn(uname, period)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	if len(ids) == 0 {
+		return c.String(http.StatusNotFound, "not found any post id in period: "+period)
+	}
+
+	return c.JSON(http.StatusOK, ids)
 }

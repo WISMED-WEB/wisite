@@ -3,18 +3,18 @@ module github.com/wismed-web/wisite-api
 go 1.18
 
 require (
-	github.com/digisan/event-mgr v0.0.11
+	github.com/digisan/event-mgr v0.0.12
 	github.com/digisan/file-mgr v0.1.8
-	github.com/digisan/go-generics v0.1.14
-	github.com/digisan/gotk v0.1.15
+	github.com/digisan/go-generics v0.1.15
+	github.com/digisan/gotk v0.1.16
 	github.com/digisan/logkit v0.0.9
 	github.com/digisan/user-mgr v0.2.4
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/postfinance/single v0.0.2
 	github.com/swaggo/echo-swagger v1.3.3
-	github.com/swaggo/swag v1.8.2
-	golang.org/x/net v0.0.0-20220607020251-c690dde0001d
+	github.com/swaggo/swag v1.8.3
+	golang.org/x/net v0.0.0-20220621193019-9d032be2e588
 )
 
 require (
@@ -55,7 +55,7 @@ require (
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
-	golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d // indirect
+	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
 	golang.org/x/tools v0.1.11 // indirect

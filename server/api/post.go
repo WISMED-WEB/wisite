@@ -15,6 +15,7 @@ func PostHandler(e *echo.Group) {
 		"/ids":      post.IdBatch,
 		"/ids-all":  post.IdAll,
 		"/one":      post.GetOne,
+		"/own/ids":  post.IdOwn,
 	}
 
 	var mPOST = map[string]echo.HandlerFunc{

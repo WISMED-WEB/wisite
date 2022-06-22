@@ -16,5 +16,8 @@
 
 data/
 server/tmp-locker
-server/build
+server/build/*
+!server/build/linux64
+server/build/linux64/*
+!server/build/linux64/temp_test.go
 prelease/prelease

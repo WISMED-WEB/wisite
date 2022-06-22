@@ -59,6 +59,6 @@ then
     RELEASE_NAME=wisite-api\($TM\).tar.gz 
     cd ./build
     echo $RELEASE_NAME
-    tar -czvf ./$RELEASE_NAME --exclude='./linux64/data' --exclude='./win64/data'  ./linux64 # ./win64 ./mac ./linuxarm
+    tar -czvf ./$RELEASE_NAME --exclude='./linux64/data' --exclude='./win64/data'  ./linux64 # ./win64 # ./mac ./linuxarm
 
 fi

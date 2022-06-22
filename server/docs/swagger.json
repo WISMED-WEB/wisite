@@ -608,6 +608,48 @@
                 }
             }
         },
+        "/api/post/own/ids": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "get own Post id group in one specific time period.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "time period for query, format is 'yyyymm', e.g. '202206'",
+                        "name": "period",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - get successfully"
+                    },
+                    "400": {
+                        "description": "Fail - incorrect query param type"
+                    },
+                    "404": {
+                        "description": "Fail - empty event ids"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
         "/api/post/template": {
             "get": {
                 "security": [

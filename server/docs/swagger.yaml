@@ -380,6 +380,32 @@ paths:
       summary: get one Post content.
       tags:
       - Post
+  /api/post/own/ids:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: time period for query, format is 'yyyymm', e.g. '202206'
+        in: query
+        name: period
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get successfully
+        "400":
+          description: Fail - incorrect query param type
+        "404":
+          description: Fail - empty event ids
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get own Post id group in one specific time period.
+      tags:
+      - Post
   /api/post/template:
     get:
       consumes:
