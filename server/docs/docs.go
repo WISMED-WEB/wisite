@@ -495,6 +495,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/post/follower/ids": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "get a specified Post follower-Post id group.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "followee Post ID",
+                        "name": "followee",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - get successfully"
+                    },
+                    "404": {
+                        "description": "Fail - empty follower ids"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
         "/api/post/ids": {
             "get": {
                 "security": [
@@ -708,6 +747,12 @@ const docTemplate = `{
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "followee Post ID (empty when doing a new post)",
+                        "name": "followee",
+                        "in": "query"
                     }
                 ],
                 "responses": {

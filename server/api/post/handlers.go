@@ -54,6 +54,7 @@ func Template(c echo.Context) error {
 // @Accept  json
 // @Produce json
 // @Param   data body string true "filled Post template json file"
+// @Param   followee  query string false "followee Post ID (empty when doing a new post)"
 // @Success 200 "OK - upload successfully"
 // @Failure 400 "Fail - incorrect Post format"
 // @Failure 500 "Fail - internal error"
@@ -66,6 +67,7 @@ func Upload(c echo.Context) error {
 
 	var (
 		uname = claims.UName
+		flwee = c.QueryParam("followee")
 	)
 
 	P := new(Post)
@@ -107,7 +109,22 @@ func Upload(c echo.Context) error {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
 
+		// DEBUG
 		gio.MustAppendFile("./debug.txt", []byte(evt.ID), true)
+
+		// FOLLOWING...
+		if len(flwee) > 0 {
+			ef, err := em.GetFlwDB(flwee)
+			if err != nil {
+				return c.String(http.StatusInternalServerError, err.Error())
+			}
+			if ef == nil {
+				ef = em.NewEventFollow(flwee)
+			}
+			if err := ef.AddFollower(evt.ID); err != nil {
+				return c.String(http.StatusInternalServerError, err.Error())
+			}
+		}
 	}
 
 	// lk.Log("---> %s", em.CurrIDs())
@@ -162,9 +179,8 @@ func IdBatch(c echo.Context) error {
 	// lk.Log("IdBatch ---> %d : %v", len(ids), ids)
 
 	if len(ids) == 0 {
-		return c.String(http.StatusNotFound, "not found")
+		return c.JSON(http.StatusNotFound, ids)
 	}
-
 	return c.JSON(http.StatusOK, ids)
 }
 
@@ -189,7 +205,7 @@ func IdAll(c echo.Context) error {
 	// lk.Log("IdAll ---> %d : %v", len(ids), ids)
 
 	if len(ids) == 0 {
-		return c.String(http.StatusNotFound, "not found")
+		return c.JSON(http.StatusNotFound, ids)
 	}
 	return c.JSON(http.StatusOK, ids)
 }
@@ -224,7 +240,6 @@ func GetOne(c echo.Context) error {
 	if content == nil {
 		c.String(http.StatusNotFound, fmt.Sprintf("Post not found @%s", id))
 	}
-
 	return c.JSON(http.StatusOK, content)
 }
 
@@ -262,8 +277,39 @@ func IdOwn(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	if len(ids) == 0 {
-		return c.String(http.StatusNotFound, "not found any post id in period: "+period)
+		return c.JSON(http.StatusNotFound, ids)
 	}
-
 	return c.JSON(http.StatusOK, ids)
 }
+
+// @Title get a Post follower-Post ids
+// @Summary get a specified Post follower-Post id group.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Param   followee query string true "followee Post ID"
+// @Success 200 "OK - get successfully"
+// @Failure 404 "Fail - empty follower ids"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/follower/ids [get]
+// @Security ApiKeyAuth
+func Followers(c echo.Context) error {
+
+	var (
+		flwee = c.QueryParam("followee")
+	)
+
+	flwers, err := em.GetFollowers(flwee)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	if len(flwers) == 0 {
+		return c.JSON(http.StatusNotFound, flwers)
+	}
+	return c.JSON(http.StatusOK, flwers)
+}
+
+// func Follow(c echo.Context) error {
+// 	em.SaveFlwDB()
+// }

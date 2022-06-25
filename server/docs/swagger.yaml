@@ -305,6 +305,30 @@ paths:
       summary: upload file action via form file input.
       tags:
       - File
+  /api/post/follower/ids:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: followee Post ID
+        in: query
+        name: followee
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get successfully
+        "404":
+          description: Fail - empty follower ids
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get a specified Post follower-Post id group.
+      tags:
+      - Post
   /api/post/ids:
     get:
       consumes:
@@ -431,6 +455,10 @@ paths:
         required: true
         schema:
           type: string
+      - description: followee Post ID (empty when doing a new post)
+        in: query
+        name: followee
+        type: string
       produces:
       - application/json
       responses:

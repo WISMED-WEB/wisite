@@ -1,6 +1,6 @@
 package system
 
 const (
-    version = "v0.0.6"
-    tag     = "v0.0.6"
+    version = "v0.0.8"
+    tag     = "v0.0.8"
 )
