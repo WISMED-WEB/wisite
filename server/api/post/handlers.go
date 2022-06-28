@@ -178,9 +178,9 @@ func IdBatch(c echo.Context) error {
 
 	// lk.Log("IdBatch ---> %d : %v", len(ids), ids)
 
-	if len(ids) == 0 {
-		return c.JSON(http.StatusNotFound, ids)
-	}
+	// if len(ids) == 0 {
+	// 	return c.JSON(http.StatusNotFound, ids)
+	// }
 	return c.JSON(http.StatusOK, ids)
 }
 
@@ -204,9 +204,9 @@ func IdAll(c echo.Context) error {
 
 	// lk.Log("IdAll ---> %d : %v", len(ids), ids)
 
-	if len(ids) == 0 {
-		return c.JSON(http.StatusNotFound, ids)
-	}
+	// if len(ids) == 0 {
+	// 	return c.JSON(http.StatusNotFound, ids)
+	// }
 	return c.JSON(http.StatusOK, ids)
 }
 
@@ -276,9 +276,9 @@ func IdOwn(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	if len(ids) == 0 {
-		return c.JSON(http.StatusNotFound, ids)
-	}
+	// if len(ids) == 0 {
+	// 	return c.JSON(http.StatusNotFound, ids)
+	// }
 	return c.JSON(http.StatusOK, ids)
 }
 
@@ -304,12 +304,8 @@ func Followers(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	if len(flwers) == 0 {
-		return c.JSON(http.StatusNotFound, flwers)
-	}
+	// if len(flwers) == 0 {
+	// 	return c.JSON(http.StatusNotFound, flwers)
+	// }
 	return c.JSON(http.StatusOK, flwers)
 }
-
-// func Follow(c echo.Context) error {
-// 	em.SaveFlwDB()
-// }
