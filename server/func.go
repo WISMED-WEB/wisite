@@ -7,7 +7,7 @@ import (
 	lk "github.com/digisan/logkit"
 	si "github.com/digisan/user-mgr/sign-in"
 	so "github.com/digisan/user-mgr/sign-out"
-	usr "github.com/digisan/user-mgr/user"
+	u "github.com/digisan/user-mgr/user"
 	"github.com/wismed-web/wisite-api/server/api/sign"
 )
 
@@ -20,7 +20,7 @@ func monitorUser(ctx context.Context, offlineTimeout time.Duration) {
 				sign.MapUserSpace.Delete(inactive)
 				if claims, ok := sign.MapUserClaims.Load(inactive); ok {
 					lk.Log("delete token: [%v]", inactive)
-					claims.(*usr.UserClaims).DeleteToken()
+					claims.(*u.UserClaims).DeleteToken()
 					sign.MapUserClaims.Delete(inactive)
 				}
 				lk.Log("offline: [%v]", inactive)

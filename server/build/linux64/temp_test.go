@@ -20,13 +20,13 @@ func TestGetAllEvtIds(t *testing.T) {
 
 	em.InitEventSpan("MINUTE", ctx)
 
-	ids, err := em.FetchAllEvtIDs() // GetEvtIdAllDB()
+	ids, err := em.FetchEvtIDs(nil)
 	if err != nil {
 		panic(err)
 	}
 
 	for i, eid := range ids {
-		fmt.Println(i, eid)
+		fmt.Println(i, "-->", eid)
 	}
 	fmt.Println("------> total:", len(ids))
 }

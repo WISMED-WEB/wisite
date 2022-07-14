@@ -9,8 +9,7 @@ import (
 	lk "github.com/digisan/logkit"
 	si "github.com/digisan/user-mgr/sign-in"
 	su "github.com/digisan/user-mgr/sign-up"
-	"github.com/digisan/user-mgr/udb"
-	usr "github.com/digisan/user-mgr/user"
+	u "github.com/digisan/user-mgr/user"
 	vf "github.com/digisan/user-mgr/user/valfield"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -27,11 +26,12 @@ import (
 // @Router /api/user/heartbeats [patch]
 // @Security ApiKeyAuth
 func HeartBeats(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
-	uname := claims.UName
 	if err := si.Trail(uname); err != nil {
 		lk.Debug("%v", err.Error())
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -51,29 +51,31 @@ func HeartBeats(c echo.Context) error {
 // @Router /api/user/profile [get]
 // @Security ApiKeyAuth
 func Profile(c echo.Context) error {
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-	uname := claims.UName
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	u, ok, err := udb.UserDB.LoadUser(uname, true)
+	user, ok, err := u.LoadUser(uname, true)
 	if err != nil || !ok {
 		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
 
-	if len(u.Profile.Avatar) > 32 {
-		u.Profile.Avatar = u.Profile.Avatar[:32]
+	if len(user.Profile.Avatar) > 32 {
+		user.Profile.Avatar = user.Profile.Avatar[:32]
 	}
 
 	return c.JSON(http.StatusOK, struct {
-		usr.Profile
+		u.Profile
 		Uname      string `json:"uname"`
 		Email      string `json:"email"`
 		MemberDays string `json:"memberDays"`
 	}{
-		u.Profile,
-		u.UName,
-		u.Email,
-		fmt.Sprintf("%v", int(u.SinceJoined().Hours()/24.0)),
+		user.Profile,
+		user.UName,
+		user.Email,
+		fmt.Sprintf("%v", int(user.SinceJoined().Hours()/24.0)),
 	})
 }
 
@@ -102,27 +104,29 @@ func Profile(c echo.Context) error {
 // @Router /api/user/setprofile [post]
 // @Security ApiKeyAuth
 func SetProfile(c echo.Context) error {
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-	uname := claims.UName
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	u, ok, err := udb.UserDB.LoadActiveUser(uname)
+	user, ok, err := u.LoadActiveUser(uname)
 	if err != nil || !ok {
 		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
 
-	u.Phone = c.FormValue("phone")
-	u.Addr = c.FormValue("addr")
-	u.City = c.FormValue("city")
-	u.Country = c.FormValue("country")
-	u.PersonalIDType = c.FormValue("pidtype")
-	u.PersonalID = c.FormValue("pid")
-	u.Gender = c.FormValue("gender")
-	u.DOB = c.FormValue("dob")
-	u.Position = c.FormValue("position")
-	u.Title = c.FormValue("title")
-	u.Employer = c.FormValue("employer")
-	u.Bio = c.FormValue("bio")
+	user.Phone = c.FormValue("phone")
+	user.Addr = c.FormValue("addr")
+	user.City = c.FormValue("city")
+	user.Country = c.FormValue("country")
+	user.PersonalIDType = c.FormValue("pidtype")
+	user.PersonalID = c.FormValue("pid")
+	user.Gender = c.FormValue("gender")
+	user.DOB = c.FormValue("dob")
+	user.Position = c.FormValue("position")
+	user.Title = c.FormValue("title")
+	user.Employer = c.FormValue("employer")
+	user.Bio = c.FormValue("bio")
 
 	// Read & Set Avatar
 	file, err := c.FormFile("avatar")
@@ -135,18 +139,18 @@ func SetProfile(c echo.Context) error {
 		return c.String(http.StatusBadRequest, e)
 	}
 	ext = strings.TrimPrefix(filepath.Ext(file.Filename), ".")
-	if err := u.SetAvatarByFormFile("image/"+ext, file); err != nil {
+	if err := user.SetAvatarByFormFile("image/"+ext, file); err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 VALIDATE:
 	// validate
-	if err := su.ChkInput(u, vf.UName, vf.EmailDB, vf.SysRole, vf.MemLevel, vf.MemExpire, vf.Tags); err != nil {
+	if err := su.ChkInput(user, vf.UName, vf.EmailDB, vf.SysRole, vf.MemLevel, vf.MemExpire, vf.Tags); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	// update
-	if err := udb.UserDB.UpdateUser(u); err != nil {
+	if err := u.UpdateUser(user); err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
@@ -165,16 +169,18 @@ VALIDATE:
 // @Router /api/user/avatar [get]
 // @Security ApiKeyAuth
 func Avatar(c echo.Context) error {
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-	uname := claims.UName
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	u, ok, err := udb.UserDB.LoadUser(uname, true)
+	user, ok, err := u.LoadUser(uname, true)
 	if err != nil || !ok {
 		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
 
-	atype, b64 := u.AvatarBase64(false)
+	atype, b64 := user.AvatarBase64(false)
 	if atype == "" || b64 == "" {
 		return c.String(http.StatusNotFound, "avatar is empty")
 	}
@@ -185,13 +191,13 @@ func Avatar(c echo.Context) error {
 	}{Src: src})
 }
 
-// var u = &usr.User{
-// 	Core: usr.Core{
+// var u = &u.User{
+// 	Core: u.Core{
 // 		UName:    "",
 // 		Email:    "",
 // 		Password: "",
 // 	},
-// 	Profile: usr.Profile{
+// 	Profile: u.Profile{
 // 		Name:           "",
 // 		Phone:          "",
 // 		Country:        "",
@@ -208,7 +214,7 @@ func Avatar(c echo.Context) error {
 // 		AvatarType:     "",
 // 		Avatar:         []byte{},
 // 	},
-// 	Admin: usr.Admin{
+// 	Admin: u.Admin{
 // 		Regtime:   time.Now().Truncate(time.Second),
 // 		Active:    true,
 // 		Certified: false,

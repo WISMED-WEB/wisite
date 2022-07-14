@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	rel "github.com/digisan/user-mgr/relation"
-	. "github.com/digisan/user-mgr/relation/enum"
-	"github.com/digisan/user-mgr/udb"
-	usr "github.com/digisan/user-mgr/user"
+	lk "github.com/digisan/logkit"
+	r "github.com/digisan/user-mgr/relation"
+	u "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
@@ -28,12 +27,13 @@ import (
 // @Router /api/rel/action/{whom} [put]
 // @Security ApiKeyAuth
 func Action(c echo.Context) error {
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-	uname := claims.UName
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	_, ok, err := udb.UserDB.LoadUser(uname, true)
-	if err != nil || !ok {
+	if _, ok, err := u.LoadUser(uname, true); err != nil || !ok {
 		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
 
@@ -41,21 +41,21 @@ func Action(c echo.Context) error {
 		whom     = c.Param("whom")
 		action   = c.QueryParam("action")
 		mActFlag = map[string]int{
-			"follow":   DO_FOLLOW,
-			"unfollow": DO_UNFOLLOW,
-			"block":    DO_BLOCK,
-			"unblock":  DO_UNBLOCK,
-			"mute":     DO_MUTE,
-			"unmute":   DO_UNMUTE,
+			"follow":   r.FOLLOW,
+			"unfollow": r.UNFOLLOW,
+			"block":    r.BLOCK,
+			"unblock":  r.UNBLOCK,
+			"mute":     r.MUTE,
+			"unmute":   r.UNMUTE,
 		}
 	)
 
 	flag, ok := mActFlag[action]
 	if !ok {
-		return c.String(http.StatusBadRequest, "invalid action value, accept [follow, unfollow, block, unblock, mute, unmute]")
+		return c.String(http.StatusBadRequest, "invalid action, only accept [follow, unfollow, block, unblock, mute, unmute]")
 	}
 
-	if err := rel.RelAction(uname, flag, whom); err != nil {
+	if err := r.RelAction(uname, flag, whom); err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.String(http.StatusOK, fmt.Sprintf("%s %s successfully now", action, whom))
@@ -74,29 +74,37 @@ func Action(c echo.Context) error {
 // @Router /api/rel/content/{type} [get]
 // @Security ApiKeyAuth
 func GetContent(c echo.Context) error {
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-	uname := claims.UName
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	_, ok, err := udb.UserDB.LoadUser(uname, true)
-	if err != nil || !ok {
+	if _, ok, err := u.LoadUser(uname, true); err != nil || !ok {
 		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
 
 	var (
-		contType  = c.QueryParam("type")
+		contType  = c.Param("type")
 		mContFlag = map[string]int{
-			"following": FOLLOWING,
-			"follower":  FOLLOWER,
-			"blocked":   BLOCKED,
-			"muted":     MUTED,
+			"following": r.FOLLOWING,
+			"follower":  r.FOLLOWER,
+			"blocked":   r.BLOCKED,
+			"muted":     r.MUTED,
 		}
 	)
 
+	lk.Debug("%s", contType)
+
 	flag, ok := mContFlag[contType]
 	if !ok {
-		return c.String(http.StatusBadRequest, "invalid action value, accept [following, follower, blocked, muted]")
+		return c.String(http.StatusBadRequest, "invalid action, only accept [following, follower, blocked, muted]")
 	}
 
-	return c.JSON(http.StatusOK, rel.RelContent(uname, flag))
+	names, err := r.ListRel(uname, flag, true)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, names)
 }

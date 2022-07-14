@@ -11,8 +11,7 @@ import (
 	rp "github.com/digisan/user-mgr/reset-pwd"
 	si "github.com/digisan/user-mgr/sign-in"
 	su "github.com/digisan/user-mgr/sign-up"
-	"github.com/digisan/user-mgr/udb"
-	usr "github.com/digisan/user-mgr/user"
+	u "github.com/digisan/user-mgr/user"
 	"github.com/labstack/echo/v4"
 )
 
@@ -20,7 +19,7 @@ import (
 
 var (
 	MapUserSpace  = &sync.Map{} // map[string]*fm.UserSpace, *** record logged-in user space ***
-	MapUserClaims = &sync.Map{} // map[string]*usr.UserClaims, *** record logged-in user claims  ***
+	MapUserClaims = &sync.Map{} // map[string]*u.UserClaims, *** record logged-in user claims  ***
 )
 
 // @Title register a new user
@@ -41,13 +40,13 @@ func NewUser(c echo.Context) error {
 
 	// lk.Debug("[%v] [%v] [%v] [%v]", c.FormValue("uname"), c.FormValue("email"), c.FormValue("name"), c.FormValue("pwd"))
 
-	user := &usr.User{
-		Core: usr.Core{
+	user := &u.User{
+		Core: u.Core{
 			UName:    c.FormValue("uname"),
 			Email:    c.FormValue("email"),
 			Password: c.FormValue("pwd"),
 		},
-		Profile: usr.Profile{
+		Profile: u.Profile{
 			Name:           c.FormValue("name"),
 			Phone:          "",
 			Country:        "",
@@ -64,7 +63,7 @@ func NewUser(c echo.Context) error {
 			AvatarType:     "",
 			Avatar:         []byte{},
 		},
-		Admin: usr.Admin{
+		Admin: u.Admin{
 			Regtime:   time.Now().Truncate(time.Second),
 			Active:    true,
 			Certified: false,
@@ -104,7 +103,6 @@ func NewUser(c echo.Context) error {
 // @Failure 500 "Fail - internal error"
 // @Router /api/sign/verify-email [post]
 func VerifyEmail(c echo.Context) error {
-
 	var (
 		uname = c.FormValue("uname")
 		code  = c.FormValue("code")
@@ -149,14 +147,14 @@ func LogIn(c echo.Context) error {
 
 	lk.Debug("login: [%v] [%v]", c.FormValue("uname"), c.FormValue("pwd"))
 
-	user := &usr.User{
-		Core: usr.Core{
+	user := &u.User{
+		Core: u.Core{
 			UName:    c.FormValue("uname"),
 			Password: c.FormValue("pwd"),
 			Email:    c.FormValue("uname"),
 		},
-		Profile: usr.Profile{},
-		Admin:   usr.Admin{},
+		Profile: u.Profile{},
+		Admin:   u.Admin{},
 	}
 
 	if err := si.CheckUserExists(user); err != nil {
@@ -181,7 +179,7 @@ func LogIn(c echo.Context) error {
 		MapUserSpace.Store(user.UName, us)
 	}
 
-	claims := usr.MakeUserClaims(user)
+	claims := u.MakeUserClaims(user)
 	defer func() { MapUserClaims.Store(user.UName, claims) }() // save current user claims for other usage
 
 	token := claims.GenToken()
@@ -205,24 +203,24 @@ func LogIn(c echo.Context) error {
 // @Router /api/sign/reset-pwd [post]
 func ResetPwd(c echo.Context) error {
 
-	u := &usr.User{
-		Core: usr.Core{
+	user := &u.User{
+		Core: u.Core{
 			UName: c.FormValue("uname"),
 			Email: c.FormValue("email"),
 		},
-		Profile: usr.Profile{},
-		Admin:   usr.Admin{},
+		Profile: u.Profile{},
+		Admin:   u.Admin{},
 	}
 
-	if err := rp.CheckUserExists(u); err != nil {
+	if err := rp.CheckUserExists(user); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
-	if !rp.EmailOK(u) {
-		return c.String(http.StatusBadRequest, fmt.Sprintf("input email [%s] is different from [%s] sign-up", u.Email, u.UName))
+	if !rp.EmailOK(user) {
+		return c.String(http.StatusBadRequest, fmt.Sprintf("input email [%s] is different from [%s] sign-up", user.Email, user.UName))
 	}
 
 	// load full user before ChkEmail
-	user, ok, err := udb.UserDB.LoadUser(u.UName, true)
+	user, ok, err := u.LoadUser(user.UName, true)
 	if err != nil || !ok {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -249,7 +247,6 @@ func ResetPwd(c echo.Context) error {
 // @Failure 500 "Fail - internal error"
 // @Router /api/sign/verify-reset-pwd [post]
 func VerifyResetPwd(c echo.Context) error {
-
 	var (
 		uname = c.FormValue("uname")
 		code  = c.FormValue("code")

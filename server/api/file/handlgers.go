@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	fm "github.com/digisan/file-mgr"
-	usr "github.com/digisan/user-mgr/user"
+	u "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/wismed-web/wisite-api/server/api/sign"
@@ -27,14 +27,12 @@ import (
 // @Router /api/file/pathcontent [get]
 // @Security ApiKeyAuth
 func PathContent(c echo.Context) error {
-
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
 	var (
-		uname = claims.UName
-		ym    = c.QueryParam("ym")
-		gpath = c.QueryParam("gpath")
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		ym      = c.QueryParam("ym")
+		gpath   = c.QueryParam("gpath")
 	)
 
 	// fetch user space for valid login
@@ -61,13 +59,11 @@ func PathContent(c echo.Context) error {
 // @Router /api/file/fileitems [get]
 // @Security ApiKeyAuth
 func FileItems(c echo.Context) error {
-
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
 	var (
-		uname = claims.UName
-		id    = c.QueryParam("id")
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		id      = c.QueryParam("id")
 	)
 
 	// fetch user space for valid login
@@ -104,13 +100,11 @@ func FileItems(c echo.Context) error {
 // @Router /api/file/upload-formfile [post]
 // @Security ApiKeyAuth
 func UploadFormFile(c echo.Context) error {
-
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
-	// Read form fields
 	var (
-		uname  = claims.UName
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		// Read form fields
 		note   = c.FormValue("note")
 		group0 = c.FormValue("group0")
 		group1 = c.FormValue("group1")
@@ -162,12 +156,9 @@ func UploadFormFile(c echo.Context) error {
 // @Router /api/file/upload-bodydata [post]
 // @Security ApiKeyAuth
 func UploadBodyData(c echo.Context) error {
-
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
-	// Read form fields
 	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
 		uname   = claims.UName
 		fname   = c.QueryParam("fname")
 		note    = c.QueryParam("note")

@@ -11,7 +11,7 @@ cd -
 if [[ $1 == 'all' ]]
 then
 
-rm go.sum
+rm -f go.sum
 go get -u ./...
 
 fi

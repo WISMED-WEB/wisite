@@ -6,7 +6,7 @@ import (
 
 	lk "github.com/digisan/logkit"
 	so "github.com/digisan/user-mgr/sign-out"
-	usr "github.com/digisan/user-mgr/user"
+	u "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/wismed-web/wisite-api/server/api/sign"
@@ -25,12 +25,13 @@ import (
 // @Router /api/sign-out/ [get]
 // @Security ApiKeyAuth
 func SignOut(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
 	defer claims.DeleteToken() // only in SignOut calling DeleteToken()
-
-	uname := claims.UName
 
 	// remove user claims for 'uname'
 	defer sign.MapUserClaims.Delete(uname)

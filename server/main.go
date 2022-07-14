@@ -13,10 +13,9 @@ import (
 	fm "github.com/digisan/file-mgr"
 	gio "github.com/digisan/gotk/io"
 	lk "github.com/digisan/logkit"
-	rel "github.com/digisan/user-mgr/relation"
+	r "github.com/digisan/user-mgr/relation"
 	su "github.com/digisan/user-mgr/sign-up"
-	"github.com/digisan/user-mgr/udb"
-	usr "github.com/digisan/user-mgr/user"
+	u "github.com/digisan/user-mgr/user"
 	vf "github.com/digisan/user-mgr/user/valfield"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -70,9 +69,8 @@ func main() {
 
 	// other init actions
 	{
-		// set user db dir, activate ***[udb.UserDB]***
-		udb.OpenUserStorage("./data/db-user")
-		defer udb.CloseUserStorage()
+		// set user db dir, activate ***[UserDB]***
+		u.InitDB("./data/db-user")
 
 		// monitor active users
 		ctx, cancel := context.WithCancel(context.Background())
@@ -80,20 +78,18 @@ func main() {
 		monitorUser(ctx, 3600*time.Second) // heartbeats checker timeout
 
 		// set user validator
-		su.SetValidator(map[string]func(o, v any) usr.ValRst{
-			vf.AvatarType: func(o, v any) usr.ValRst {
+		su.SetValidator(map[string]func(o, v any) u.ValRst{
+			vf.AvatarType: func(o, v any) u.ValRst {
 				ok := v == "" || strings.HasPrefix(v.(string), "image/")
-				return usr.NewValRst(ok, "avatarType must have prefix - 'image/'")
+				return u.NewValRst(ok, "avatarType must have prefix - 'image/'")
 			},
 		})
 
 		// set user file space & file item db space
-		fm.SetFileMgrRoot("./data/user-space", "./data/db-fileitem")
-		defer fm.CloseFileMgr()
+		fm.InitFileMgr("./data/")
 
 		// set user relation db
-		rel.OpenRelStorage("./data/db-relation")
-		defer rel.CloseRelStorage()
+		r.InitDB("./data/db-relation")
 	}
 
 	// start Service
@@ -104,8 +100,9 @@ func main() {
 
 func waitShutdown(e *echo.Echo) {
 	go func() {
-		defer udb.CloseUserStorage() // after closing echo, close user db, i.e. deactivate ***[udb.UserDB]***
-		defer rel.CloseRelStorage()  // after closing echo, close relation db, i.e. deactivate ***[rel.RelDB]***
+		defer u.CloseDB()         // after closing echo, close user db, i.e. deactivate ***[UserDB]***
+		defer r.CloseDB()         // after closing echo, close relation db, i.e. deactivate ***[RelDB]***
+		defer fm.DisposeFileMgr() // close file db
 
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
@@ -182,8 +179,8 @@ func echoHost(done chan<- string) {
 		for i, group := range groups {
 			r := e.Group(group)
 			r.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-				Claims:     &usr.UserClaims{},
-				SigningKey: []byte(usr.TokenKey()),
+				Claims:     &u.UserClaims{},
+				SigningKey: []byte(u.TokenKey()),
 			}))
 			r.Use(ValidateToken)
 			handlers[i](r)
@@ -203,7 +200,7 @@ func echoHost(done chan<- string) {
 func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		userTkn := c.Get("user").(*jwt.Token)
-		claims := userTkn.Claims.(*usr.UserClaims)
+		claims := userTkn.Claims.(*u.UserClaims)
 		if claims.ValidateToken(userTkn.Raw) {
 			return next(c)
 		}

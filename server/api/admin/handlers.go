@@ -7,8 +7,7 @@ import (
 	"strings"
 
 	. "github.com/digisan/go-generics/v2"
-	"github.com/digisan/user-mgr/udb"
-	usr "github.com/digisan/user-mgr/user"
+	u "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
@@ -26,12 +25,13 @@ import (
 // @Router /api/admin/spa/menu [get]
 // @Security ApiKeyAuth
 func Menu(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	// --- //
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
-	user, ok, err := udb.UserDB.LoadActiveUser(claims.UName)
+	user, ok, err := u.LoadActiveUser(uname)
 
 	switch {
 	case err != nil:
@@ -45,13 +45,13 @@ func Menu(c echo.Context) error {
 
 	switch user.MemLevel {
 	case 0:
-		menu = []string{"whats-new", "topic", "ask", "task"}
+		menu = []string{"whats-new", "topic", "task"}
 	case 1:
-		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "task", "vote"}
+		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote"}
 	case 2:
-		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "assign", "task", "vote", "audit"}
+		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote", "audit"}
 	case 3:
-		menu = []string{"whats-new", "topic", "bookmark", "sharing", "ask", "assign", "task", "vote", "audit", "admin"}
+		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote", "audit", "admin"}
 	default:
 		menu = []string{}
 	}
@@ -76,12 +76,13 @@ func Menu(c echo.Context) error {
 // @Router /api/admin/users [get]
 // @Security ApiKeyAuth
 func ListUser(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	// --- //
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
-	user, ok, err := udb.UserDB.LoadActiveUser(claims.UName)
+	user, ok, err := u.LoadActiveUser(uname)
 
 	switch {
 	case err != nil:
@@ -103,7 +104,7 @@ func ListUser(c echo.Context) error {
 		rName  = wc2re(wName)
 	)
 
-	users, err := udb.UserDB.ListUser(func(u *usr.User) bool {
+	users, err := u.ListUser(func(u *u.User) bool {
 		switch {
 		case len(wUname) > 0 && !rUname.MatchString(u.UName):
 			return false
@@ -147,12 +148,12 @@ func UserAvatar(c echo.Context) error {
 		return c.String(http.StatusBadRequest, uname+" cannot be empty")
 	}
 
-	u, ok, err := udb.UserDB.LoadUser(uname, true)
+	user, ok, err := u.LoadUser(uname, true)
 	if err != nil || !ok {
 		return c.String(http.StatusBadRequest, "couldn't find user: "+uname)
 	}
 
-	atype, b64 := u.AvatarBase64(false)
+	atype, b64 := user.AvatarBase64(false)
 	if atype == "" || b64 == "" {
 		return c.String(http.StatusNotFound, "avatar is empty")
 	}
@@ -176,12 +177,13 @@ func UserAvatar(c echo.Context) error {
 // @Router /api/admin/onlines [get]
 // @Security ApiKeyAuth
 func ListOnlineUser(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	// --- //
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
-	user, ok, err := udb.UserDB.LoadActiveUser(claims.UName)
+	user, ok, err := u.LoadActiveUser(uname)
 
 	switch {
 	case err != nil:
@@ -200,26 +202,26 @@ func ListOnlineUser(c echo.Context) error {
 		rUname = wc2re(wUname)
 	)
 
-	users, err := udb.UserDB.OnlineUsers()
-	// for _, user := range users {
+	onlines, err := u.OnlineUsers()
+	// for _, user := range onlines {
 	// 	fmt.Println(user)
 	// }
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	FilterFast(&users, func(i int, e string) bool {
-		if len(wUname) > 0 && !rUname.MatchString(e) {
+	FilterFast(&onlines, func(i int, e *u.UserOnline) bool {
+		if len(wUname) > 0 && !rUname.MatchString(e.Uname) {
 			return false
 		}
 		return true
 	})
 
-	return c.JSON(http.StatusOK, users)
+	return c.JSON(http.StatusOK, onlines)
 }
 
 // return uname, set flag, return ok, error
-func switchField(c echo.Context, fn func(uname string, flag bool) (*usr.User, bool, error)) (string, bool, bool, error) {
+func switchField(c echo.Context, fn func(uname string, flag bool) (*u.User, bool, error)) (string, bool, bool, error) {
 	uname := c.FormValue("uname")
 	flagstr := c.FormValue("flag")
 	flag, err := strconv.ParseBool(flagstr)
@@ -245,12 +247,13 @@ func switchField(c echo.Context, fn func(uname string, flag bool) (*usr.User, bo
 // @Router /api/admin/activate [put]
 // @Security ApiKeyAuth
 func ActivateUser(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	// --- //
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
-	user, ok, err := udb.UserDB.LoadActiveUser(claims.UName)
+	user, ok, err := u.LoadActiveUser(uname)
 
 	switch {
 	case err != nil:
@@ -264,7 +267,7 @@ func ActivateUser(c echo.Context) error {
 	}
 	// --- //
 
-	uname, flag, ok, err := switchField(c, udb.UserDB.ActivateUser)
+	uname, flag, ok, err := switchField(c, u.ActivateUser)
 	if err != nil {
 		if uname == "" {
 			return c.String(http.StatusBadRequest, err.Error())
@@ -295,12 +298,13 @@ func ActivateUser(c echo.Context) error {
 // @Router /api/admin/officialize [put]
 // @Security ApiKeyAuth
 func OfficializeUser(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+	)
 
-	// --- //
-	userTkn := c.Get("user").(*jwt.Token)
-	claims := userTkn.Claims.(*usr.UserClaims)
-
-	user, ok, err := udb.UserDB.LoadActiveUser(claims.UName)
+	user, ok, err := u.LoadActiveUser(uname)
 
 	switch {
 	case err != nil:
@@ -314,7 +318,7 @@ func OfficializeUser(c echo.Context) error {
 	}
 	// --- //
 
-	uname, flag, ok, err := switchField(c, udb.UserDB.OfficializeUser)
+	uname, flag, ok, err := switchField(c, u.OfficializeUser)
 	if err != nil {
 		if uname == "" {
 			return c.String(http.StatusBadRequest, err.Error())

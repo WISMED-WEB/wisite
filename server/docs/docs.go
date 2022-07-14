@@ -675,10 +675,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "time period for query, format is 'yyyymm', e.g. '202206'",
+                        "description": "time period for query, format is 'yyyymm', e.g. '202206'. if missing, current yyyymm applies",
                         "name": "period",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
