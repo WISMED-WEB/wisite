@@ -495,6 +495,90 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/post/del/one": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "delete one Post content.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID for deleting",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - delete successfully"
+                    },
+                    "400": {
+                        "description": "Fail - incorrect query param id"
+                    },
+                    "404": {
+                        "description": "Fail - not found"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
+        "/api/post/erase/one": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "erase one Post content permanently.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID for erasing",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - erase successfully"
+                    },
+                    "400": {
+                        "description": "Fail - incorrect query param id"
+                    },
+                    "404": {
+                        "description": "Fail - not found"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
         "/api/post/follower/ids": {
             "get": {
                 "security": [

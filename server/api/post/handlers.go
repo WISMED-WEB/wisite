@@ -43,7 +43,6 @@ func Template(c echo.Context) error {
 				Path: "attached stuff path, which should have been given from 'file upload'",
 			},
 		},
-		Summary: "summarize your topic",
 	})
 }
 
@@ -117,7 +116,9 @@ func Upload(c echo.Context) error {
 				return c.String(http.StatusInternalServerError, err.Error())
 			}
 			if ef == nil {
-				ef = em.NewEventFollow(flwee)
+				if ef, err = em.NewEventFollow(flwee, true); err != nil {
+					return c.String(http.StatusInternalServerError, err.Error())
+				}
 			}
 			if err := ef.AddFollower(evt.ID); err != nil {
 				return c.String(http.StatusInternalServerError, err.Error())
@@ -229,7 +230,7 @@ func GetOne(c echo.Context) error {
 		c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
 	}
 
-	content, err := em.FetchEvent(id)
+	content, err := em.FetchEvent(true, id)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -237,6 +238,62 @@ func GetOne(c echo.Context) error {
 		c.String(http.StatusNotFound, fmt.Sprintf("Post not found @%s", id))
 	}
 	return c.JSON(http.StatusOK, content)
+}
+
+// @Title delete one Post content
+// @Summary delete one Post content.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Param   id   query string true "Post ID for deleting"
+// @Success 200 "OK - delete successfully"
+// @Failure 400 "Fail - incorrect query param id"
+// @Failure 404 "Fail - not found"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/del/one [delete]
+// @Security ApiKeyAuth
+func DelOne(c echo.Context) error {
+	var (
+		id = c.QueryParam("id")
+	)
+	if len(id) == 0 {
+		c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
+	}
+
+	n, err := em.DelEvent(id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return c.String(http.StatusOK, IF(n == 1, fmt.Sprintf("<%s> is deleted", id), fmt.Sprintf("<%s> is not existing, nothing to delete", id)))
+}
+
+// @Title erase one Post content
+// @Summary erase one Post content permanently.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Param   id   query string true "Post ID for erasing"
+// @Success 200 "OK - erase successfully"
+// @Failure 400 "Fail - incorrect query param id"
+// @Failure 404 "Fail - not found"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/erase/one [delete]
+// @Security ApiKeyAuth
+func EraseOne(c echo.Context) error {
+	var (
+		id = c.QueryParam("id")
+	)
+	if len(id) == 0 {
+		c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
+	}
+
+	n, err := em.EraseEvents(id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return c.String(http.StatusOK, IF(n == 1, fmt.Sprintf("<%s> is erased permanently", id), fmt.Sprintf("<%s> is not existing, nothing to erase", id)))
 }
 
 // @Title get own Post id group in a specific period

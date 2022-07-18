@@ -24,7 +24,12 @@ func PostHandler(e *echo.Group) {
 	}
 
 	var mPUT = map[string]echo.HandlerFunc{}
-	var mDELETE = map[string]echo.HandlerFunc{}
+
+	var mDELETE = map[string]echo.HandlerFunc{
+		"/del/one":   post.DelOne,
+		"/erase/one": post.EraseOne,
+	}
+
 	var mPATCH = map[string]echo.HandlerFunc{}
 
 	// ------------------------------------------------------- //

@@ -14,7 +14,6 @@ type Post struct {
 	Category string      `json:"category"`
 	Topic    string      `json:"topic"`
 	Content  []Paragraph `json:"content"`
-	Summary  string      `json:"summary"`
 }
 
 func (m Post) String() string {
@@ -25,6 +24,5 @@ func (m Post) String() string {
 		sb.WriteString(fmt.Sprintf("	Text: %v\n", cont.Text))
 		sb.WriteString(fmt.Sprintf("	Path: %v\n", cont.Path))
 	}
-	sb.WriteString(fmt.Sprintf("Summary: %v\n", m.Summary))
 	return sb.String()
 }

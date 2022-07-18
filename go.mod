@@ -3,7 +3,7 @@ module github.com/wismed-web/wisite-api
 go 1.18
 
 require (
-	github.com/digisan/event-mgr v0.1.7
+	github.com/digisan/event-mgr v0.1.8
 	github.com/digisan/file-mgr v0.2.1
 	github.com/digisan/go-generics v0.2.0
 	github.com/digisan/gotk v0.1.16
@@ -56,7 +56,7 @@ require (
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
-	golang.org/x/sys v0.0.0-20220712014510-0a85c31ab51e // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
 	golang.org/x/tools v0.1.11 // indirect
