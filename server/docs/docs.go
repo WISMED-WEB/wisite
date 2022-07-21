@@ -274,6 +274,28 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/debug/erase/all-post": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Debug"
+                ],
+                "summary": "erase all Post data collected by wisite service (high risk, only for debugging)",
+                "responses": {
+                    "200": {
+                        "description": "OK - delete successfully"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
         "/api/file/fileitems": {
             "get": {
                 "security": [

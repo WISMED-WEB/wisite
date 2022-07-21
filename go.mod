@@ -13,7 +13,7 @@ require (
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/postfinance/single v0.0.2
 	github.com/swaggo/echo-swagger v1.3.3
-	github.com/swaggo/swag v1.8.3
+	github.com/swaggo/swag v1.8.4
 	golang.org/x/net v0.0.0-20220708220712-1185a9018129
 )
 

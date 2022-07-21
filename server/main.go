@@ -6,17 +6,13 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
-	"time"
 
 	fm "github.com/digisan/file-mgr"
 	gio "github.com/digisan/gotk/io"
 	lk "github.com/digisan/logkit"
 	r "github.com/digisan/user-mgr/relation"
-	su "github.com/digisan/user-mgr/sign-up"
 	u "github.com/digisan/user-mgr/user"
-	vf "github.com/digisan/user-mgr/user/valfield"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -66,31 +62,6 @@ func main() {
 		os.RemoveAll(dir)
 		lk.Log("Server Exited Successfully")
 	}()
-
-	// other init actions
-	{
-		// set user db dir, activate ***[UserDB]***
-		u.InitDB("./data/db-user")
-
-		// monitor active users
-		ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
-		monitorUser(ctx, 3600*time.Second) // heartbeats checker timeout
-
-		// set user validator
-		su.SetValidator(map[string]func(o, v any) u.ValRst{
-			vf.AvatarType: func(o, v any) u.ValRst {
-				ok := v == "" || strings.HasPrefix(v.(string), "image/")
-				return u.NewValRst(ok, "avatarType must have prefix - 'image/'")
-			},
-		})
-
-		// set user file space & file item db space
-		fm.InitFileMgr("./data/")
-
-		// set user relation db
-		r.InitDB("./data/db-relation")
-	}
 
 	// start Service
 	done := make(chan string)
@@ -157,6 +128,7 @@ func echoHost(done chan<- string) {
 		{
 			api.SignHandler(e.Group("/api/sign"))
 			api.SystemHandler(e.Group("/api/system"))
+			api.DebugHandler(e.Group("/api/debug"))
 		}
 
 		// other groups with JWT

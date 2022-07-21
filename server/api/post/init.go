@@ -7,12 +7,12 @@ import (
 )
 
 var (
-	ctx      context.Context
-	CancelES context.CancelFunc
+	ctx    context.Context
+	Cancel context.CancelFunc
 )
 
 func init() {
-	ctx, CancelES = context.WithCancel(context.Background())
+	ctx, Cancel = context.WithCancel(context.Background())
 	em.InitDB("./data")
 	em.InitEventSpan("MINUTE", ctx)
 }
