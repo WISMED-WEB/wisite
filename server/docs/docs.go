@@ -826,6 +826,78 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/post/thumbsup/status/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "get current login user's thumbsup status for a post.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID (event id) for checking thumbs-up status",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - get thumbs-up status successfully"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
+        "/api/post/thumbsup/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "summary": "add or remove a personal thumbsup for a post.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID (event id) for adding or removing thumbs-up",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - added or removed thumb successfully"
+                    },
+                    "500": {
+                        "description": "Fail - internal error"
+                    }
+                }
+            }
+        },
         "/api/post/upload": {
             "post": {
                 "security": [

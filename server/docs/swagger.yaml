@@ -511,6 +511,50 @@ paths:
       summary: get Post template for dev reference.
       tags:
       - Post
+  /api/post/thumbsup/{id}:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Post ID (event id) for adding or removing thumbs-up
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - added or removed thumb successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: add or remove a personal thumbsup for a post.
+      tags:
+      - Post
+  /api/post/thumbsup/status/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Post ID (event id) for checking thumbs-up status
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get thumbs-up status successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get current login user's thumbsup status for a post.
+      tags:
+      - Post
   /api/post/upload:
     post:
       consumes:

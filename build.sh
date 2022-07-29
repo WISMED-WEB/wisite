@@ -53,12 +53,12 @@ echo "${G}server(linux64) built${W}"
 
 #######################################################################################
 
-if [[ $1 == 'release' ]]
+if [[ $1 == 'release' || $1 == 'rel' ]]
 then
 
     RELEASE_NAME=wisite-api\($TM\).tar.gz 
     cd ./build
     echo $RELEASE_NAME
-    tar -czvf ./$RELEASE_NAME --exclude='./linux64/data' --exclude='./win64/data'  ./linux64 # ./win64 # ./mac ./linuxarm
+    tar -czvf ./$RELEASE_NAME --exclude='./linux64/data' --exclude='./linux64/temp_test.go' --exclude='./win64/data'  ./linux64 # ./win64 ./mac ./linuxarm
 
 fi

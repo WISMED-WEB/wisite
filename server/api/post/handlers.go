@@ -12,7 +12,6 @@ import (
 	em "github.com/digisan/event-mgr"
 	. "github.com/digisan/go-generics/v2"
 	fd "github.com/digisan/gotk/filedir"
-	gio "github.com/digisan/gotk/io"
 	lk "github.com/digisan/logkit"
 	u "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
@@ -107,7 +106,7 @@ func Upload(c echo.Context) error {
 		}
 
 		// DEBUG
-		gio.MustAppendFile("./debug.txt", []byte(evt.ID), true)
+		// gio.MustAppendFile("./debug.txt", []byte(evt.ID), true)
 
 		// FOLLOWING...
 		if len(flwee) > 0 {
@@ -361,4 +360,72 @@ func Followers(c echo.Context) error {
 	// 	return c.JSON(http.StatusNotFound, flwers)
 	// }
 	return c.JSON(http.StatusOK, flwers)
+}
+
+// @Title add or remove a thumbsup for a post
+// @Summary add or remove a personal thumbsup for a post.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Param   id path string true "Post ID (event id) for adding or removing thumbs-up"
+// @Success 200 "OK - added or removed thumb successfully"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/thumbsup/{id} [patch]
+// @Security ApiKeyAuth
+func ThumbsUp(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		id      = c.Param("id")
+	)
+	p, err := em.NewEventParticipate(id, "ThumbsUp", true)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	has, err := p.TogglePtp(uname)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, struct {
+		ThumbsUp bool
+		Count    int
+	}{
+		has, len(p.Ptps),
+	})
+}
+
+// @Title get current user's thumbsup status for a post
+// @Summary get current login user's thumbsup status for a post.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Param   id path string true "Post ID (event id) for checking thumbs-up status"
+// @Success 200 "OK - get thumbs-up status successfully"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/thumbsup/status/{id} [get]
+// @Security ApiKeyAuth
+func ThumbsUpStatus(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		id      = c.Param("id")
+	)
+	p, err := em.NewEventParticipate(id, "ThumbsUp", true)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	has, err := p.HasPtp(uname)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, struct {
+		ThumbsUp bool
+		Count    int
+	}{
+		has, len(p.Ptps),
+	})
 }

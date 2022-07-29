@@ -157,7 +157,7 @@ func LogIn(c echo.Context) error {
 		Admin:   u.Admin{},
 	}
 
-	if err := si.CheckUserExists(user); err != nil {
+	if err := si.CheckUserExisting(user); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 

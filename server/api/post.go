@@ -11,12 +11,13 @@ import (
 func PostHandler(e *echo.Group) {
 
 	var mGET = map[string]echo.HandlerFunc{
-		"/template":     post.Template,
-		"/ids":          post.IdBatch,
-		"/ids-all":      post.IdAll,
-		"/one":          post.GetOne,
-		"/own/ids":      post.IdOwn,
-		"/follower/ids": post.Followers,
+		"/template":            post.Template,
+		"/ids":                 post.IdBatch,
+		"/ids-all":             post.IdAll,
+		"/one":                 post.GetOne,
+		"/own/ids":             post.IdOwn,
+		"/follower/ids":        post.Followers,
+		"/thumbsup/status/:id": post.ThumbsUpStatus,
 	}
 
 	var mPOST = map[string]echo.HandlerFunc{
@@ -30,7 +31,9 @@ func PostHandler(e *echo.Group) {
 		"/erase/one": post.EraseOne,
 	}
 
-	var mPATCH = map[string]echo.HandlerFunc{}
+	var mPATCH = map[string]echo.HandlerFunc{
+		"/thumbsup/:id": post.ThumbsUp,
+	}
 
 	// ------------------------------------------------------- //
 
