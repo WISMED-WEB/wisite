@@ -3,7 +3,7 @@ module github.com/wismed-web/wisite-api
 go 1.19
 
 require (
-	github.com/digisan/event-mgr v0.1.11
+	github.com/digisan/event-mgr v0.1.12
 	github.com/digisan/file-mgr v0.2.4
 	github.com/digisan/go-generics v0.2.2
 	github.com/digisan/gotk v0.1.19
@@ -30,7 +30,7 @@ require (
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/spec v0.20.6 // indirect
-	github.com/go-openapi/swag v0.21.1 // indirect
+	github.com/go-openapi/swag v0.22.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -66,4 +66,5 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gopkg.in/mail.v2 v2.3.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

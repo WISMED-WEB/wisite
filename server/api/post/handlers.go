@@ -99,7 +99,7 @@ func Upload(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	evt := em.NewEvent("", uname, "Post", string(data))
+	evt := em.NewEvent("", uname, "Post", string(data), flwee)
 	if len(evt.ID) > 0 {
 		if err = em.AddEvent(evt); err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
