@@ -10,6 +10,8 @@ import (
 	"time"
 
 	em "github.com/digisan/event-mgr"
+	fm "github.com/digisan/file-mgr"
+	"github.com/digisan/file-mgr/fdb"
 	. "github.com/digisan/go-generics/v2"
 	fd "github.com/digisan/gotk/filedir"
 	lk "github.com/digisan/logkit"
@@ -95,8 +97,7 @@ func Upload(c echo.Context) error {
 			paths = append(paths, path)
 		}
 	}
-	ok, epath := fd.AllExistAsWhole(paths...)
-	if !ok {
+	if ok, epath := fd.AllExistAsWhole(paths...); !ok {
 		return c.String(http.StatusBadRequest, fmt.Sprintf("'%s' is invalid storage at server", filepath.Base(epath)))
 	}
 
@@ -135,7 +136,7 @@ func Upload(c echo.Context) error {
 
 	// lk.Log("---> %s", em.CurrIDs())
 
-	return c.JSON(http.StatusOK, evt)
+	return c.JSON(http.StatusOK, evt.ID)
 }
 
 // @Title get a batch of Post id group
@@ -230,21 +231,67 @@ func IdAll(c echo.Context) error {
 // @Security ApiKeyAuth
 func GetOne(c echo.Context) error {
 	var (
-		id = c.QueryParam("id")
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		id      = c.QueryParam("id")
 	)
 
 	if len(id) == 0 {
-		c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
+		return c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
 	}
 
-	content, err := em.FetchEvent(true, id)
+	event, err := em.FetchEvent(true, id)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	if content == nil {
-		c.String(http.StatusNotFound, fmt.Sprintf("Post not found @%s", id))
+	if event == nil {
+		return c.String(http.StatusNotFound, fmt.Sprintf("Post not found @%s", id))
 	}
-	return c.JSON(http.StatusOK, content)
+	if len(event.RawJSON) == 0 {
+		return c.String(http.StatusOK, fmt.Sprintf("Post has no content @%s", id))
+	}
+
+	////////////////////////////////////
+
+	// set up event content, i.e. Post
+	P := &Post{}
+	if err := json.Unmarshal([]byte(event.RawJSON), P); err != nil {
+		return c.String(http.StatusInternalServerError, "convert RawJSON to [Post] Unmarshal error")
+	}
+
+	heights := []int{}
+	for i, p := range P.Content {
+		fpath := filepath.Join("data", "user-space", uname, p.Atch.Path)
+		P.Content[i].Atch.Type = fdb.GetFileType(fpath)
+
+		sz := ""
+		switch P.Content[i].Atch.Type {
+		case "image":
+			sz, err = fm.GetImageSize(fpath)
+		case "video":
+			sz, err = fm.GetVideoSize(fpath)
+		}
+		if err != nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+		P.Content[i].Atch.Size = sz
+
+		// for getting VFX
+		w, h := 0, 0
+		fmt.Sscanf(sz, "%d,%d", &w, &h)
+		heights = append(heights, h)
+	}
+
+	// set up Post VFX
+	//
+	if maxh := Max(heights...); maxh > 480 {
+		P.VFX.Height = maxh
+	}
+
+	////////////////////////////////////
+
+	return c.JSON(http.StatusOK, P)
 }
 
 // @Title delete one Post content
@@ -265,7 +312,7 @@ func DelOne(c echo.Context) error {
 		id = c.QueryParam("id")
 	)
 	if len(id) == 0 {
-		c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
+		return c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
 	}
 
 	n, err := em.DelEvent(id)
@@ -293,7 +340,7 @@ func EraseOne(c echo.Context) error {
 		id = c.QueryParam("id")
 	)
 	if len(id) == 0 {
-		c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
+		return c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
 	}
 
 	n, err := em.EraseEvents(id)

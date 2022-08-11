@@ -36,9 +36,9 @@ func (m Post) String() string {
 	sb.WriteString(fmt.Sprintf("VFX.Height: %v\n", m.VFX.Height))
 	for _, cont := range m.Content {
 		sb.WriteString(fmt.Sprintf("	Text: %v\n", cont.Text))
-		sb.WriteString(fmt.Sprintf("	Attachment Path: %v\n", cont.Atch.Path))
-		sb.WriteString(fmt.Sprintf("	Attachment Type: %v\n", cont.Atch.Type))
-		sb.WriteString(fmt.Sprintf("	Attachment Size: %v\n", cont.Atch.Size))
+		sb.WriteString(fmt.Sprintf("	Attachment.Path: %v\n", cont.Atch.Path))
+		sb.WriteString(fmt.Sprintf("	Attachment.Type: %v\n", cont.Atch.Type))
+		sb.WriteString(fmt.Sprintf("	Attachment.Size: %v\n", cont.Atch.Size))
 	}
 	return sb.String()
 }

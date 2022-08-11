@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/digisan/event-mgr v0.1.12
-	github.com/digisan/file-mgr v0.2.6
+	github.com/digisan/file-mgr v0.2.7
 	github.com/digisan/go-generics v0.2.2
 	github.com/digisan/gotk v0.1.19
 	github.com/digisan/logkit v0.1.0
