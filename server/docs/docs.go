@@ -1428,6 +1428,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "real name",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
                         "description": "phone number",
                         "name": "phone",
                         "in": "formData"

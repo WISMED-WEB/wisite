@@ -889,6 +889,10 @@ paths:
       consumes:
       - multipart/form-data
       parameters:
+      - description: real name
+        in: formData
+        name: name
+        type: string
       - description: phone number
         in: formData
         name: phone

@@ -163,14 +163,30 @@ func LogIn(c echo.Context) error {
 		Admin:   u.Admin{},
 	}
 
+AGAIN:
+
 	if err := si.CheckUserExisting(user); err != nil {
 
 		///////////////////////////////////////
 		// external user checking
-		// {
-		// 	user.UName = fmt.Sprintf("%s%s%s", uname, extSep, vCode)
-		// 	user.Email = fmt.Sprintf("%s@%s", uname, vEmail)
-		// }
+		{
+			// external v-site check
+			if ok, err := vUserLoginCheck(uname, pwd); err == nil && ok {
+				// external user passed in v-site
+				if u := validateSavedExtUser(uname, pwd); u != nil {
+					// external user already exists, u.uname is like "13888888888@@@V"
+					user = u
+					goto AGAIN
+				}
+				// if doesn't exist, create a new external user, u.uname is like "13888888888@@@V"
+				u, err := createExtUser(uname, pwd)
+				if err != nil {
+					return c.String(http.StatusInternalServerError, "ERR: creating external user, "+err.Error())
+				}
+				user = u
+				goto AGAIN
+			}
+		}
 		///////////////////////////////////////
 
 		return c.String(http.StatusBadRequest, err.Error())

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	lk "github.com/digisan/logkit"
+	si "github.com/digisan/user-mgr/sign-in"
 	su "github.com/digisan/user-mgr/sign-up"
 	u "github.com/digisan/user-mgr/user"
 )
@@ -27,8 +28,8 @@ const (
 	apiVUserCanLoginToken = `N39UNuYt3&GEfYS*uxYp7mti1Pv^$ISA`
 )
 
-func createExtUser(userId, pwd string) (*u.User, error) {
-	user := &u.User{
+func newExtUser(userId, pwd string) *u.User {
+	return &u.User{
 		Core: u.Core{
 			UName:    fmt.Sprintf("%s%s%s", userId, extSep, vCode),
 			Email:    fmt.Sprintf("%s@%s", userId, vEmail),
@@ -62,9 +63,18 @@ func createExtUser(userId, pwd string) (*u.User, error) {
 			Tags:      "",
 		},
 	}
+}
 
-	// store into db
+func createExtUser(userId, pwd string) (*u.User, error) {
+	user := newExtUser(userId, pwd)
 	return user, su.Store(user)
+}
+
+func validateSavedExtUser(userId, pwd string) *u.User {
+	if user := newExtUser(userId, pwd); si.CheckUserExisting(user) == nil {
+		return user
+	}
+	return nil
 }
 
 type ResultExt struct {

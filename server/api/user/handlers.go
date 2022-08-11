@@ -85,6 +85,7 @@ func Profile(c echo.Context) error {
 // @Tags    User
 // @Accept  multipart/form-data
 // @Produce json
+// @Param   name      formData   string  false  "real name"
 // @Param   phone     formData   string  false  "phone number"
 // @Param   addr      formData   string  false  "address"
 // @Param   city      formData   string  false  "city"
@@ -115,6 +116,7 @@ func SetProfile(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "couldn't find user: "+uname)
 	}
 
+	user.Name = c.FormValue("name")
 	user.Phone = c.FormValue("phone")
 	user.Addr = c.FormValue("addr")
 	user.City = c.FormValue("city")
@@ -145,7 +147,7 @@ func SetProfile(c echo.Context) error {
 
 VALIDATE:
 	// validate
-	if err := su.ChkInput(user, vf.UName, vf.EmailDB, vf.SysRole, vf.MemLevel, vf.MemExpire, vf.Tags); err != nil {
+	if err := su.ChkInput(user, vf.Password, vf.UName, vf.EmailDB, vf.SysRole, vf.MemLevel, vf.MemExpire, vf.Tags); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
@@ -190,38 +192,3 @@ func Avatar(c echo.Context) error {
 		Src string `json:"src"`
 	}{Src: src})
 }
-
-// var u = &u.User{
-// 	Core: u.Core{
-// 		UName:    "",
-// 		Email:    "",
-// 		Password: "",
-// 	},
-// 	Profile: u.Profile{
-// 		Name:           "",
-// 		Phone:          "",
-// 		Country:        "",
-// 		City:           "",
-// 		Addr:           "",
-// 		PersonalIDType: "",
-// 		PersonalID:     "",
-// 		Gender:         "",
-// 		DOB:            "",
-// 		Position:       "",
-// 		Title:          "",
-// 		Employer:       "",
-// 		Bio:            "",
-// 		AvatarType:     "",
-// 		Avatar:         []byte{},
-// 	},
-// 	Admin: u.Admin{
-// 		Regtime:   time.Now().Truncate(time.Second),
-// 		Active:    true,
-// 		Certified: false,
-// 		Official:  false,
-// 		SysRole:   "",
-// 		MemLevel:  "",
-// 		MemExpire: time.Time{},
-// 		Tags:      "",
-// 	},
-// }
