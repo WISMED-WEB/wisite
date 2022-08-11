@@ -1,6 +1,7 @@
 package file
 
 import (
+	"fmt"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -122,6 +123,8 @@ func UploadFormFile(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
+
+	fmt.Println("note ---> ", note)
 
 	path, err := us.(*fm.UserSpace).SaveFormFile(file, note, group0, group1, group2)
 	if err != nil {

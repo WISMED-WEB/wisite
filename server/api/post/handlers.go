@@ -34,12 +34,20 @@ import (
 // @Security ApiKeyAuth
 func Template(c echo.Context) error {
 	return c.JSON(http.StatusOK, Post{
-		Category: "post category",
-		Topic:    "post topic",
+		Category: "Post category",
+		Topic:    "Post topic",
+		Keywords: "keywords for this Post",
+		VFX: VisualEffects{
+			Height: 480,
+		},
 		Content: []Paragraph{
 			{
-				Text: "some words for this attach",
-				Path: "attached stuff path, which should have been given from 'file upload'",
+				Text: "some words for this paragraph",
+				Atch: Attachment{
+					Path: "attachment path, which should have been given from 'file upload'",
+					Type: "attachment file type, e.g. image, video, audio, etc",
+					Size: "if attachment file type is image or video, return its size as format 'width,height'",
+				},
 			},
 		},
 	})
@@ -75,15 +83,15 @@ func Upload(c echo.Context) error {
 	// get rid of empty paragraph
 	//
 	FilterFast(&P.Content, func(i int, e Paragraph) bool {
-		return len(e.Text) > 0 || len(e.Path) > 0
+		return len(e.Text) > 0 || len(e.Atch.Path) > 0
 	})
 
 	// validate each path from P
 	//
 	paths := []string{}
 	for _, item := range P.Content {
-		if len(item.Path) > 0 {
-			path := filepath.Join("data/user-space", uname, item.Path)
+		if len(item.Atch.Path) > 0 {
+			path := filepath.Join("data/user-space", uname, item.Atch.Path)
 			paths = append(paths, path)
 		}
 	}

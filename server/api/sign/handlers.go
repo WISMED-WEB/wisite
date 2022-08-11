@@ -145,19 +145,34 @@ func VerifyEmail(c echo.Context) error {
 // @Router /api/sign/in [post]
 func LogIn(c echo.Context) error {
 
-	lk.Debug("login: [%v] [%v]", c.FormValue("uname"), c.FormValue("pwd"))
+	var (
+		uname = c.FormValue("uname")
+		pwd   = c.FormValue("pwd")
+		email = c.FormValue("uname")
+	)
+
+	lk.Debug("login: [%v] [%v]", uname, pwd)
 
 	user := &u.User{
 		Core: u.Core{
-			UName:    c.FormValue("uname"),
-			Password: c.FormValue("pwd"),
-			Email:    c.FormValue("uname"),
+			UName:    uname,
+			Password: pwd,
+			Email:    email,
 		},
 		Profile: u.Profile{},
 		Admin:   u.Admin{},
 	}
 
 	if err := si.CheckUserExisting(user); err != nil {
+
+		///////////////////////////////////////
+		// external user checking
+		// {
+		// 	user.UName = fmt.Sprintf("%s%s%s", uname, extSep, vCode)
+		// 	user.Email = fmt.Sprintf("%s@%s", uname, vEmail)
+		// }
+		///////////////////////////////////////
+
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
