@@ -170,15 +170,15 @@ AGAIN:
 		///////////////////////////////////////
 		// external user checking
 		{
-			// external v-site check
+			// try v-site existing user check. if external user already exists, wrap user & login again
+			if u := validateSavedExtUser(uname, pwd); u != nil {
+				user = u
+				goto AGAIN
+			}
+
+			// external v-site check via remote api
 			if ok, err := vUserLoginCheck(uname, pwd); err == nil && ok {
-				// external user passed in v-site
-				if u := validateSavedExtUser(uname, pwd); u != nil {
-					// external user already exists, u.uname is like "13888888888@@@V"
-					user = u
-					goto AGAIN
-				}
-				// if doesn't exist, create a new external user, u.uname is like "13888888888@@@V"
+				// if can login v-site, but doesn't exist, create a new external user, u.uname is like "13888888888@@@V"
 				u, err := createExtUser(uname, pwd)
 				if err != nil {
 					return c.String(http.StatusInternalServerError, "ERR: creating external user, "+err.Error())
