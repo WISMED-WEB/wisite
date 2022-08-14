@@ -747,7 +747,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK - get successfully"
+                        "description": "OK - get Post event successfully"
                     },
                     "400": {
                         "description": "Fail - incorrect query param id"

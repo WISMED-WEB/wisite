@@ -14,7 +14,7 @@ require (
 	github.com/postfinance/single v0.0.2
 	github.com/swaggo/echo-swagger v1.3.4
 	github.com/swaggo/swag v1.8.4
-	golang.org/x/net v0.0.0-20220811182439-13a9a731de15
+	golang.org/x/net v0.0.0-20220812174116-3211cb980234
 )
 
 require (

@@ -223,7 +223,7 @@ func IdAll(c echo.Context) error {
 // @Accept  json
 // @Produce json
 // @Param   id   query string true "Post ID for its content"
-// @Success 200 "OK - get successfully"
+// @Success 200 "OK - get Post event successfully"
 // @Failure 400 "Fail - incorrect query param id"
 // @Failure 404 "Fail - not found"
 // @Failure 500 "Fail - internal error"
@@ -291,7 +291,13 @@ func GetOne(c echo.Context) error {
 
 	////////////////////////////////////
 
-	return c.JSON(http.StatusOK, P)
+	PData, err := json.Marshal(P)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	event.RawJSON = string(PData)
+	return c.JSON(http.StatusOK, event)
 }
 
 // @Title delete one Post content
