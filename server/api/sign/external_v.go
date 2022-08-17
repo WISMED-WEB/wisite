@@ -58,7 +58,7 @@ func newExtUser(userId, pwd string) *u.User {
 			Certified: false,
 			Official:  false,
 			SysRole:   "",
-			MemLevel:  0,
+			MemLevel:  3,
 			MemExpire: time.Time{},
 			Tags:      "",
 		},

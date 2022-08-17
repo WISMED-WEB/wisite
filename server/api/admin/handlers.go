@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	. "github.com/digisan/go-generics/v2"
+	lk "github.com/digisan/logkit"
 	u "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -44,17 +45,32 @@ func Menu(c echo.Context) error {
 	var menu []string
 
 	switch user.MemLevel {
-	case 0:
+	case 0: // unsubscribe
 		menu = []string{"whats-new", "topic", "task"}
-	case 1:
+	case 1: // subscribe
 		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote"}
-	case 2:
+	case 2: // advanced subscribe
 		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote", "audit"}
-	case 3:
+	case 3: // admin
 		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote", "audit", "admin"}
 	default:
+		lk.Warn("MemLevel is invalid @ [%v], only 0-3 is valid", user.MemLevel)
 		menu = []string{}
 	}
+
+	// next version menu ......
+	// switch user.MemLevel {
+	// case 0:
+	// 	menu = []string{"whats-new", "topic", "my-sharing", "my-task"}
+	// case 1:
+	// 	menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "my-task"}
+	// case 2:
+	// 	menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "my-task"}
+	// case 3:
+	// 	menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "my-task", "admin"}
+	// default:
+	// 	menu = []string{}
+	// }
 
 	menu = append(menu, "profile", "wisite-green")
 

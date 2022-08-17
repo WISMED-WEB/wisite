@@ -3,12 +3,12 @@ module github.com/wismed-web/wisite-api
 go 1.19
 
 require (
-	github.com/digisan/event-mgr v0.1.12
+	github.com/digisan/event-mgr v0.1.14
 	github.com/digisan/file-mgr v0.2.7
 	github.com/digisan/go-generics v0.2.2
 	github.com/digisan/gotk v0.1.19
 	github.com/digisan/logkit v0.1.0
-	github.com/digisan/user-mgr v0.3.4
+	github.com/digisan/user-mgr v0.3.5
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/labstack/echo/v4 v4.8.0
 	github.com/postfinance/single v0.0.2
@@ -29,8 +29,8 @@ require (
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
-	github.com/go-openapi/spec v0.20.6 // indirect
-	github.com/go-openapi/swag v0.22.0 // indirect
+	github.com/go-openapi/spec v0.20.7 // indirect
+	github.com/go-openapi/swag v0.22.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -48,8 +48,8 @@ require (
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-colorable v0.1.12 // indirect
-	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

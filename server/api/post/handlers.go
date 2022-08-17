@@ -237,6 +237,8 @@ func GetOne(c echo.Context) error {
 		id      = c.QueryParam("id")
 	)
 
+	lk.Log("Into GetOne, event id is %v", id)
+
 	if len(id) == 0 {
 		return c.String(http.StatusBadRequest, "'id' is invalid (cannot be empty)")
 	}
@@ -257,6 +259,7 @@ func GetOne(c echo.Context) error {
 	// set up event content, i.e. Post
 	P := &Post{}
 	if err := json.Unmarshal([]byte(event.RawJSON), P); err != nil {
+		lk.Warn("Unmarshal Post Error, event is %v", event)
 		return c.String(http.StatusInternalServerError, "convert RawJSON to [Post] Unmarshal error")
 	}
 
@@ -441,11 +444,15 @@ func ThumbsUp(c echo.Context) error {
 		uname   = claims.UName
 		id      = c.Param("id")
 	)
-	p, err := em.NewEventParticipate(id, "ThumbsUp", true)
+	ep, err := em.NewEventParticipate(id, true)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	has, err := p.TogglePtp(uname)
+	has, err := ep.TogglePtp("ThumbsUp", uname)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	ptps, err := ep.Ptps("ThumbsUp")
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -453,7 +460,7 @@ func ThumbsUp(c echo.Context) error {
 		ThumbsUp bool
 		Count    int
 	}{
-		has, len(p.Ptps),
+		has, len(ptps),
 	})
 }
 
@@ -475,11 +482,15 @@ func ThumbsUpStatus(c echo.Context) error {
 		uname   = claims.UName
 		id      = c.Param("id")
 	)
-	p, err := em.NewEventParticipate(id, "ThumbsUp", true)
+	ep, err := em.NewEventParticipate(id, true)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	has, err := p.HasPtp(uname)
+	has, err := ep.HasPtp("ThumbsUp", uname)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	ptps, err := ep.Ptps("ThumbsUp")
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -487,6 +498,6 @@ func ThumbsUpStatus(c echo.Context) error {
 		ThumbsUp bool
 		Count    int
 	}{
-		has, len(p.Ptps),
+		has, len(ptps),
 	})
 }
