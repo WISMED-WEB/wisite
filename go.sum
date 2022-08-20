@@ -30,8 +30,8 @@ github.com/dgraph-io/ristretto v0.1.0/go.mod h1:fux0lOrBhrVCJd3lcTHsIJhq1T2rokOu
 github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2/go.mod h1:SqUrOPUnsFjfmXRMNPybcSiG0BgUW2AuFH8PAnS2iTw=
 github.com/digisan/db-helper v0.0.6 h1:3mICMGzMv+m6aRgPcEGUNbQ1dLsgzfxTl8EPBO6L2PI=
 github.com/digisan/db-helper v0.0.6/go.mod h1:D3NpW4QjbgMrHBWqhQecV+jWh/hKdCgKG6uaWQfQ4rY=
-github.com/digisan/event-mgr v0.1.14 h1:GdyIYTkVyg84nbBsLOGPIe9DemwTWMAQNT59jprMIk4=
-github.com/digisan/event-mgr v0.1.14/go.mod h1:m9x1RFJpcSD7sme7eYKLZpxTswcJuigplZLyy+J9m+E=
+github.com/digisan/event-mgr v0.1.15 h1:efAIQgy6A4JbFGGFHdQKRKbj8r4C/gisHIIdG8JB2Fw=
+github.com/digisan/event-mgr v0.1.15/go.mod h1:m9x1RFJpcSD7sme7eYKLZpxTswcJuigplZLyy+J9m+E=
 github.com/digisan/file-mgr v0.2.8 h1:igCH3Z0GIgI85ge2pedRoaIJByFgGL6yL4EJe8ccYLE=
 github.com/digisan/file-mgr v0.2.8/go.mod h1:TXU34M54M0BKA8Qphu0FM3NJj6Lru1MiAZg7bne/kJk=
 github.com/digisan/go-generics v0.2.2 h1:5ec8h+H6YVCdzxra5VDm3SHdgcdtRwWgFQrfF7QsCK8=

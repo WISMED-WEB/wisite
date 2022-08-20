@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// wildcard to regular expression
 func wc2re(wc string) *regexp.Regexp {
 	if len(wc) == 0 {
 		return nil
