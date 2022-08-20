@@ -78,9 +78,10 @@ func Upload(c echo.Context) error {
 
 	P := new(Post)
 	if err := c.Bind(P); err != nil {
+		lk.Warn("incorrect Uploaded Post format: " + err.Error())
 		return c.String(http.StatusBadRequest, "incorrect Post format: "+err.Error())
 	}
-	// lk.Log("---> %s -- %v", uname, P)
+	lk.Log("Uploading ---> [%s] --- %v", uname, P)
 
 	// get rid of empty paragraph
 	//
@@ -99,6 +100,15 @@ func Upload(c echo.Context) error {
 	}
 	if ok, epath := fd.AllExistAsWhole(paths...); !ok {
 		return c.String(http.StatusBadRequest, fmt.Sprintf("'%s' is invalid storage at server", filepath.Base(epath)))
+	}
+
+	// set P Category
+	//
+	switch {
+	case len(flwee) > 0:
+		P.Category = "comment"
+	default:
+		P.Category = "post"
 	}
 
 	// save P as JSON for event
@@ -231,10 +241,7 @@ func IdAll(c echo.Context) error {
 // @Security ApiKeyAuth
 func GetOne(c echo.Context) error {
 	var (
-		userTkn = c.Get("user").(*jwt.Token)
-		claims  = userTkn.Claims.(*u.UserClaims)
-		uname   = claims.UName
-		id      = c.QueryParam("id")
+		id = c.QueryParam("id")
 	)
 
 	lk.Log("Into GetOne, event id is %v", id)
@@ -265,19 +272,32 @@ func GetOne(c echo.Context) error {
 
 	heights := []int{}
 	for i, p := range P.Content {
-		fpath := filepath.Join("data", "user-space", uname, p.Atch.Path)
-		P.Content[i].Atch.Type = fdb.GetFileType(fpath)
+
+		// originally, path start with yyyy-mm
+		path := p.Atch.Path
+
+		// 1) update path for remote access
+		P.Content[i].Atch.Path = filepath.Join(event.Owner, path)
+
+		// 2) update type
+		fpath := filepath.Join("data", "user-space", event.Owner, path)
+		ftype := fdb.GetFileType(fpath)
+		P.Content[i].Atch.Type = ftype
 
 		sz := ""
-		switch P.Content[i].Atch.Type {
+		switch ftype {
 		case "image":
 			sz, err = fm.GetImageSize(fpath)
 		case "video":
 			sz, err = fm.GetVideoSize(fpath)
+		default:
+			// no need to get area size
 		}
-		if err != nil {
+		if In(ftype, "image", "video") && err != nil {
+			lk.Warn("get media area size error %v @ %s @ %s", err, ftype, fpath)
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
+		// 3) update area size
 		P.Content[i].Atch.Size = sz
 
 		// for getting VFX
@@ -288,6 +308,7 @@ func GetOne(c echo.Context) error {
 
 	// set up Post VFX
 	//
+	P.VFX.Height = 480
 	if maxh := Max(heights...); maxh > 480 {
 		P.VFX.Height = maxh
 	}
