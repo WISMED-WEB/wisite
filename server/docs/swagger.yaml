@@ -320,6 +320,71 @@ paths:
       summary: upload file action via form file input.
       tags:
       - File
+  /api/post/bookmark/{id}:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Post ID (event id) for toggling a bookmark
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - toggled bookmark successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: add or remove a personal bookmark for a post.
+      tags:
+      - Post
+  /api/post/bookmark/bookmarked:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: order[desc asc] to get Post ids ordered by event time
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get all bookmarked Post ids.
+      tags:
+      - Post
+  /api/post/bookmark/status/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Post ID (event id) for checking bookmark status
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get bookmark status successfully
+        "500":
+          description: Fail - internal error
+      security:
+      - ApiKeyAuth: []
+      summary: get current login user's bookmark status for a post.
+      tags:
+      - Post
   /api/post/del/one:
     delete:
       consumes:

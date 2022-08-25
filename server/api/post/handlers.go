@@ -393,7 +393,7 @@ func EraseOne(c echo.Context) error {
 // @Failure 500 "Fail - internal error"
 // @Router /api/post/own/ids [get]
 // @Security ApiKeyAuth
-func IdOwn(c echo.Context) error {
+func OwnPosts(c echo.Context) error {
 	var (
 		userTkn = c.Get("user").(*jwt.Token)
 		claims  = userTkn.Claims.(*u.UserClaims)
@@ -418,6 +418,85 @@ func IdOwn(c echo.Context) error {
 	// 	return c.JSON(http.StatusNotFound, ids)
 	// }
 	return c.JSON(http.StatusOK, ids)
+}
+
+// @Title toggle a bookmark for a post
+// @Summary add or remove a personal bookmark for a post.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Param   id path string true "Post ID (event id) for toggling a bookmark"
+// @Success 200 "OK - toggled bookmark successfully"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/bookmark/{id} [patch]
+// @Security ApiKeyAuth
+func Bookmark(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		id      = c.Param("id")
+	)
+	bm, err := em.NewBookmark(uname, true)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	has, err := bm.ToggleEvent(id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, has)
+}
+
+// @Title get current user's bookmark status for a post
+// @Summary get current login user's bookmark status for a post.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Param   id path string true "Post ID (event id) for checking bookmark status"
+// @Success 200 "OK - get bookmark status successfully"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/bookmark/status/{id} [get]
+// @Security ApiKeyAuth
+func BookmarkStatus(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		id      = c.Param("id")
+	)
+	bm, err := em.NewBookmark(uname, true)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, bm.HasEvent(id))
+}
+
+// @Title get bookmarked Posts
+// @Summary get all bookmarked Post ids.
+// @Description
+// @Tags    Post
+// @Accept  json
+// @Produce json
+// @Param   order query string false "order[desc asc] to get Post ids ordered by event time"
+// @Success 200 "OK - get successfully"
+// @Failure 500 "Fail - internal error"
+// @Router /api/post/bookmark/bookmarked [get]
+// @Security ApiKeyAuth
+func BookmarkedPosts(c echo.Context) error {
+	var (
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		order   = c.QueryParam("order")
+	)
+	bm, err := em.NewBookmark(uname, true)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, bm.Bookmarks(order))
 }
 
 // @Title get a Post follower-Post ids
@@ -507,10 +586,7 @@ func ThumbsUpStatus(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	has, err := ep.HasPtp("ThumbsUp", uname)
-	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
-	}
+	has := ep.HasPtp("ThumbsUp", uname)
 	ptps, err := ep.Ptps("ThumbsUp")
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())

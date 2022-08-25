@@ -15,9 +15,11 @@ func PostHandler(e *echo.Group) {
 		"/ids":                 post.IdBatch,
 		"/ids-all":             post.IdAll,
 		"/one":                 post.GetOne,
-		"/own/ids":             post.IdOwn,
+		"/own/ids":             post.OwnPosts,
 		"/follower/ids":        post.Followers,
 		"/thumbsup/status/:id": post.ThumbsUpStatus,
+		"/bookmark/status/:id": post.BookmarkStatus,
+		"/bookmark/bookmarked": post.BookmarkedPosts,
 	}
 
 	var mPOST = map[string]echo.HandlerFunc{
@@ -33,6 +35,7 @@ func PostHandler(e *echo.Group) {
 
 	var mPATCH = map[string]echo.HandlerFunc{
 		"/thumbsup/:id": post.ThumbsUp,
+		"/bookmark/:id": post.Bookmark,
 	}
 
 	// ------------------------------------------------------- //
