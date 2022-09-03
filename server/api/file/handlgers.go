@@ -11,6 +11,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/wismed-web/wisite-api/server/api/sign"
+	lk "github.com/digisan/logkit"
 )
 
 // *** after implementing, register with path in 'file.go' *** //
@@ -128,6 +129,7 @@ func UploadFormFile(c echo.Context) error {
 
 	path, err := us.(*fm.UserSpace).SaveFormFile(file, note, group0, group1, group2)
 	if err != nil {
+		lk.Warn("UploadFormFile / SaveFormFile ERR: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 

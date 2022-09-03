@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/digisan/event-mgr v0.1.17
-	github.com/digisan/file-mgr v0.2.8
+	github.com/digisan/file-mgr v0.2.9
 	github.com/digisan/go-generics v0.2.2
 	github.com/digisan/gotk v0.1.19
 	github.com/digisan/logkit v0.1.0
@@ -14,7 +14,7 @@ require (
 	github.com/postfinance/single v0.0.2
 	github.com/swaggo/echo-swagger v1.3.4
 	github.com/swaggo/swag v1.8.5
-	golang.org/x/net v0.0.0-20220822230855-b0a4917ee28c
+	golang.org/x/net v0.0.0-20220826154423-83b083e8dc8b
 )
 
 require (
@@ -38,9 +38,9 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/flatbuffers v2.0.7+incompatible // indirect
+	github.com/google/flatbuffers v2.0.8+incompatible // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/gookit/color v1.5.1 // indirect
+	github.com/gookit/color v1.5.2 // indirect
 	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/jtguibas/cinema v0.0.0-20200208054232-ca271f28a020 // indirect
@@ -56,8 +56,8 @@ require (
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	go.opencensus.io v0.23.0 // indirect
-	golang.org/x/crypto v0.0.0-20220824171710-5757bc0c5503 // indirect
-	golang.org/x/sys v0.0.0-20220825204002-c680a09ffe64 // indirect
+	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
+	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	golang.org/x/tools v0.1.12 // indirect
