@@ -33,7 +33,7 @@ func init() {
 
 // @title WISMED WISITE API
 // @version 1.0
-// @description This is wismed wisite-api server.
+// @description WISMED Wisite-API Server. Updated@ 2022-09-03T11:33:31+10:00
 // @termsOfService
 // @contact.name API Support
 // @contact.url

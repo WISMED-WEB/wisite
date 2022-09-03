@@ -2,7 +2,7 @@ host: 127.0.0.1:1323
 info:
   contact:
     name: API Support
-  description: This is wismed wisite-api server.
+  description: WISMED Wisite-API Server. Updated@ 2022-09-03T11:26:06+10:00
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
