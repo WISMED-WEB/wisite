@@ -3,14 +3,14 @@ module github.com/wismed-web/wisite-api
 go 1.19
 
 require (
-	github.com/digisan/event-mgr v0.1.17
-	github.com/digisan/file-mgr v0.2.9
+	github.com/digisan/event-mgr v0.1.18
+	github.com/digisan/file-mgr v0.2.10
 	github.com/digisan/go-generics v0.2.2
 	github.com/digisan/gotk v0.1.19
 	github.com/digisan/logkit v0.1.0
-	github.com/digisan/user-mgr v0.3.5
+	github.com/digisan/user-mgr v0.3.6
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/labstack/echo/v4 v4.8.0
+	github.com/labstack/echo/v4 v4.9.0
 	github.com/postfinance/single v0.0.2
 	github.com/swaggo/echo-swagger v1.3.4
 	github.com/swaggo/swag v1.8.5
@@ -25,7 +25,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgraph-io/badger/v3 v3.2103.2 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
-	github.com/digisan/db-helper v0.0.6 // indirect
+	github.com/digisan/db-helper v0.0.10 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect

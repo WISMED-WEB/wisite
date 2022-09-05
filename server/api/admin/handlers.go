@@ -44,15 +44,31 @@ func Menu(c echo.Context) error {
 
 	var menu []string
 
+	// old version
+	// switch user.MemLevel {
+	// case 0: // unsubscribe
+	// 	menu = []string{"whats-new", "topic", "task"}
+	// case 1: // subscribe
+	// 	menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote"}
+	// case 2: // advanced subscribe
+	// 	menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote", "audit"}
+	// case 3: // admin
+	// 	menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote", "audit", "admin"}
+	// default:
+	// 	lk.Warn("MemLevel is invalid @ [%v], only 0-3 is valid", user.MemLevel)
+	// 	menu = []string{}
+	// }
+
+	// simple version
 	switch user.MemLevel {
 	case 0: // unsubscribe
-		menu = []string{"whats-new", "topic", "task"}
+		menu = []string{"whats-new", "topic"}
 	case 1: // subscribe
-		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote"}
+		menu = []string{"whats-new", "topic", "bookmark", "my-sharing"}
 	case 2: // advanced subscribe
-		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote", "audit"}
+		menu = []string{"whats-new", "topic", "bookmark", "my-sharing"}
 	case 3: // admin
-		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "assign", "task", "vote", "audit", "admin"}
+		menu = []string{"whats-new", "topic", "bookmark", "my-sharing", "admin"}
 	default:
 		lk.Warn("MemLevel is invalid @ [%v], only 0-3 is valid", user.MemLevel)
 		menu = []string{}

@@ -46,6 +46,8 @@ func CommentaryReplace(fpath string) error {
 
 func main() {
 	fmt.Println("Usage: \n\t-s: go source file [../server/main.go]\n\t-c: commentary symbol replacement [true]\n\t-p: local ip to public ip [false]")
+	fmt.Println("commentary symbol: [Updated@]")
+
 	var (
 		s = flag.String("s", "../server/main.go", "go source file")
 		c = flag.Bool("c", true, "commentary symbol replacement")

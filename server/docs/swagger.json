@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "WISMED Wisite-API Server. Updated@ 2022-09-03T11:26:06+10:00",
+        "description": "WISMED Wisite-API Server. Updated@ 2022-09-03T11:33:31+10:00",
         "title": "WISMED WISITE API",
         "contact": {
             "name": "API Support"
