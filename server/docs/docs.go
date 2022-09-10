@@ -274,6 +274,71 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/client/get/size": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "get client viewport, header, menu, content, \u0026 post-title size",
+                "responses": {
+                    "200": {
+                        "description": "OK - get client viewport \u0026 other parts' size ok"
+                    },
+                    "400": {
+                        "description": "Fail - viewport is not set"
+                    }
+                }
+            }
+        },
+        "/api/client/set/view": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Client"
+                ],
+                "summary": "set client browser's viewport ( width, height )",
+                "parameters": [
+                    {
+                        "description": "window.innerWidth \u0026 window.innerHeight",
+                        "name": "innerSize",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK - set client viewport ok"
+                    },
+                    "400": {
+                        "description": "Fail - invalid width or height for setting viewport"
+                    }
+                }
+            }
+        },
         "/api/debug/erase/all-post": {
             "delete": {
                 "consumes": [

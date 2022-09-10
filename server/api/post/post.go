@@ -13,19 +13,22 @@ type Post struct {
 	VFX      VisualEffects `json:"vfx"`
 }
 
-type VisualEffects struct {
-	Height int `json:"height"`
-}
-
 type Paragraph struct {
-	Text string     `json:"text"`
-	Atch Attachment `json:"attachment"`
+	Text     string        `json:"text"`
+	Atch     Attachment    `json:"attachment"`
+	VfxMedia VisualEffects `json:"vfx-media"`
+	// VfxText  VisualEffects `json:"vfx-text"`
 }
 
 type Attachment struct {
 	Path string `json:"path"`
 	Type string `json:"type"`
-	Size string `json:"size"` // "width,height"
+	Size string `json:"size"` // real "width,height"
+}
+
+type VisualEffects struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
 }
 
 func (m Post) String() string {
@@ -39,6 +42,8 @@ func (m Post) String() string {
 		sb.WriteString(fmt.Sprintf("	Attachment.Path: %v\n", cont.Atch.Path))
 		sb.WriteString(fmt.Sprintf("	Attachment.Type: %v\n", cont.Atch.Type))
 		sb.WriteString(fmt.Sprintf("	Attachment.Size: %v\n", cont.Atch.Size))
+		sb.WriteString(fmt.Sprintf("	VFX Media.Width: %v\n", cont.VfxMedia.Width))
+		sb.WriteString(fmt.Sprintf("	VFX Media.Height: %v\n", cont.VfxMedia.Height))
 	}
 	return sb.String()
 }

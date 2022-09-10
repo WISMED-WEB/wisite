@@ -306,12 +306,15 @@ func GetOne(c echo.Context) error {
 		heights = append(heights, h)
 	}
 
-	// set up Post VFX
+	// setup Post VFX
 	//
 	P.VFX.Height = 480
 	if maxh := Max(heights...); maxh > 480 {
 		P.VFX.Height = maxh
 	}
+
+	// setup each paragraph VFX
+
 
 	////////////////////////////////////
 
@@ -321,6 +324,9 @@ func GetOne(c echo.Context) error {
 	}
 
 	event.RawJSON = string(PData)
+
+	lk.Log("-->\n %v", event)
+
 	return c.JSON(http.StatusOK, event)
 }
 
@@ -556,6 +562,9 @@ func ThumbsUp(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
+
+	lk.Log("---> %v", ptps)
+
 	return c.JSON(http.StatusOK, struct {
 		ThumbsUp bool
 		Count    int

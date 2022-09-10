@@ -165,6 +165,45 @@ paths:
       summary: get all users' info
       tags:
       - Admin
+  /api/client/get/size:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - get client viewport & other parts' size ok
+        "400":
+          description: Fail - viewport is not set
+      security:
+      - ApiKeyAuth: []
+      summary: get client viewport, header, menu, content, & post-title size
+      tags:
+      - Client
+  /api/client/set/view:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: window.innerWidth & window.innerHeight
+        in: body
+        name: innerSize
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK - set client viewport ok
+        "400":
+          description: Fail - invalid width or height for setting viewport
+      security:
+      - ApiKeyAuth: []
+      summary: set client browser's viewport ( width, height )
+      tags:
+      - Client
   /api/debug/erase/all-post:
     delete:
       consumes:

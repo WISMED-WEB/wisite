@@ -139,6 +139,7 @@ func echoHost(done chan<- string) {
 			"/api/post",
 			"/api/user",
 			"/api/rel",
+			"/api/client",
 		}
 		handlers := []func(*echo.Group){
 			api.SignoutHandler,
@@ -147,6 +148,7 @@ func echoHost(done chan<- string) {
 			api.PostHandler,
 			api.UserHandler,
 			api.RelHandler,
+			api.ClientHandler,
 		}
 		for i, group := range groups {
 			r := e.Group(group)
