@@ -312,7 +312,7 @@ func ActivateUser(c echo.Context) error {
 		true:  "activated",
 		false: "deactivated",
 	}
-	return c.String(http.StatusOK, fmt.Sprintf("[%s] is %s", uname, m[flag]))
+	return c.JSON(http.StatusOK, fmt.Sprintf("[%s] is %s", uname, m[flag]))
 }
 
 // @Title officialize user
@@ -363,5 +363,5 @@ func OfficializeUser(c echo.Context) error {
 		true:  "switched to official account",
 		false: "switched to unofficial account",
 	}
-	return c.String(http.StatusOK, fmt.Sprintf("[%s] is %s", uname, m[flag]))
+	return c.JSON(http.StatusOK, fmt.Sprintf("[%s] is %s", uname, m[flag]))
 }

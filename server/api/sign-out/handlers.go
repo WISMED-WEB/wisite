@@ -44,5 +44,5 @@ func SignOut(c echo.Context) error {
 	// remove user space for 'uname'
 	sign.MapUserSpace.Delete(uname)
 
-	return c.String(http.StatusOK, fmt.Sprintf("[%s] sign-out successfully", uname))
+	return c.JSON(http.StatusOK, fmt.Sprintf("[%s] sign-out successfully", uname))
 }

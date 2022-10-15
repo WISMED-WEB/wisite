@@ -17,7 +17,7 @@ import (
 // @Success 200 "OK - get its version"
 // @Router /api/system/ver [get]
 func Ver(c echo.Context) error {
-	return c.String(http.StatusOK, version)
+	return c.JSON(http.StatusOK, version)
 }
 
 // @Title api service tag
@@ -29,5 +29,5 @@ func Ver(c echo.Context) error {
 // @Success 200 "OK - get its tag"
 // @Router /api/system/ver-tag [get]
 func VerTag(c echo.Context) error {
-	return c.String(http.StatusOK, tag)
+	return c.JSON(http.StatusOK, tag)
 }

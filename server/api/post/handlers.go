@@ -39,12 +39,10 @@ func Template(c echo.Context) error {
 		Category: "Post category",
 		Topic:    "Post topic",
 		Keywords: "keywords for this Post",
-		VFX: VisualEffects{
-			Height: 480,
-		},
 		Content: []Paragraph{
 			{
-				Text: "some words for this paragraph",
+				Text:     "some words for this paragraph",
+				RichText: "html format for text",
 				Atch: Attachment{
 					Path: "attachment path, which should have been given from 'file upload'",
 					Type: "attachment file type, e.g. image, video, audio, etc",
@@ -232,7 +230,8 @@ func IdAll(c echo.Context) error {
 // @Tags    Post
 // @Accept  json
 // @Produce json
-// @Param   id   query string true "Post ID for its content"
+// @Param   id     query string  true "Post ID for its content"
+// @Param   remote query boolean true "remote ip for media src?"
 // @Success 200 "OK - get Post event successfully"
 // @Failure 400 "Fail - incorrect query param id"
 // @Failure 404 "Fail - not found"
@@ -241,7 +240,11 @@ func IdAll(c echo.Context) error {
 // @Security ApiKeyAuth
 func GetOne(c echo.Context) error {
 	var (
-		id = c.QueryParam("id")
+		userTkn = c.Get("user").(*jwt.Token)
+		claims  = userTkn.Claims.(*u.UserClaims)
+		uname   = claims.UName
+		id      = c.QueryParam("id")
+		remote  = c.QueryParam("remote")
 	)
 
 	lk.Log("Into GetOne, event id is %v", id)
@@ -258,7 +261,7 @@ func GetOne(c echo.Context) error {
 		return c.String(http.StatusNotFound, fmt.Sprintf("Post not found @%s", id))
 	}
 	if len(event.RawJSON) == 0 {
-		return c.String(http.StatusOK, fmt.Sprintf("Post has no content @%s", id))
+		return c.JSON(http.StatusOK, fmt.Sprintf("Post has no content @%s", id))
 	}
 
 	////////////////////////////////////
@@ -270,7 +273,6 @@ func GetOne(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "convert RawJSON to [Post] Unmarshal error")
 	}
 
-	heights := []int{}
 	for i, p := range P.Content {
 
 		// originally, path start with yyyy-mm
@@ -297,24 +299,17 @@ func GetOne(c echo.Context) error {
 			lk.Warn("get media area size error %v @ %s @ %s", err, ftype, fpath)
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
+
 		// 3) update area size
 		P.Content[i].Atch.Size = sz
-
-		// for getting VFX
-		w, h := 0, 0
-		fmt.Sscanf(sz, "%d,%d", &w, &h)
-		heights = append(heights, h)
 	}
 
-	// setup Post VFX
-	//
-	P.VFX.Height = 480
-	if maxh := Max(heights...); maxh > 480 {
-		P.VFX.Height = maxh
+	rmt, err := strconv.ParseBool(remote)
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
 	}
 
-	// setup each paragraph VFX
-
+	P.GenVFX(uname, rmt)
 
 	////////////////////////////////////
 
@@ -355,7 +350,7 @@ func DelOne(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	return c.String(http.StatusOK, IF(n == 1, fmt.Sprintf("<%s> is deleted", id), fmt.Sprintf("<%s> is not existing, nothing to delete", id)))
+	return c.JSON(http.StatusOK, IF(n == 1, fmt.Sprintf("<%s> is deleted", id), fmt.Sprintf("<%s> is not existing, nothing to delete", id)))
 }
 
 // @Title erase one Post content
@@ -383,7 +378,7 @@ func EraseOne(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	return c.String(http.StatusOK, IF(n == 1, fmt.Sprintf("<%s> is erased permanently", id), fmt.Sprintf("<%s> is not existing, nothing to erase", id)))
+	return c.JSON(http.StatusOK, IF(n == 1, fmt.Sprintf("<%s> is erased permanently", id), fmt.Sprintf("<%s> is not existing, nothing to erase", id)))
 }
 
 // @Title get own Post id group in a specific period

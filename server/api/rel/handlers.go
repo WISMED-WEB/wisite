@@ -58,7 +58,7 @@ func Action(c echo.Context) error {
 	if err := r.RelAction(uname, flag, whom); err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	return c.String(http.StatusOK, fmt.Sprintf("%s %s successfully now", action, whom))
+	return c.JSON(http.StatusOK, fmt.Sprintf("%s %s successfully now", action, whom))
 }
 
 // @Title user relation content

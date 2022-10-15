@@ -320,7 +320,7 @@ const docTemplate = `{
                 "summary": "set client browser's viewport ( width, height )",
                 "parameters": [
                     {
-                        "description": "window.innerWidth \u0026 window.innerHeight",
+                        "description": "width: window.innerWidth \u0026 height: window.innerHeight",
                         "name": "innerSize",
                         "in": "body",
                         "required": true,
@@ -913,6 +913,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Post ID for its content",
                         "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "remote ip for media src?",
+                        "name": "remote",
                         "in": "query",
                         "required": true
                     }

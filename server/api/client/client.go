@@ -1,9 +1,14 @@
 package client
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+
+	lk "github.com/digisan/logkit"
+)
 
 var (
-	mLayout = make(map[string]*Layout)
+	mLayout = &sync.Map{}
 )
 
 type Area struct {
@@ -12,20 +17,25 @@ type Area struct {
 }
 
 func (a Area) String() string {
-	return fmt.Sprintf("width: %d,  height: %d", a.Width, a.Height)
+	return fmt.Sprintf("{ width: %04d, height: %04d }", a.Width, a.Height)
 }
 
 type Layout struct {
-	Viewport Area `json:"viewport"`
-	Header   Area `json:"header"`
-	Menu     Area `json:"menubar"`
-	Content  Area `json:"content"`
+	Viewport Area `json:"viewport"` // whole page area
+	Header   Area `json:"header"`   // header area for title etc.
+	Menu     Area `json:"menubar"`  // left area for menu
+	Content  Area `json:"content"`  // right area for content
+	Footer   Area `json:"footer"`   // bottom area for extra message
 }
 
 func (lo Layout) String() string {
 	return fmt.Sprintf(
-		"\nViewport: %v\nHeader: %v\nMenu: %v\nContent: %v\n",
-		lo.Viewport, lo.Header, lo.Menu, lo.Content,
+		"%s%-12s %v    %s%-12s %v    %s%-12s %v    %s%-12s %v    %s%-12s %v",
+		lk.LF, "Viewport:", lo.Viewport,
+		lk.LF, "Header:", lo.Header,
+		lk.LF, "Menu:", lo.Menu,
+		lk.LF, "Content:", lo.Content,
+		lk.LF, "Footer:", lo.Footer,
 	)
 }
 
@@ -38,12 +48,16 @@ func newLayout(area *Area) *Layout {
 	lo.Header.Width = lo.Viewport.Width
 	lo.Header.Height = int(float64(lo.Viewport.Height) * hHeaderProp)
 
+	hFooterProp := 0.02
+	lo.Footer.Width = lo.Viewport.Width
+	lo.Footer.Height = int(float64(lo.Viewport.Height) * hFooterProp)
+
 	wMenuProp := 0.2
 	lo.Menu.Width = int(float64(lo.Viewport.Width) * wMenuProp)
 	lo.Menu.Height = lo.Viewport.Height
 
 	wContentProp := 1.0 - wMenuProp
-	hContentProp := 1.0 - hHeaderProp
+	hContentProp := 1.0 - hHeaderProp - hFooterProp
 	lo.Content.Width = int(float64(lo.Viewport.Width) * wContentProp)
 	lo.Content.Height = int(float64(lo.Viewport.Height) * hContentProp)
 
@@ -51,43 +65,24 @@ func newLayout(area *Area) *Layout {
 }
 
 func GetLayout(uname string) *Layout {
-	return mLayout[uname]
+	if lo, ok := mLayout.Load(uname); ok {
+		return lo.(*Layout)
+	}
+	return nil
 }
 
 func AddLayout(uname string, lo *Layout) {
-	mLayout[uname] = lo
+	mLayout.Store(uname, lo)
 }
 
-func (lo *Layout) HeaderWidth() int {
-	return lo.Header.Width
-}
-
-func (lo *Layout) HeaderHeight() int {
-	return lo.Header.Height
-}
-
-func (lo *Layout) MenuWidth() int {
-	return lo.Menu.Width
-}
-
-func (lo *Layout) MenuHeight() int {
-	return lo.Menu.Height
-}
-
-func (lo *Layout) ContentWidth() int {
-	return lo.Content.Width
-}
-
-func (lo *Layout) ContentHeight() int {
-	return lo.Content.Height
-}
+////////////////////////////////////////////
 
 func (lo *Layout) PostWidth() int {
-	return int(float64(lo.ContentWidth()) * 0.9)
+	return int(float64(lo.Content.Width) * 0.9)
 }
 
 func (lo *Layout) PostTitleHeight() int {
-	return int(float64(lo.ContentHeight()) * 0.06)
+	return int(float64(lo.Content.Height) * 0.06)
 }
 
 func (lo *Layout) PostContentHeight() int {

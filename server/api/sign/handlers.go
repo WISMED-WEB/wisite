@@ -87,7 +87,7 @@ func NewUser(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	return c.String(http.StatusOK, "waiting verification code in your email")
+	return c.JSON(http.StatusOK, "waiting verification code in your email")
 }
 
 // @Title verify new user's email
@@ -128,7 +128,7 @@ func VerifyEmail(c echo.Context) error {
 
 	}
 
-	return c.String(http.StatusOK, "registered successfully")
+	return c.JSON(http.StatusOK, "registered successfully")
 }
 
 // @Title sign in
@@ -261,7 +261,7 @@ func ResetPwd(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	return c.String(http.StatusOK, "waiting verification code in your email")
+	return c.JSON(http.StatusOK, "waiting verification code in your email")
 }
 
 // @Title update new password
@@ -301,5 +301,5 @@ func VerifyResetPwd(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.String(http.StatusOK, "password updated")
+	return c.JSON(http.StatusOK, "password updated")
 }

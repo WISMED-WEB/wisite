@@ -186,7 +186,7 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: window.innerWidth & window.innerHeight
+      - description: 'width: window.innerWidth & height: window.innerHeight'
         in: body
         name: innerSize
         required: true
@@ -559,6 +559,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: remote ip for media src?
+        in: query
+        name: remote
+        required: true
+        type: boolean
       produces:
       - application/json
       responses:

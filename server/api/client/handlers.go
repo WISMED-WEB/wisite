@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	lk "github.com/digisan/logkit"
 	u "github.com/digisan/user-mgr/user"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -15,7 +16,7 @@ import (
 // @Tags    Client
 // @Accept  json
 // @Produce json
-// @Param   innerSize body string true "window.innerWidth & window.innerHeight"
+// @Param   innerSize body string true "width: window.innerWidth & height: window.innerHeight"
 // @Success 200 "OK - set client viewport ok"
 // @Failure 400 "Fail - invalid width or height for setting viewport"
 // @Router /api/client/set/view [put]
@@ -28,13 +29,14 @@ func SetClientView(c echo.Context) error {
 		cv      = new(Area)
 	)
 	if err := c.Bind(cv); err != nil || cv.Width <= 0 || cv.Height <= 0 {
-		return c.String(http.StatusBadRequest, "setting client viewport error")
+		return c.String(http.StatusBadRequest, "set client viewport error")
 	}
 	AddLayout(uname, newLayout(cv))
 
-	for u, lo := range mLayout {
-		fmt.Println(u, lo)
-	}
+	mLayout.Range(func(key, value any) bool {
+		lk.Log("%v: %v", key, value)
+		return true
+	})
 
 	return c.JSON(http.StatusOK, "Set ClientView Successfully")
 }

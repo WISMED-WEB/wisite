@@ -37,7 +37,7 @@ func HeartBeats(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.String(http.StatusOK, fmt.Sprintf("[%v] heartbeats", uname))
+	return c.JSON(http.StatusOK, fmt.Sprintf("[%v] heartbeats", uname))
 }
 
 // @Title get user profile
@@ -156,7 +156,7 @@ VALIDATE:
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.String(http.StatusOK, "Profile Updated")
+	return c.JSON(http.StatusOK, "Profile Updated")
 }
 
 // @Title get self avatar

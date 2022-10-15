@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
 	fm "github.com/digisan/file-mgr"
+	cfg "github.com/digisan/go-config"
 	gio "github.com/digisan/gotk/io"
 	lk "github.com/digisan/logkit"
 	r "github.com/digisan/user-mgr/relation"
@@ -25,10 +27,16 @@ import (
 
 var (
 	fHttp2 = false
+	port   = 1323
 )
 
 func init() {
 	lk.WarnDetail(false)
+
+	cfg.Init("main", false, "./config.json")
+
+	fHttp2 = cfg.Val[bool]("http2")
+	port = cfg.Val[int]("port")
 }
 
 // @title WISMED WISITE API
@@ -161,11 +169,12 @@ func echoHost(done chan<- string) {
 		}
 
 		// running...
+		portstr := fmt.Sprintf(":%d", port)
 		var err error
 		if fHttp2 {
-			err = e.StartTLS(":1323", "./cert/public.pem", "./cert/private.pem")
+			err = e.StartTLS(portstr, "./cert/public.pem", "./cert/private.pem")
 		} else {
-			err = e.Start(":1323")
+			err = e.Start(portstr)
 		}
 		lk.FailOnErrWhen(err != http.ErrServerClosed, "%v", err)
 	}()

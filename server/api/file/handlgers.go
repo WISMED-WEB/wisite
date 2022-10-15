@@ -140,7 +140,7 @@ func UploadFormFile(c echo.Context) error {
 
 	parts := strings.Split(path, "/")
 	path = strings.Join(parts[3:], "/")
-	return c.String(http.StatusOK, path)
+	return c.JSON(http.StatusOK, path)
 }
 
 // @Title upload-bodydata
@@ -193,5 +193,5 @@ func UploadBodyData(c echo.Context) error {
 
 	parts := strings.Split(path, "/")
 	path = strings.Join(parts[3:], "/")
-	return c.String(http.StatusOK, path)
+	return c.JSON(http.StatusOK, path)
 }
