@@ -18,9 +18,9 @@ cd -
 
 LDFLAGS="-s -w"
 TM=`date +%F@%T@%Z`
-OUT=server\($TM\)
+OUT=wisite-api\($TM\)
 
-######################### X86
+######################### X86 #########################
 
 GOARCH=amd64
 
@@ -31,7 +31,7 @@ CGO_ENABLED=0 GOOS="linux" GOARCH="$GOARCH" go build -ldflags="$LDFLAGS" -o $OUT
 mv $OUT $OUTPATH_LINUX
 cp -r ./*config.json $OUTPATH_LINUX
 # cp -r ./www $OUTPATH_LINUX 
-echo "${G}server(linux64) built${W}"
+echo "${G}${OUT}(linux64)${W} built"
 
 # OUTPATH_WIN=./build/win64/
 # mkdir -p $OUTPATH_WIN
@@ -39,7 +39,7 @@ echo "${G}server(linux64) built${W}"
 # mv $OUT.exe $OUTPATH_WIN
 # cp -r ./*config.json $OUTPATH_WIN
 # # cp -r ./www $OUTPATH_WIN
-# echo "${G}server(win64) built${W}"
+# echo "${G}${OUT}(win64)${W} built"
 
 # OUTPATH_MAC=./build/mac/
 # mkdir -p $OUTPATH_MAC
@@ -47,9 +47,9 @@ echo "${G}server(linux64) built${W}"
 # mv $OUT $OUTPATH_MAC
 # cp -r ./*config.json $OUTPATH_MAC
 # # cp -r ./www $OUTPATH_MAC
-# echo "${G}server(mac) built${W}"
+# echo "${G}${OUT}(mac)${W} built"
 
-######################### ARM
+######################### ARM #########################
 
 # GOARCH=arm
 
@@ -59,7 +59,7 @@ echo "${G}server(linux64) built${W}"
 # mv $OUT $OUTPATH_LARM
 # cp -r ./*config.json $OUTPATH_LARM
 # # cp -r ./www $OUTPATH_LARM
-# echo "${G}server(linuxArm) built${W}"
+# echo "${G}${OUT}(linuxArm)${W} built"
 
 #######################################################################################
 

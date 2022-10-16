@@ -26,8 +26,8 @@ import (
 )
 
 var (
-	fHttp2 = false
-	port   = 1323
+	fHttp2 = false //
+	port   = 3323  // must be same as @host IP
 )
 
 func init() {
@@ -48,7 +48,7 @@ func init() {
 // @contact.email
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host 127.0.0.1:1323
+// @host 127.0.0.1:3323
 // @BasePath
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
@@ -129,7 +129,7 @@ func echoHost(done chan<- string) {
 		// web socket
 		e.GET("/ws/msg", ws.WSMsg)
 
-		// host swagger http://localhost:1323/swagger/index.html
+		// host swagger http://localhost:3323/swagger/index.html
 		e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 		// sign group without JWT
