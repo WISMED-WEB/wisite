@@ -7,11 +7,11 @@ import (
 	"strings"
 
 	fm "github.com/digisan/file-mgr"
+	lk "github.com/digisan/logkit"
 	u "github.com/digisan/user-mgr/user"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/wismed-web/wisite-api/server/api/sign"
-	lk "github.com/digisan/logkit"
 )
 
 // *** after implementing, register with path in 'file.go' *** //
@@ -38,7 +38,7 @@ func PathContent(c echo.Context) error {
 	)
 
 	// fetch user space for valid login
-	us, ok := sign.MapUserSpace.Load(uname)
+	us, ok := sign.UserCache.Load(uname)
 	if !ok || us == nil {
 		return c.String(http.StatusInternalServerError, "login error for [pathcontent] @"+uname)
 	}
@@ -69,7 +69,7 @@ func FileItems(c echo.Context) error {
 	)
 
 	// fetch user space for valid login
-	us, ok := sign.MapUserSpace.Load(uname)
+	us, ok := sign.UserCache.Load(uname)
 	if !ok || us == nil {
 		return c.String(http.StatusInternalServerError, "login error for [fileitem] @"+uname)
 	}
@@ -114,7 +114,7 @@ func UploadFormFile(c echo.Context) error {
 	)
 
 	// fetch user space for valid login
-	us, ok := sign.MapUserSpace.Load(uname)
+	us, ok := sign.UserCache.Load(uname)
 	if !ok || us == nil {
 		return c.String(http.StatusInternalServerError, "login error for [upload] @"+uname)
 	}
@@ -174,7 +174,7 @@ func UploadBodyData(c echo.Context) error {
 	)
 
 	// fetch user space for valid login
-	us, ok := sign.MapUserSpace.Load(uname)
+	us, ok := sign.UserCache.Load(uname)
 	if !ok || us == nil {
 		return c.String(http.StatusInternalServerError, "login error for [upload] @"+uname)
 	}

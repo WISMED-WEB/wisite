@@ -11,7 +11,7 @@ import (
 	su "github.com/digisan/user-mgr/sign-up"
 	u "github.com/digisan/user-mgr/user"
 	vf "github.com/digisan/user-mgr/user/valfield"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 

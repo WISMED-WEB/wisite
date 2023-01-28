@@ -53,7 +53,7 @@ func newExtUser(userId, pwd string) *u.User {
 			Avatar:         []byte{},
 		},
 		Admin: u.Admin{
-			Regtime:   time.Now().Truncate(time.Second),
+			RegTime:   time.Now().Truncate(time.Second),
 			Active:    true,
 			Certified: false,
 			Official:  false,
@@ -71,7 +71,7 @@ func createExtUser(userId, pwd string) (*u.User, error) {
 }
 
 func validateSavedExtUser(userId, pwd string) *u.User {
-	if user := newExtUser(userId, pwd); si.CheckUserExisting(user) == nil {
+	if user := newExtUser(userId, pwd); si.UserStatusIssue(user) == nil {
 		return user
 	}
 	return nil

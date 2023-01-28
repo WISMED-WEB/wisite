@@ -15,7 +15,6 @@ import (
 	lk "github.com/digisan/logkit"
 	r "github.com/digisan/user-mgr/relation"
 	u "github.com/digisan/user-mgr/user"
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/postfinance/single"
@@ -182,9 +181,12 @@ func echoHost(done chan<- string) {
 
 func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userTkn := c.Get("user").(*jwt.Token)
-		claims := userTkn.Claims.(*u.UserClaims)
-		if claims.ValidateToken(userTkn.Raw) {
+		token, claims, err := u.TokenClaimsInHandler(c)
+		if err != nil {
+			return err
+		}
+		invoker := u.ClaimsToUser(claims)
+		if invoker.ValidateToken(token.Raw) {
 			return next(c)
 		}
 		return c.JSON(http.StatusUnauthorized, map[string]any{
@@ -192,3 +194,16 @@ func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 		})
 	}
 }
+
+// func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
+// 	return func(c echo.Context) error {
+// 		userTkn := c.Get("user").(*jwt.Token)
+// 		claims := userTkn.Claims.(*u.UserClaims)
+// 		if claims.ValidateToken(userTkn.Raw) {
+// 			return next(c)
+// 		}
+// 		return c.JSON(http.StatusUnauthorized, map[string]any{
+// 			"message": "invalid or expired jwt",
+// 		})
+// 	}
+// }

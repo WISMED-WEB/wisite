@@ -18,8 +18,8 @@ import (
 // *** after implementing, register with path in 'sign.go' *** //
 
 var (
-	MapUserSpace  = &sync.Map{} // map[string]*fm.UserSpace, *** record logged-in user space ***
-	MapUserClaims = &sync.Map{} // map[string]*u.UserClaims, *** record logged-in user claims  ***
+	UserCache = &sync.Map{} // map[string]*u.User, *** record logged-in user ***
+	// MapUserClaims = &sync.Map{} // map[string]*u.UserClaims, *** record logged-in user claims  ***
 )
 
 // @Title register a new user
@@ -64,7 +64,7 @@ func NewUser(c echo.Context) error {
 			Avatar:         []byte{},
 		},
 		Admin: u.Admin{
-			Regtime:   time.Now().Truncate(time.Second),
+			RegTime:   time.Now().Truncate(time.Second),
 			Active:    true,
 			Certified: false,
 			Official:  false,
@@ -125,7 +125,6 @@ func VerifyEmail(c echo.Context) error {
 
 	// sign-up ok calling...
 	{
-
 	}
 
 	return c.JSON(http.StatusOK, "registered successfully")
@@ -165,7 +164,7 @@ func LogIn(c echo.Context) error {
 
 AGAIN:
 
-	if err := si.CheckUserExisting(user); err != nil {
+	if err := si.UserStatusIssue(user); err != nil {
 
 		///////////////////////////////////////
 		// external user checking
@@ -207,13 +206,12 @@ AGAIN:
 		if err != nil || us == nil {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
-		MapUserSpace.Store(user.UName, us)
 	}
 
-	claims := u.MakeUserClaims(user)
-	defer func() { MapUserClaims.Store(user.UName, claims) }() // save current user claims for other usage
+	defer func() { UserCache.Store(user.UName, user) }() // save current user for other usage
 
-	token := claims.GenToken()
+	claims := u.MakeClaims(user)
+	token := u.GenerateToken(claims)
 	return c.JSON(http.StatusOK, echo.Map{
 		"token": token,
 		"auth":  "Bearer " + token,
@@ -243,7 +241,7 @@ func ResetPwd(c echo.Context) error {
 		Admin:   u.Admin{},
 	}
 
-	if err := rp.CheckUserExists(user); err != nil {
+	if err := rp.UserStatusIssue(user); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 	if !rp.EmailOK(user) {

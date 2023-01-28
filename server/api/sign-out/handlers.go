@@ -7,7 +7,6 @@ import (
 	lk "github.com/digisan/logkit"
 	so "github.com/digisan/user-mgr/sign-out"
 	u "github.com/digisan/user-mgr/user"
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/wismed-web/wisite-api/server/api/sign"
 )
@@ -25,24 +24,24 @@ import (
 // @Router /api/sign-out/ [get]
 // @Security ApiKeyAuth
 func SignOut(c echo.Context) error {
-	var (
-		userTkn = c.Get("user").(*jwt.Token)
-		claims  = userTkn.Claims.(*u.UserClaims)
-		uname   = claims.UName
-	)
 
-	defer claims.DeleteToken() // only in SignOut calling DeleteToken()
+	invoker, err := u.Invoker(c)
+	if err != nil {
+		lk.Warn("%v", err)
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
 
-	// remove user claims for 'uname'
-	defer sign.MapUserClaims.Delete(uname)
+	defer invoker.DeleteToken() // only in SignOut calling DeleteToken()
+
+	uname := invoker.UName
+
+	// remove user by 'uname'
+	defer sign.UserCache.Delete(uname)
 
 	if err := so.Logout(uname); err != nil {
 		lk.Warn("%v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-
-	// remove user space for 'uname'
-	sign.MapUserSpace.Delete(uname)
 
 	return c.JSON(http.StatusOK, fmt.Sprintf("[%s] sign-out successfully", uname))
 }

@@ -12,7 +12,7 @@
         },
         "version": "1.0"
     },
-    "host": "127.0.0.1:1323",
+    "host": "127.0.0.1:3323",
     "paths": {
         "/api/admin/activate": {
             "put": {
