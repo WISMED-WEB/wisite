@@ -11,7 +11,10 @@ cd -
 if [[ $1 == 'all' ]]
 then
 
-rm -f go.sum
-go get -u ./...
+go clean -cache
+go clean -modcache
+rm -f go.sum go.mod
+go mod init github.com/wismed-web/wisite-api
+go mod tidy
 
 fi

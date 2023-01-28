@@ -7,7 +7,7 @@ import (
 	lk "github.com/digisan/logkit"
 	r "github.com/digisan/user-mgr/relation"
 	u "github.com/digisan/user-mgr/user"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 

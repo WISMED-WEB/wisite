@@ -16,7 +16,7 @@ import (
 	fd "github.com/digisan/gotk/filedir"
 	lk "github.com/digisan/logkit"
 	u "github.com/digisan/user-mgr/user"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 
